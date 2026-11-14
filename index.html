@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chrish Pep Felix A</title>
+<meta name="description" content="Chrish Pep Felix A: AI and data engineer building forecasting models, LLM agents and guardrails for financial data. Every result measured on held-out data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: a chart-paper page. The hero is Chrish's own Brent series and forecast, drawn live;
+   everything below is a quiet ledger of measured results, each with the data it was measured on. */
+:root {
+  --paper: #eaefed;      /* cool chart-paper grey-green */
+  --sheet: #f6f8f7;      /* raised surfaces */
+  --ink: #142019;        /* text and the price line */
+  --muted: #56655e;      /* secondary text, axes */
+  --grid: #d0dbd6;       /* chart grid and rules */
+  --signal: #1f4ef5;     /* forecasts and links */
+  --shock: #c3333b;      /* market-shock annotations */
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--paper); color: var(--ink);
+  font: 400 17px/1.6 var(--body); font-variant-numeric: tabular-nums;
+}
+a { color: var(--signal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; border-radius: 2px; }
+.wrap { width: min(1160px, 100% - 40px); margin-inline: auto; }
+
+/* ---------- header ---------- */
+header.top { padding: 56px 0 8px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
+h1 {
+  font: 700 clamp(48px, 9vw, 112px)/0.92 var(--display); letter-spacing: -0.02em; margin: 0;
+  text-wrap: balance;
+}
+.lede { font-size: clamp(18px, 2vw, 21px); line-height: 1.5; max-width: 34em; margin: 22px 0 0; color: var(--ink); }
+.links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 22px; font-weight: 500; }
+.links span { color: var(--muted); font-weight: 400; }
+.portrait {
+  width: clamp(120px, 16vw, 188px); aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden;
+  background: var(--sheet); border: 1px solid var(--grid); display: grid; place-items: center;
+  box-shadow: 0 1px 0 var(--grid), 0 18px 40px -24px rgba(20, 32, 25, .45);
+}
+.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.portrait .mono { font: 700 52px/1 var(--display); color: var(--muted); letter-spacing: -0.02em; }
+
+/* ---------- hero chart ---------- */
+.chart { position: relative; margin-top: 34px; }
+.chart canvas { display: block; width: 100%; height: clamp(260px, 38vw, 430px); cursor: crosshair; touch-action: pan-y; }
+.tip {
+  position: absolute; pointer-events: none; background: var(--ink); color: var(--sheet);
+  font: 500 13px/1.35 var(--body); padding: 7px 10px; border-radius: 4px; white-space: nowrap;
+  transform: translate(-50%, calc(-100% - 14px)); opacity: 0; transition: opacity .12s;
+}
+.tip.on { opacity: 1; }
+.caption { display: flex; flex-wrap: wrap; gap: 6px 26px; font-size: 14px; color: var(--muted); margin: 12px 0 0; }
+.key { display: inline-flex; align-items: center; gap: 8px; }
+.sw { width: 22px; height: 0; border-top: 2px solid var(--ink); }
+.sw.f { border-top-color: var(--signal); border-top-style: dashed; }
+.sw.b { height: 10px; border: 0; background: color-mix(in srgb, var(--signal) 16%, transparent); }
+
+/* ---------- sections ---------- */
+section { padding: 84px 0 0; }
+h2 { font: 700 clamp(30px, 4vw, 44px)/1.05 var(--display); margin: 0 0 10px; letter-spacing: -0.01em; text-wrap: balance; }
+.intro { color: var(--muted); max-width: 40em; margin: 0 0 30px; }
+
+/* results ledger */
+.ledger { border-top: 2px solid var(--ink); }
+.row {
+  display: grid; grid-template-columns: minmax(170px, 230px) 1fr minmax(180px, 260px); gap: 8px 36px;
+  padding: 26px 0; border-bottom: 1px solid var(--grid); align-items: start;
+}
+.fig { font: 700 clamp(38px, 5vw, 56px)/1 var(--display); letter-spacing: -0.02em; }
+.fig small { font: 600 16px/1 var(--display); color: var(--muted); letter-spacing: 0; margin-left: 4px; }
+.row h3 { font: 600 21px/1.25 var(--display); margin: 2px 0 6px; }
+.row p { margin: 0; max-width: 38em; }
+.row .on { font-size: 14px; color: var(--muted); margin-top: 8px; }
+.viz { padding-top: 6px; }
+.bar { position: relative; height: 10px; background: color-mix(in srgb, var(--ink) 9%, transparent); border-radius: 5px; overflow: hidden; }
+.bar i { position: absolute; inset: 0 auto 0 0; width: 100%; border-radius: 5px; background: var(--ink); transform-origin: left; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
+.bar i.sig { background: var(--signal); }
+.bar.ref::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: var(--ref); width: 2px; background: var(--shock); }
+.vlabel { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin: 5px 0 12px; }
+.repo { font-size: 15px; font-weight: 500; display: inline-block; margin-top: 10px; }
+
+/* projects */
+.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 40px; border-top: 2px solid var(--ink); }
+.proj { padding: 22px 0; border-bottom: 1px solid var(--grid); }
+.proj h3 { font: 600 20px/1.25 var(--display); margin: 0 0 6px; }
+.proj h3 a { color: var(--ink); text-decoration: none; }
+.proj h3 a:hover { color: var(--signal); }
+.proj p { margin: 0; font-size: 16px; }
+.stack { font-size: 14px; color: var(--muted); margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.note { color: var(--shock); }
+
+/* about */
+.about { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 56px; border-top: 2px solid var(--ink); padding-top: 26px; }
+.about h3 { font: 600 20px/1.25 var(--display); margin: 0 0 6px; }
+.about p { margin: 0 0 14px; max-width: 34em; }
+
+/* gallery */
+.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+.gallery figure { margin: 0; border-radius: 6px; overflow: hidden; background: var(--sheet); border: 1px solid var(--grid); }
+.gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
+.gallery figure:hover img { transform: scale(1.04); }
+.gallery figcaption { font-size: 14px; color: var(--muted); padding: 8px 12px 10px; }
+
+footer { margin: 96px 0 0; padding: 30px 0 48px; border-top: 2px solid var(--ink); display: flex; flex-wrap: wrap; gap: 12px 30px; justify-content: space-between; font-size: 15px; color: var(--muted); }
+
+@media (max-width: 820px) {
+  header.top { grid-template-columns: 1fr; }
+  .portrait { order: -1; }
+  .row { grid-template-columns: 1fr; gap: 6px; }
+  .about { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="top">
+  <div>
+    <h1>Chrish Pep Felix A</h1>
+    <p class="lede">I build forecasting models, LLM agents and guardrails for financial data, and I measure every one of them on data it has not seen. MSc Data Science and Artificial Intelligence, University of Liverpool.</p>
+    <nav class="links" aria-label="Contact">
+      <a href="https://github.com/ChrishA-tech">GitHub</a>
+      <a href="https://www.linkedin.com/in/chrish-pep-felix">LinkedIn</a>
+      <a href="mailto:chrishpepfelixa@gmail.com">chrishpepfelixa@gmail.com</a>
+    </nav>
+  </div>
+  <div class="portrait" id="portrait"><span class="mono" aria-hidden="true">CP</span></div>
+</header>
+
+<figure class="chart" style="margin-inline:0">
+  <canvas id="brent" role="img" aria-label="Line chart of monthly Brent crude prices from January 2000 to October 2026, ranging from 18 to 133 US dollars a barrel, with a six-month forecast to April 2027 of about 124 dollars."></canvas>
+  <div class="tip" id="tip"></div>
+  <figcaption class="caption">
+    <span class="key"><span class="sw"></span>Brent crude, monthly average, USD/bbl (US EIA, Jan 2000 to Oct 2026)</span>
+    <span class="key"><span class="sw f"></span>My forecast to Apr 2027 (AR on log returns)</span>
+    <span class="key"><span class="sw b"></span>± backtest RMSE at 1, 3 and 6 months (interpolated between)</span>
+    <a href="https://github.com/ChrishA-tech/oil-price-forecasting">Code and data</a>
+  </figcaption>
+</figure>
+
+<section id="results" aria-labelledby="h-results">
+  <h2 id="h-results">Results, and what they were measured on</h2>
+  <p class="intro">Every number below comes from a held-out test or a rolling backtest that is reproducible from the linked repository. Where a result has a limitation, it is stated next to it.</p>
+  <div class="ledger">
+
+    <article class="row">
+      <div class="fig">0.885<small>F1</small></div>
+      <div>
+        <h3>FinMine: financial statements from SEC filings</h3>
+        <p>MSc dissertation. Extracts income-statement, balance-sheet and cash-flow line items from 10-K filings with a parser that handles year ordering, scale captions and label variants, then loads them into a knowledge graph.</p>
+        <p class="on">Measured on held-out real 10-K filings. Parsing latency 28.9% lower than the submitted version.</p>
+      </div>
+      <div class="viz" aria-hidden="true">
+        <div class="bar"><i style="transform:scaleX(.885)"></i></div>
+        <div class="vlabel"><span>F1 on held-out filings</span><span>0.885</span></div>
+        <div class="bar"><i class="sig" style="transform:scaleX(.289)"></i></div>
+        <div class="vlabel"><span>Latency reduction</span><span>28.9%</span></div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="fig">86.7%<small>recall</small></div>
+      <div>
+        <h3>LangGraph prompt guard</h3>
+        <p>Rules alone caught 8% of real prompt-injection attacks. A TF-IDF and logistic-regression classifier, tuned by cross-validation on the training split only, raised that to 52 of 60, with no benign prompt wrongly blocked.</p>
+        <p class="on">Measured on the deepset/prompt-injections test split. It over-flags prompts unlike its training data, so it ships opt-in behind the explainable rules.</p>
+        <a class="repo" href="https://github.com/ChrishA-tech/langgraph-prompt-guard">langgraph-prompt-guard</a>
+      </div>
+      <div class="viz" aria-hidden="true">
+        <div class="bar"><i style="transform:scaleX(.083)"></i></div>
+        <div class="vlabel"><span>Rules only</span><span>8.3%</span></div>
+        <div class="bar"><i class="sig" style="transform:scaleX(.867)"></i></div>
+        <div class="vlabel"><span>Rules + classifier</span><span>86.7%</span></div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="fig">−16%<small>RMSE</small></div>
+      <div>
+        <h3>UK CPI inflation forecasting</h3>
+        <p>An ARX model using CPI lags, Bank Rate and Brent beats a no-change forecast at every horizon from 1 to 12 months, through the 2021 to 2023 inflation surge. I also audited the original reinforcement-learning model: it did worse than the naive forecast, and the README now says so.</p>
+        <p class="on">60 rolling origins, forecasts evaluated Oct 2021 to Sep 2026 on ONS, Bank of England and EIA data. The gains are not statistically significant.</p>
+        <a class="repo" href="https://github.com/ChrishA-tech/uk-cpi-forecasting">uk-cpi-forecasting</a>
+      </div>
+      <div class="viz" aria-hidden="true">
+        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i style="transform:scaleX(calc(.96 / 1.2))"></i></div>
+        <div class="vlabel"><span>1 month: 0.96 × naive</span><span>red = naive</span></div>
+        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i class="sig" style="transform:scaleX(calc(.84 / 1.2))"></i></div>
+        <div class="vlabel"><span>12 months: 0.84 × naive</span><span></span></div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="fig">−13%<small>RMSE</small></div>
+      <div>
+        <h3>Brent crude oil forecasting</h3>
+        <p>Seven models compared in a rolling backtest. At 12 months the AR(12) model beats a random walk with a statistically significant Diebold-Mariano test. At 1 to 3 months nothing reliably beats the random walk, which is what the oil-forecasting literature would lead you to expect.</p>
+        <p class="on">60 rolling origins on 322 months of EIA data, including the 2026 price spike.</p>
+        <a class="repo" href="https://github.com/ChrishA-tech/oil-price-forecasting">oil-price-forecasting</a>
+      </div>
+      <div class="viz" aria-hidden="true">
+        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i style="transform:scaleX(calc(.97 / 1.2))"></i></div>
+        <div class="vlabel"><span>1 month: 0.97 × random walk</span><span>red = random walk</span></div>
+        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i class="sig" style="transform:scaleX(calc(.87 / 1.2))"></i></div>
+        <div class="vlabel"><span>12 months: 0.87 × random walk</span><span>p &lt; 0.05</span></div>
+      </div>
+    </article>
+
+    <article class="row">
+      <div class="fig">7<small>tools</small></div>
+      <div>
+        <h3>Macro forecast agent</h3>
+        <p>Ask in plain English, such as "What happens to UK inflation if oil rises 20%?". A LangGraph agent with Claude routes the question to the oil and CPI models above, and every number in its answer is checked against the tool outputs before it is returned. Prompt-injection attempts are refused.</p>
+        <p class="on">Runs on the real data from the two forecasting projects; answers are reproducible offline without an API key.</p>
+        <a class="repo" href="https://github.com/ChrishA-tech/macro-forecast-agent">macro-forecast-agent</a>
+      </div>
+      <div class="viz" aria-hidden="true"></div>
+    </article>
+
+  </div>
+</section>
+
+<section id="projects" aria-labelledby="h-projects">
+  <h2 id="h-projects">Other projects</h2>
+  <p class="intro">Engineering projects with tests and CI. Several use synthetic data, marked where they do, so their scores test the pipeline rather than real-world accuracy.</p>
+  <div class="projects">
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/rag-pro">RAG Pro</a></h3>
+      <p>Hybrid retrieval (BM25 and dense, fused with reciprocal rank fusion), reranking, cited answers, a grounding check and abstention on questions it cannot answer, with an ablation harness.</p>
+      <p class="stack">Python, FastAPI, Docker</p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/finrisk-service">FinRisk Service</a></h3>
+      <p>Joins disclosed risk factors to market risk: search risk passages, compute volatility, 95% VaR and drawdown, and screen companies on both. Prometheus metrics and alert rules.</p>
+      <p class="stack">FastAPI, Prometheus <span class="note">Synthetic data</span></p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/fraud-detection">Fraud detection</a></h3>
+      <p>Imbalanced classification on 284k card transactions: time-ordered splits, thresholds set for analyst capacity, a delayed-label experiment, drift (PSI) and a 300 ms scoring budget.</p>
+      <p class="stack">XGBoost, scikit-learn</p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/qlora-finetune-pipeline">QLoRA fine-tuning pipeline</a></h3>
+      <p>Fine-tunes an open-weight LLM in 4-bit with LoRA adapters for strict JSON extraction of tax line items, compares it with the base model and serves it offline in Docker.</p>
+      <p class="stack">Transformers, PEFT, Docker <span class="note">Synthetic data</span></p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/insurance-ops-automation">Insurance operations automation</a></h3>
+      <p>Seven projects: bordereaux standardisation, data-quality controls with ledger reconciliation, complaint triage, an MCP server exposing the controls to agents, and Claude Code hooks.</p>
+      <p class="stack">pandas, MCP, Claude Code <span class="note">Synthetic data</span></p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/llm-prompt-guard">LLM prompt guard</a></h3>
+      <p>A LangGraph pipeline that screens prompts for injection, PII and harmful requests before the model, then checks the response for leaks with a canary token.</p>
+      <p class="stack">LangGraph, Anthropic API</p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/leetforge">LeetForge</a></h3>
+      <p>A practice toolkit that proves solutions correct and as fast as claimed: isolated test runs, differential fuzzing against brute force, and empirical complexity fits.</p>
+      <p class="stack">Python standard library</p></div>
+    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/model-grid">Model Grid</a></h3>
+      <p>A spreadsheet-style operating model with live formulas, circular-reference detection and changes from the base case marked. Formulas go through a small parser, never eval.</p>
+      <p class="stack">React, TypeScript <a href="https://chrisha-tech.github.io/model-grid/">Try the live demo</a></p></div>
+  </div>
+</section>
+
+<section id="about" aria-labelledby="h-about">
+  <h2 id="h-about">Education</h2>
+  <div class="about">
+    <div>
+      <h3>MSc Data Science and Artificial Intelligence</h3>
+      <p>University of Liverpool. Dissertation: FinMine, extracting financial statements from SEC EDGAR filings, supervised by Dr Blaine Keetch.</p>
+    </div>
+    <div>
+      <h3>How I work</h3>
+      <p>Benchmarks first, so a model has to beat the simple answer. Held-out data for every headline number. Limits written next to results, and tests and CI on every repository.</p>
+    </div>
+  </div>
+</section>
+
+<section id="photos" aria-labelledby="h-photos" hidden>
+  <h2 id="h-photos">Photos</h2>
+  <div class="gallery" id="gallery"></div>
+</section>
+
+<footer>
+  <span>Chrish Pep Felix A, Liverpool</span>
+  <span>Email: chrishpepfelixa@gmail.com</span>
+  <a href="https://github.com/ChrishA-tech">github.com/ChrishA-tech</a>
+</footer>
+</div>
+
+<script>
+const DATA = {"dates":["2000-01","2000-02","2000-03","2000-04","2000-05","2000-06","2000-07","2000-08","2000-09","2000-10","2000-11","2000-12","2001-01","2001-02","2001-03","2001-04","2001-05","2001-06","2001-07","2001-08","2001-09","2001-10","2001-11","2001-12","2002-01","2002-02","2002-03","2002-04","2002-05","2002-06","2002-07","2002-08","2002-09","2002-10","2002-11","2002-12","2003-01","2003-02","2003-03","2003-04","2003-05","2003-06","2003-07","2003-08","2003-09","2003-10","2003-11","2003-12","2004-01","2004-02","2004-03","2004-04","2004-05","2004-06","2004-07","2004-08","2004-09","2004-10","2004-11","2004-12","2005-01","2005-02","2005-03","2005-04","2005-05","2005-06","2005-07","2005-08","2005-09","2005-10","2005-11","2005-12","2006-01","2006-02","2006-03","2006-04","2006-05","2006-06","2006-07","2006-08","2006-09","2006-10","2006-11","2006-12","2007-01","2007-02","2007-03","2007-04","2007-05","2007-06","2007-07","2007-08","2007-09","2007-10","2007-11","2007-12","2008-01","2008-02","2008-03","2008-04","2008-05","2008-06","2008-07","2008-08","2008-09","2008-10","2008-11","2008-12","2009-01","2009-02","2009-03","2009-04","2009-05","2009-06","2009-07","2009-08","2009-09","2009-10","2009-11","2009-12","2010-01","2010-02","2010-03","2010-04","2010-05","2010-06","2010-07","2010-08","2010-09","2010-10","2010-11","2010-12","2011-01","2011-02","2011-03","2011-04","2011-05","2011-06","2011-07","2011-08","2011-09","2011-10","2011-11","2011-12","2012-01","2012-02","2012-03","2012-04","2012-05","2012-06","2012-07","2012-08","2012-09","2012-10","2012-11","2012-12","2013-01","2013-02","2013-03","2013-04","2013-05","2013-06","2013-07","2013-08","2013-09","2013-10","2013-11","2013-12","2014-01","2014-02","2014-03","2014-04","2014-05","2014-06","2014-07","2014-08","2014-09","2014-10","2014-11","2014-12","2015-01","2015-02","2015-03","2015-04","2015-05","2015-06","2015-07","2015-08","2015-09","2015-10","2015-11","2015-12","2016-01","2016-02","2016-03","2016-04","2016-05","2016-06","2016-07","2016-08","2016-09","2016-10","2016-11","2016-12","2017-01","2017-02","2017-03","2017-04","2017-05","2017-06","2017-07","2017-08","2017-09","2017-10","2017-11","2017-12","2018-01","2018-02","2018-03","2018-04","2018-05","2018-06","2018-07","2018-08","2018-09","2018-10","2018-11","2018-12","2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"brent":[25.51,27.78,27.49,22.76,27.74,29.8,28.68,30.2,33.14,30.96,32.55,25.66,25.62,27.5,24.5,25.66,28.31,27.85,24.61,25.68,25.62,20.54,18.8,18.71,19.42,20.28,23.7,25.73,25.35,24.08,25.74,26.65,28.4,27.54,24.34,28.33,31.18,32.77,30.61,25.0,25.86,27.65,28.35,29.89,27.11,29.61,28.75,29.81,31.28,30.86,33.63,33.59,37.57,35.18,38.22,42.74,43.2,49.78,43.11,39.6,44.51,45.48,53.1,51.88,48.65,54.35,57.52,63.98,62.91,58.54,55.24,56.86,62.99,60.21,62.06,70.26,69.78,68.56,73.67,73.23,61.96,57.81,58.76,62.47,53.68,57.56,62.05,67.49,67.21,71.05,76.93,70.76,77.17,82.34,92.41,90.93,92.18,94.99,103.64,109.07,122.8,132.32,132.72,113.24,97.23,71.58,52.45,39.95,43.44,43.32,46.54,50.18,57.3,68.61,64.44,72.51,67.65,72.77,76.66,74.46,76.17,73.75,78.83,84.82,75.95,74.76,75.58,77.04,77.84,82.67,85.28,91.45,96.52,103.72,114.64,123.26,114.99,113.83,116.97,110.22,112.83,109.55,110.77,107.87,110.69,119.33,125.45,119.75,110.34,95.16,102.62,113.36,112.86,111.71,109.06,109.49,112.96,116.05,108.47,102.25,102.56,102.92,107.93,111.28,111.6,109.08,107.79,110.76,108.12,108.9,107.48,107.76,109.54,111.8,106.77,101.61,97.09,87.43,79.44,62.34,47.76,58.1,55.89,59.52,64.08,61.48,56.56,46.52,47.62,48.43,44.27,38.01,30.7,32.18,38.21,41.58,46.74,48.25,44.95,45.84,46.57,49.52,44.73,53.31,54.58,54.87,51.59,52.31,50.33,46.37,48.48,51.7,56.15,57.51,62.71,64.37,69.08,65.32,66.02,72.11,76.98,74.41,74.25,72.53,78.89,81.03,64.75,57.36,59.41,63.96,66.14,71.23,71.32,64.22,63.92,59.04,62.83,59.71,63.21,67.31,63.65,55.66,32.01,18.38,29.38,40.27,43.24,44.74,40.91,40.19,42.69,49.99,54.77,62.28,65.41,64.81,68.53,73.16,75.17,70.75,74.49,83.54,81.05,74.17,86.51,97.13,117.25,104.58,113.34,122.71,111.93,100.45,89.76,93.33,91.42,80.92,82.5,82.59,78.43,84.64,75.47,74.84,80.11,86.15,93.72,90.6,82.94,77.63,80.12,83.48,85.41,89.94,81.75,82.25,85.15,80.36,74.02,75.63,74.35,73.86,79.27,75.44,72.73,68.13,64.45,71.44,71.04,67.87,67.99,64.54,63.8,62.54,66.6,70.89,103.13,117.29,107.14,85.4,83.76,91.08,114.16,123.93]};
+const FORECAST = { start: "2026-11", values: [122.83, 121.40, 121.66, 122.47, 123.16, 123.74], rmse: [8.41, 12.54, 16.67, 17.28, 17.90, 18.51] };
+const PORTRAIT = null;   // data: URI or null
+const PHOTOS = [];       // [{src, caption}]
+
+/* photos */
+if (PORTRAIT) {
+  document.getElementById("portrait").innerHTML = '<img alt="Chrish Pep Felix A" src="' + PORTRAIT + '">';
+}
+if (PHOTOS.length) {
+  const g = document.getElementById("gallery");
+  PHOTOS.forEach(p => {
+    const f = document.createElement("figure");
+    const img = new Image(); img.src = p.src; img.alt = p.caption || "Photo of Chrish Pep Felix A"; img.loading = "lazy";
+    f.appendChild(img);
+    if (p.caption) { const c = document.createElement("figcaption"); c.textContent = p.caption; f.appendChild(c); }
+    g.appendChild(f);
+  });
+  document.getElementById("photos").hidden = false;
+}
+
+/* hero chart */
+(function () {
+  const cv = document.getElementById("brent"), tip = document.getElementById("tip");
+  const ctx = cv.getContext("2d");
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const C = { ink: css("--ink"), muted: css("--muted"), grid: css("--grid"), signal: css("--signal"), shock: css("--shock"), paper: css("--paper") };
+  const hist = DATA.brent, dates = DATA.dates, H = hist.length, F = FORECAST.values.length, N = H + F;
+  const fDates = []; { let [y, m] = FORECAST.start.split("-").map(Number); for (let i = 0; i < F; i++) { fDates.push(y + "-" + String(m).padStart(2, "0")); m++; if (m > 12) { m = 1; y++; } } }
+  const allDates = dates.concat(fDates);
+  const YMAX = 150, YMIN = 0;
+  const notes = [
+    { d: "2008-07", t: "Jul 2008  $132.72", dy: -16 },
+    { d: "2020-04", t: "Apr 2020  $18.38", dy: 22 },
+    { d: "2026-10", t: "Oct 2026  $123.93", dy: -16, right: true },
+  ];
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let W = 0, Ht = 0, pad, progress = reduce ? 1 : 0, hover = -1;
+
+  function size() {
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    W = r.width; Ht = r.height; cv.width = W * dpr; cv.height = Ht * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    pad = { l: 44, r: W < 600 ? 18 : 34, t: 22, b: 30 };
+    draw();
+  }
+  const x = i => pad.l + (i / (N - 1)) * (W - pad.l - pad.r);
+  const y = v => pad.t + (1 - (v - YMIN) / (YMAX - YMIN)) * (Ht - pad.t - pad.b);
+  const lbl = d => { const [yy, mm] = d.split("-"); return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+mm - 1] + " " + yy; };
+
+  function draw() {
+    ctx.clearRect(0, 0, W, Ht);
+    ctx.font = "500 12px " + css("--body");
+    // grid + y labels
+    ctx.lineWidth = 1; ctx.textAlign = "right"; ctx.textBaseline = "middle";
+    for (let v = 0; v <= YMAX; v += 25) {
+      ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(pad.l, Math.round(y(v)) + .5); ctx.lineTo(W - pad.r, Math.round(y(v)) + .5); ctx.stroke();
+      ctx.fillStyle = C.muted; ctx.fillText("$" + v, pad.l - 8, y(v));
+    }
+    // x labels: every 5 years (fewer on small screens)
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    const step = W < 600 ? 10 : 5;
+    allDates.forEach((d, i) => { if (d.endsWith("-01") && (+d.slice(0, 4)) % step === 0) { ctx.fillStyle = C.muted; ctx.fillText(d.slice(0, 4), x(i), Ht - pad.b + 9); } });
+
+    // faint full series at rest, then the traced line on top
+    const shown = Math.max(2, Math.round(progress * H));
+    ctx.lineJoin = "round"; ctx.lineCap = "round";
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 2; ctx.beginPath();
+    hist.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v))); ctx.stroke();
+    ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath();
+    for (let i = 0; i < shown; i++) i ? ctx.lineTo(x(i), y(hist[i])) : ctx.moveTo(x(i), y(hist[i]));
+    ctx.stroke();
+
+    if (progress >= 1) {
+      // forecast band and line
+      const fx = i => x(H + i), last = hist[H - 1];
+      ctx.fillStyle = C.signal + "29"; ctx.beginPath(); ctx.moveTo(x(H - 1), y(last));
+      FORECAST.values.forEach((v, i) => ctx.lineTo(fx(i), y(v + FORECAST.rmse[i])));
+      for (let i = F - 1; i >= 0; i--) ctx.lineTo(fx(i), y(FORECAST.values[i] - FORECAST.rmse[i]));
+      ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = C.signal; ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(H - 1), y(last));
+      FORECAST.values.forEach((v, i) => ctx.lineTo(fx(i), y(v))); ctx.stroke(); ctx.setLineDash([]);
+      // annotations
+      ctx.textBaseline = "middle";
+      notes.forEach(n => {
+        const i = dates.indexOf(n.d); if (i < 0) return;
+        const px = x(i), py = y(hist[i]);
+        ctx.fillStyle = C.shock; ctx.beginPath(); ctx.arc(px, py, 3.5, 0, 7); ctx.fill();
+        if (W < 520 && !n.right) return;
+        ctx.font = "600 12px " + css("--body"); ctx.textAlign = n.right ? "right" : "left";
+        ctx.fillStyle = C.ink; ctx.fillText(n.t, px + (n.right ? -10 : 8), py + n.dy);
+      });
+      // pulsing endpoint
+      const t = reduce ? 0 : (performance.now() % 2000) / 2000;
+      const ex = x(N - 1), ey = y(FORECAST.values[F - 1]);
+      ctx.fillStyle = C.signal; ctx.beginPath(); ctx.arc(ex, ey, 3.5, 0, 7); ctx.fill();
+      if (!reduce) { ctx.strokeStyle = C.signal; ctx.globalAlpha = 1 - t; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(ex, ey, 3.5 + t * 12, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
+    }
+    // crosshair
+    if (hover >= 0) {
+      const v = hover < H ? hist[hover] : FORECAST.values[hover - H];
+      ctx.strokeStyle = C.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
+      ctx.beginPath(); ctx.moveTo(Math.round(x(hover)) + .5, pad.t); ctx.lineTo(Math.round(x(hover)) + .5, Ht - pad.b); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = hover < H ? C.ink : C.signal; ctx.beginPath(); ctx.arc(x(hover), y(v), 4.5, 0, 7); ctx.fill();
+    }
+  }
+
+  function onMove(e) {
+    const r = cv.getBoundingClientRect(), px = e.clientX - r.left;
+    const i = Math.round(((px - pad.l) / (W - pad.l - pad.r)) * (N - 1));
+    if (i < 0 || i >= N) return onLeave();
+    hover = i;
+    const isF = i >= H, v = isF ? FORECAST.values[i - H] : hist[i];
+    tip.innerHTML = lbl(allDates[i]) + "<br>" + (isF ? "Forecast $" + v.toFixed(2) + " ± " + FORECAST.rmse[i - H].toFixed(1) : "$" + v.toFixed(2) + " a barrel");
+    tip.style.left = Math.min(Math.max(x(i), 80), W - 80) + "px"; tip.style.top = y(v) + "px"; tip.classList.add("on");
+    if (reduce || progress >= 1) draw();
+  }
+  function onLeave() { hover = -1; tip.classList.remove("on"); draw(); }
+  cv.addEventListener("pointermove", onMove);
+  cv.addEventListener("pointerleave", onLeave);
+
+  addEventListener("resize", size);
+  size();
+  if (!reduce) {
+    const t0 = performance.now(), dur = 2200;
+    (function frame(now) {
+      progress = Math.min(1, (now - t0) / dur);
+      progress = 1 - Math.pow(1 - progress, 3);
+      draw();
+      requestAnimationFrame(frame);
+    })(t0);
+  }
+})();
+</script>
+</body>
+</html>
