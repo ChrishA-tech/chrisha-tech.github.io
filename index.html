@@ -3,424 +3,1269 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chrish Pep Felix A</title>
-<meta name="description" content="Chrish Pep Felix A: AI and data engineer building forecasting models, LLM agents and guardrails for financial data. Every result measured on held-out data.">
+<title>Chrish on the Mersey</title>
+<meta name="description" content="Chrish Pep Felix A: AI and machine learning engineer in Liverpool. LLM agents, RAG and ML models with held-out results.">
+<meta property="og:title" content="Chrish Pep Felix A, AI & ML Engineer">
+<meta property="og:description" content="AI Engineer, Machine Learning Engineer and Data Scientist in Liverpool. LLM agents, RAG and ML models with held-out results.">
+<meta property="og:image" content="https://chrisha-tech.github.io/img/cover-og.jpg">
+<meta property="og:url" content="https://chrisha-tech.github.io/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: a chart-paper page. The hero is Chrish's own Brent series and forecast, drawn live;
-   everything below is a quiet ledger of measured results, each with the data it was measured on. */
-:root {
-  --paper: #eaefed;      /* cool chart-paper grey-green */
-  --sheet: #f6f8f7;      /* raised surfaces */
-  --ink: #142019;        /* text and the price line */
-  --muted: #56655e;      /* secondary text, axes */
-  --grid: #d0dbd6;       /* chart grid and rules */
-  --signal: #1f4ef5;     /* forecasts and links */
-  --shock: #c3333b;      /* market-shock annotations */
-  --display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
-  --body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
-  color-scheme: light;
-}
-* { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
-body {
-  margin: 0; background: var(--paper); color: var(--ink);
-  font: 400 17px/1.6 var(--body); font-variant-numeric: tabular-nums;
-}
-a { color: var(--signal); text-decoration-thickness: 1px; text-underline-offset: 3px; }
-a:hover { text-decoration-thickness: 2px; }
-:focus-visible { outline: 3px solid var(--signal); outline-offset: 3px; border-radius: 2px; }
-.wrap { width: min(1160px, 100% - 40px); margin-inline: auto; }
+  /* Layout idea: Liverpool waterfront at golden hour. Clear sky, a black varsity jacket,
+     evening light. Photo-led hero, then interactive pieces a recruiter can actually use. */
+  :root {
+    --sky: #DCEBFA;
+    --bg: #F7F9FC;
+    --card: #FFFFFF;
+    --ink: #0E1117;
+    --muted: #5B6575;
+    --line: #DEE4EC;
+    --gold: #E9802F;
+    --blue: #2C79D3;
+    --teal: #0F9E87;
+    --pink: #E0457B;
+    --violet: #7357E0;
+    --display: "Familjen Grotesk", "Helvetica Neue", Arial, sans-serif;
+    --body: "Instrument Sans", "Segoe UI", system-ui, sans-serif;
+    color-scheme: light;
+  }
+  :root[data-theme="dark"] {
+    --sky: #0F1C2E; --bg: #0B0F16; --card: #131A25; --ink: #EEF2F7; --muted: #9AA6B8;
+    --line: #243042; --gold: #F29B4F; --blue: #6AA9F0; --teal: #3CCFB4; --pink: #FF77A3; --violet: #A08CFF; color-scheme: dark;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --sky: #0F1C2E; --bg: #0B0F16; --card: #131A25; --ink: #EEF2F7; --muted: #9AA6B8;
+      --line: #243042; --gold: #F29B4F; --blue: #6AA9F0; --teal: #3CCFB4; --pink: #FF77A3; --violet: #A08CFF; color-scheme: dark;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 400 1.05rem/1.6 var(--body); overflow-x: clip; }
+  img { max-width: 100%; display: block; }
+  a { color: var(--blue); text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 74rem; margin: 0 auto; padding: 0 clamp(16px, 4vw, 40px); }
+  .progress { position: fixed; inset: 0 0 auto 0; height: 3px; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); z-index: 50; }
 
-/* ---------- header ---------- */
-header.top { padding: 56px 0 8px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: end; }
-h1 {
-  font: 700 clamp(48px, 9vw, 112px)/0.92 var(--display); letter-spacing: -0.02em; margin: 0;
-  text-wrap: balance;
-}
-.lede { font-size: clamp(18px, 2vw, 21px); line-height: 1.5; max-width: 34em; margin: 22px 0 0; color: var(--ink); }
-.links { display: flex; flex-wrap: wrap; gap: 10px 22px; margin-top: 22px; font-weight: 500; }
-.links span { color: var(--muted); font-weight: 400; }
-.portrait {
-  width: clamp(120px, 16vw, 188px); aspect-ratio: 4 / 5; border-radius: 6px; overflow: hidden;
-  background: var(--sheet); border: 1px solid var(--grid); display: grid; place-items: center;
-  box-shadow: 0 1px 0 var(--grid), 0 18px 40px -24px rgba(20, 32, 25, .45);
-}
-.portrait img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.portrait .mono { font: 700 52px/1 var(--display); color: var(--muted); letter-spacing: -0.02em; }
+  /* ---------- nav ---------- */
+  .nav { position: sticky; top: 0; z-index: 40; backdrop-filter: blur(12px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid transparent; transition: border-color .3s; }
+  .nav.scrolled { border-bottom-color: var(--line); }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding-top: 14px; padding-bottom: 14px; flex-wrap: wrap; }
+  .nav .me { font: 700 1.05rem/1 var(--display); color: var(--ink); text-decoration: none; }
+  .nav nav { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+  .nav nav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+  .nav nav a:hover, .nav nav a.here { color: var(--ink); }
+  .theme { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .9rem var(--body); cursor: pointer; }
 
-/* ---------- hero chart ---------- */
-.chart { position: relative; margin-top: 34px; }
-.chart canvas { display: block; width: 100%; height: clamp(260px, 38vw, 430px); cursor: crosshair; touch-action: pan-y; }
-.tip {
-  position: absolute; pointer-events: none; background: var(--ink); color: var(--sheet);
-  font: 500 13px/1.35 var(--body); padding: 7px 10px; border-radius: 4px; white-space: nowrap;
-  transform: translate(-50%, calc(-100% - 14px)); opacity: 0; transition: opacity .12s;
-}
-.tip.on { opacity: 1; }
-.caption { display: flex; flex-wrap: wrap; gap: 6px 26px; font-size: 14px; color: var(--muted); margin: 12px 0 0; }
-.key { display: inline-flex; align-items: center; gap: 8px; }
-.sw { width: 22px; height: 0; border-top: 2px solid var(--ink); }
-.sw.f { border-top-color: var(--signal); border-top-style: dashed; }
-.sw.b { height: 10px; border: 0; background: color-mix(in srgb, var(--signal) 16%, transparent); }
+  /* ---------- hero ---------- */
+  .hero { background: linear-gradient(180deg, var(--sky), var(--bg) 92%); }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(24px, 5vw, 64px); align-items: center; padding-top: clamp(28px, 5vw, 60px); padding-bottom: clamp(36px, 6vw, 70px); }
+  .hello { font-weight: 600; color: var(--gold); margin: 0 0 12px; }
+  .name { font: 700 clamp(3.2rem, 8.4vw, 7.2rem)/.9 var(--display); letter-spacing: -0.045em; margin: 0 0 22px; }
+  .name .w { display: inline-block; white-space: nowrap; }
+  .name .l { display: inline-block; }
+  .role { font: 600 clamp(1.25rem, 2.2vw, 1.7rem)/1.25 var(--display); margin: 0 0 14px; max-width: 32rem; text-wrap: balance; }
+  .rot { color: var(--blue); display: inline-block; min-width: 10ch; }
+  .sub { color: var(--muted); max-width: 33rem; margin: 0 0 26px; }
+  .ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 20px; border-radius: 14px; font: 600 1rem var(--body); text-decoration: none; border: 1.5px solid var(--ink); color: var(--ink); background: transparent; cursor: pointer; transition: transform .2s ease, background .2s, color .2s; will-change: transform; }
+  .btn.dark { background: var(--ink); color: var(--bg); }
+  .btn:hover { background: var(--gold); border-color: var(--gold); color: #111; }
+  .copied { color: var(--muted); font-size: .92rem; margin-top: 12px; min-height: 1.4em; }
 
-/* ---------- sections ---------- */
-section { padding: 84px 0 0; }
-h2 { font: 700 clamp(30px, 4vw, 44px)/1.05 var(--display); margin: 0 0 10px; letter-spacing: -0.01em; text-wrap: balance; }
-.intro { color: var(--muted); max-width: 40em; margin: 0 0 30px; }
+  .portrait { position: relative; perspective: 900px; }
+  .frame { position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 3 / 4; box-shadow: 0 30px 60px -30px rgba(14, 17, 23, .45); cursor: pointer; background: var(--sky); }
+  .frame img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .7s ease, transform 1.2s ease; }
+  .frame img:not(.on) { opacity: 0; transform: scale(1.06); }
+  .frame .hint { position: absolute; left: 14px; bottom: 14px; background: rgba(14,17,23,.62); color: #fff; font-size: .82rem; font-weight: 500; padding: 6px 11px; border-radius: 999px; }
+  .dots { display: flex; gap: 8px; justify-content: center; margin-top: 14px; }
+  .dots button { width: 10px; height: 10px; border-radius: 50%; border: 0; background: var(--line); cursor: pointer; padding: 0; transition: background .2s, transform .2s; }
+  .dots button[aria-current="true"] { background: var(--gold); transform: scale(1.3); }
+  .chip-float { position: absolute; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 10px 14px; box-shadow: 0 14px 30px -18px rgba(0,0,0,.4); font-size: .9rem; line-height: 1.3; }
+  .chip-float { z-index: 20; }
+  .chip-float b { display: block; font: 700 1.35rem/1 var(--display); color: var(--gold); }
+  .cf1 { left: -28px; top: 18%; }
+  .cf2 { right: -22px; bottom: 16%; }
 
-/* results ledger */
-.ledger { border-top: 2px solid var(--ink); }
-.row {
-  display: grid; grid-template-columns: minmax(170px, 230px) 1fr minmax(180px, 260px); gap: 8px 36px;
-  padding: 26px 0; border-bottom: 1px solid var(--grid); align-items: start;
-}
-.fig { font: 700 clamp(38px, 5vw, 56px)/1 var(--display); letter-spacing: -0.02em; }
-.fig small { font: 600 16px/1 var(--display); color: var(--muted); letter-spacing: 0; margin-left: 4px; }
-.row h3 { font: 600 21px/1.25 var(--display); margin: 2px 0 6px; }
-.row p { margin: 0; max-width: 38em; }
-.row .on { font-size: 14px; color: var(--muted); margin-top: 8px; }
-.viz { padding-top: 6px; }
-.bar { position: relative; height: 10px; background: color-mix(in srgb, var(--ink) 9%, transparent); border-radius: 5px; overflow: hidden; }
-.bar i { position: absolute; inset: 0 auto 0 0; width: 100%; border-radius: 5px; background: var(--ink); transform-origin: left; transition: transform .6s cubic-bezier(.2,.7,.2,1); }
-.bar i.sig { background: var(--signal); }
-.bar.ref::after { content: ""; position: absolute; top: -4px; bottom: -4px; left: var(--ref); width: 2px; background: var(--shock); }
-.vlabel { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin: 5px 0 12px; }
-.repo { font-size: 15px; font-weight: 500; display: inline-block; margin-top: 10px; }
+  /* ---------- sections ---------- */
+  section:not(.cover):not(.scene), section.wrap:not(.cover) { padding-top: clamp(56px, 8vw, 96px); padding-bottom: clamp(56px, 8vw, 96px); }
+  .eyebrow { color: var(--gold); font-weight: 600; margin: 0 0 8px; }
+  h2 { font: 700 clamp(2rem, 4.4vw, 3.4rem)/1 var(--display); letter-spacing: -0.03em; margin: 0 0 14px; text-wrap: balance; }
+  .lead { color: var(--muted); max-width: 40rem; margin: 0 0 30px; }
 
-/* projects */
-.projects { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 0 40px; border-top: 2px solid var(--ink); }
-.proj { padding: 22px 0; border-bottom: 1px solid var(--grid); }
-.proj h3 { font: 600 20px/1.25 var(--display); margin: 0 0 6px; }
-.proj h3 a { color: var(--ink); text-decoration: none; }
-.proj h3 a:hover { color: var(--signal); }
-.proj p { margin: 0; font-size: 16px; }
-.stack { font-size: 14px; color: var(--muted); margin-top: 8px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
-.note { color: var(--shock); }
+  /* stats */
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px; }
+  .stat b { display: block; font: 700 clamp(2rem, 3.6vw, 2.8rem)/1 var(--display); letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: .95rem; }
 
-/* about */
-.about { display: grid; grid-template-columns: 1fr 1fr; gap: 24px 56px; border-top: 2px solid var(--ink); padding-top: 26px; }
-.about h3 { font: 600 20px/1.25 var(--display); margin: 0 0 6px; }
-.about p { margin: 0 0 14px; max-width: 34em; }
+  /* ask me */
+  .ask { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(24px, 4vw, 48px); align-items: stretch; }
+  .ask-photo { border-radius: 24px; overflow: hidden; min-height: 320px; }
+  .ask-photo img { width: 100%; height: 100%; object-fit: cover; }
+  .qs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .q { border: 1.5px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 9px 15px; font: 500 .95rem var(--body); cursor: pointer; transition: border-color .2s, background .2s; }
+  .q:hover { border-color: var(--ink); }
+  .q[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .answer { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 22px 24px; min-height: 11rem; font-size: 1.08rem; }
+  .answer .who { color: var(--muted); font-size: .88rem; font-weight: 600; margin-bottom: 6px; }
+  .caret { display: inline-block; width: 2px; height: 1.1em; background: var(--gold); vertical-align: -3px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
 
-/* gallery */
-.gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
-.gallery figure { margin: 0; border-radius: 6px; overflow: hidden; background: var(--sheet); border: 1px solid var(--grid); }
-.gallery img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; transition: transform .5s cubic-bezier(.2,.7,.2,1); }
-.gallery figure:hover img { transform: scale(1.04); }
-.gallery figcaption { font-size: 14px; color: var(--muted); padding: 8px 12px 10px; }
+  /* projects with filters */
+  .filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 22px; }
+  .filter { border: 1.5px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 8px 14px; font: 600 .92rem var(--body); cursor: pointer; }
+  .filter[aria-pressed="true"] { border-color: var(--gold); color: var(--ink); background: color-mix(in srgb, var(--gold) 16%, transparent); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 18px; align-items: start; }
+  .proj { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; display: flex; flex-direction: column; transition: transform .35s ease, opacity .35s ease, box-shadow .25s; position: relative; overflow: hidden; }
+    .proj:hover { box-shadow: 0 22px 40px -28px rgba(0,0,0,.45); }
+  .proj.out { opacity: .18; transform: scale(.97); }
+  .proj .k { color: var(--muted); font-size: .88rem; font-weight: 600; }
+  .proj .m { font: 700 2.6rem/1 var(--display); letter-spacing: -0.03em; color: var(--gold); margin: 10px 0 2px; font-variant-numeric: tabular-nums; }
+  .proj .ml { color: var(--muted); font-size: .9rem; margin-bottom: 12px; }
+  .proj h3 { font: 700 1.25rem/1.2 var(--display); margin: 0 0 8px; }
+  .proj p { margin: 0 0 12px; }
+  .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+  .more > div { overflow: hidden; }
+  .proj.open .more { grid-template-rows: 1fr; }
+  .more dl { margin: 4px 0 12px; display: grid; gap: 8px; }
+  .more dt { font-weight: 600; }
+  .more dd { margin: 0; color: var(--muted); font-size: .95rem; }
+  .proj-foot { margin-top: auto; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; padding-top: 8px; }
+  .toggle { background: none; border: 0; padding: 0; color: var(--ink); font: 600 .95rem var(--body); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+  .proj-foot a { font-weight: 600; }
 
-footer { margin: 96px 0 0; padding: 30px 0 48px; border-top: 2px solid var(--ink); display: flex; flex-wrap: wrap; gap: 12px 30px; justify-content: space-between; font-size: 15px; color: var(--muted); }
+  /* experience */
+  .xp { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .job { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; }
+  .job .when { color: var(--gold); font-weight: 600; font-size: .92rem; font-variant-numeric: tabular-nums; }
+  .job h3 { font: 700 1.2rem/1.2 var(--display); margin: 6px 0 2px; }
+  .job .org { color: var(--muted); margin: 0 0 10px; }
+  .job ul { margin: 0; padding-left: 1.05rem; }
+  .job li { margin: 5px 0; }
 
-@media (max-width: 820px) {
-  header.top { grid-template-columns: 1fr; }
-  .portrait { order: -1; }
-  .row { grid-template-columns: 1fr; gap: 6px; }
-  .about { grid-template-columns: 1fr; }
-}
-@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* gallery */
+  .gallery { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 14px; cursor: grab; scrollbar-width: thin; }
+  .gallery.drag { cursor: grabbing; scroll-snap-type: none; }
+  .gallery button { flex: 0 0 min(64vw, 18rem); aspect-ratio: 3 / 4; border: 0; padding: 0; border-radius: 22px; overflow: hidden; scroll-snap-align: start; cursor: zoom-in; background: var(--sky); }
+  .gallery img { width: 100%; height: 100%; object-fit: cover; transition: transform .5s ease; pointer-events: none; }
+  .gallery button:hover img { transform: scale(1.05); }
+  .lightbox { position: fixed; inset: 0; z-index: 60; background: rgba(8, 10, 14, .86); display: none; align-items: center; justify-content: center; padding: 24px; }
+  .lightbox.open { display: flex; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; } }
+  .lightbox img { max-height: 88vh; max-width: min(92vw, 40rem); border-radius: 18px; }
+  .lightbox button { position: absolute; top: 18px; right: 18px; background: #fff; color: #111; border: 0; border-radius: 999px; padding: 8px 14px; font: 600 .95rem var(--body); cursor: pointer; }
+
+  /* skills */
+  .skills { display: flex; flex-wrap: wrap; gap: 10px; }
+  .skill { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 8px 14px; font-weight: 500; transition: transform .2s, border-color .2s, background .2s; }
+  .skill:hover { transform: translateY(-3px) rotate(-1.5deg); border-color: var(--gold); }
+
+  /* contact */
+  .contact { background: var(--ink); color: var(--bg); border-radius: 32px; padding: clamp(28px, 5vw, 56px); display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, .7fr); gap: 28px; align-items: center; }
+  .contact h2 { color: var(--bg); }
+  .contact p { color: color-mix(in srgb, var(--bg) 75%, transparent); margin: 0 0 22px; }
+  .contact .btn { border-color: var(--bg); color: var(--bg); }
+  .contact .btn.gold { background: var(--gold); border-color: var(--gold); color: #111; }
+  .contact img { border-radius: 22px; aspect-ratio: 1; object-fit: cover; width: 100%; }
+  footer { color: var(--muted); font-size: .88rem; padding: 26px 0 40px; }
+
+
+  /* ---------- page background: sky turns to golden hour as you scroll ---------- */
+  body::before, body::after { content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none; }
+  body::before { background:
+      radial-gradient(70rem 40rem at 90% -10%, color-mix(in srgb, var(--blue) 18%, transparent), transparent 70%),
+      radial-gradient(50rem 30rem at -10% 40%, color-mix(in srgb, var(--blue) 10%, transparent), transparent 70%); }
+  body::after { opacity: var(--p, 0); background:
+      radial-gradient(70rem 40rem at 80% 110%, color-mix(in srgb, var(--gold) 26%, transparent), transparent 70%),
+      radial-gradient(50rem 30rem at 0% 80%, color-mix(in srgb, var(--gold) 14%, transparent), transparent 70%); }
+  body { background: var(--bg); position: relative; isolation: isolate; }
+  .hero { position: relative; overflow: hidden; }
+  #waves { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 140px; pointer-events: none; }
+  .hero .wrap { position: relative; z-index: 1; }
+  .grain { position: fixed; inset: 0; z-index: -1; pointer-events: none; opacity: .5;
+    background-image: radial-gradient(color-mix(in srgb, var(--ink) 14%, transparent) 1px, transparent 1.2px); background-size: 22px 22px;
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent); mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent); }
+
+  /* ---------- experience with organisation badges ---------- */
+  .xp .job { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px 16px; align-content: start; }
+  .xp .job > :not(.logo) { grid-column: 2; }
+  .logo { grid-row: 1 / span 4; width: 58px; height: 58px; border-radius: 16px; display: grid; place-items: center; overflow: hidden;
+    background: var(--bg); border: 1px solid var(--line); font: 700 1.05rem/1 var(--display); letter-spacing: -0.02em; color: var(--ink); }
+  .logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; background: #fff; }
+  .logo.uol { background: color-mix(in srgb, var(--blue) 14%, var(--card)); }
+  .logo.filed { background: color-mix(in srgb, var(--gold) 16%, var(--card)); }
+
+  /* ---------- resume ---------- */
+  .resume { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 48px); align-items: center; }
+  .sheet { background: #fff; color: #111; border-radius: 10px; padding: 26px 26px 30px; box-shadow: 0 30px 60px -30px rgba(0,0,0,.45), 0 0 0 1px var(--line);
+    transform: rotate(-2deg); transition: transform .4s cubic-bezier(.2,.7,.2,1); font: 400 .72rem/1.45 var(--body); max-width: 30rem; }
+  .sheet:hover { transform: rotate(0) translateY(-6px); }
+  .sheet .nm { font: 700 1.25rem/1.1 var(--display); text-align: center; margin: 0 0 2px; }
+  .sheet .tl { text-align: center; font-weight: 600; margin: 0 0 10px; }
+  .sheet h4 { font: 700 .72rem/1 var(--display); text-transform: uppercase; border-bottom: 1px solid #111; padding-bottom: 3px; margin: 10px 0 5px; }
+  .sheet p { margin: 0 0 4px; }
+  .sheet .r { display: flex; justify-content: space-between; gap: 8px; font-weight: 700; }
+  .resume .facts-list { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 10px; }
+  .resume .facts-list li { display: flex; gap: 10px; align-items: baseline; }
+  .resume .facts-list b { font: 700 1.3rem/1 var(--display); color: var(--gold); min-width: 4.2rem; font-variant-numeric: tabular-nums; }
+  .note { color: var(--muted); font-size: .88rem; margin-top: 12px; }
+  @media (max-width: 900px) { .resume { grid-template-columns: 1fr; } .sheet { transform: none; } }
+
+
+  /* ---------- ambient colour clouds that drift slowly ---------- */
+  .blobs { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .blob { position: absolute; width: 38vmax; height: 38vmax; border-radius: 50%; filter: blur(70px); opacity: .22; animation: drift 22s ease-in-out infinite alternate; }
+  .blob.b2 { animation-duration: 28s; animation-delay: -6s; } .blob.b3 { animation-duration: 25s; animation-delay: -12s; } .blob.b4 { animation-duration: 31s; }
+  @keyframes drift { 0% { transform: translate(0,0) scale(1); } 50% { transform: translate(6vw, 4vh) scale(1.12); } 100% { transform: translate(-4vw, -3vh) scale(.95); } }
+  .blob.b1 { background: var(--blue); left: -10vmax; top: -8vmax; }
+  .blob.b2 { background: var(--pink); right: -12vmax; top: 30vh; opacity: .14; }
+  .blob.b3 { background: var(--teal); left: 20vw; bottom: -16vmax; opacity: .16; }
+  .blob.b4 { background: var(--violet); right: 10vw; bottom: 20vh; opacity: .12; width: 26vmax; height: 26vmax; }
+
+  /* ---------- skills tabs ---------- */
+  .tabs { display: inline-flex; gap: 6px; padding: 6px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); margin-bottom: 26px; flex-wrap: wrap; }
+  .tab { border: 0; background: transparent; color: var(--muted); font: 600 .98rem var(--body); padding: 10px 18px; border-radius: 999px; cursor: pointer; transition: background .25s, color .25s; }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+  .tabpanel[hidden] { display: none; }
+  .tabpanel { animation: panelIn .45s cubic-bezier(.2,.7,.2,1); }
+  @keyframes panelIn { from { opacity: 0; transform: translateY(14px); } }
+
+  .keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 16px; }
+  .key { --c: var(--blue); position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px 22px 20px; overflow: hidden; transition: transform .3s cubic-bezier(.2,.7,.2,1), box-shadow .3s; }
+  .key::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--c); }
+  .key:hover { transform: translateY(-6px); box-shadow: 0 24px 40px -26px var(--c); }
+  .key h3 { font: 700 1.2rem/1.2 var(--display); margin: 0 0 6px; color: var(--c); }
+  .key p { margin: 0 0 10px; color: var(--muted); }
+  .key .proof { font-size: .9rem; color: var(--ink); font-weight: 500; }
+
+  .tech { display: grid; grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr)); gap: 18px; }
+  .group { --c: var(--blue); background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 20px; }
+  .group h3 { font: 700 1.05rem/1.2 var(--display); margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+  .group h3::before { content: ""; width: 12px; height: 12px; border-radius: 4px; background: var(--c); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chipb { border: 1.5px solid color-mix(in srgb, var(--c) 45%, var(--line)); background: color-mix(in srgb, var(--c) 9%, var(--card)); color: var(--ink); border-radius: 999px; padding: 6px 12px; font: 500 .92rem var(--body); cursor: pointer; transition: transform .2s, background .2s; }
+  .chipb:hover, .chipb[aria-pressed="true"] { transform: translateY(-2px); background: var(--c); color: #fff; border-color: var(--c); }
+  .usedin { margin-top: 18px; min-height: 3.2rem; background: var(--card); border: 1px dashed var(--line); border-radius: 16px; padding: 14px 18px; color: var(--muted); }
+  .usedin b { color: var(--ink); }
+  .proj.glow { box-shadow: 0 0 0 3px var(--gold), 0 24px 40px -26px rgba(0,0,0,.5); }
+
+  .quals { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 16px; }
+  .qual { --c: var(--blue); perspective: 900px; height: 13.5rem; border: 0; padding: 0; background: none; cursor: pointer; text-align: left; font: inherit; color: inherit; }
+  .qual .in { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+  .qual.flip .in { transform: rotateY(180deg); }
+  .qual .f, .qual .b { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 22px; padding: 22px; display: flex; flex-direction: column; }
+  .qual .f { background: linear-gradient(140deg, var(--c), color-mix(in srgb, var(--c) 55%, #000)); color: #fff; justify-content: space-between; }
+  .qual .f h3 { font: 700 1.45rem/1.1 var(--display); margin: 0; letter-spacing: -0.02em; }
+  .qual .f span { font-size: .88rem; opacity: .85; }
+  .qual .b { background: var(--card); border: 1.5px solid var(--c); transform: rotateY(180deg); font-size: .97rem; }
+  .qual .b b { color: var(--c); font-family: var(--display); margin-bottom: 6px; }
+  .langs { margin-top: 20px; color: var(--muted); }
+  @media (prefers-reduced-motion: reduce) { .qual .in { transition: none; } .blob { transition: none; } }
+
+
+  /* ---------- effects and transitions ---------- */
+  .intro { position: fixed; inset: 0; z-index: 80; background: var(--ink); color: var(--bg); display: grid; place-items: center; pointer-events: none;
+    animation: introOut .7s cubic-bezier(.7,0,.2,1) .75s forwards; }
+  .intro span { font: 700 clamp(2rem, 6vw, 4rem)/1 var(--display); letter-spacing: -0.03em; animation: introIn .6s cubic-bezier(.2,.8,.2,1) both; }
+  .intro i { display: block; height: 3px; margin-top: 14px; background: var(--gold); transform-origin: 0 50%; animation: introBar .7s ease .05s both; }
+  @keyframes introIn { from { opacity: 0; transform: translateY(20px); } }
+  @keyframes introBar { from { transform: scaleX(0); } }
+  @keyframes introOut { to { transform: translateY(-100%); visibility: hidden; } }
+
+    @keyframes kenburns { from { transform: scale(1.08); } to { transform: scale(1); } }
+  .chip-float { animation: bob 5s ease-in-out infinite; }
+  .cf2 { animation-delay: -2.5s; }
+  @keyframes bob { 50% { transform: translateY(-10px); } }
+
+  .split .wd { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: .06em; }
+  .split .wd > span { display: inline-block; transition: transform .8s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i) * 55ms); }
+  .split.pre .wd > span { transform: translateY(105%); }
+
+  .clip { transition: clip-path 1.1s cubic-bezier(.7,0,.2,1); clip-path: inset(0 0 0 0 round 24px); }
+  .clip.pre { clip-path: inset(100% 0 0 0 round 24px); }
+
+  .stagger > * { transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); transition-delay: calc(var(--i, 0) * 90ms); }
+  .stagger.pre > * { opacity: 0; transform: translateY(26px) scale(.98); }
+
+  .btn, .q, .filter, .chipb, .tab { transition: transform .25s cubic-bezier(.2,.7,.2,1), background .25s, color .25s, border-color .25s, box-shadow .25s; }
+  .btn:hover { transform: translateY(-3px); box-shadow: 0 12px 24px -14px var(--gold); }
+  .proj { transition: transform .45s cubic-bezier(.2,.7,.2,1), opacity .45s, box-shadow .3s; }
+  .proj:hover { transform: translateY(-6px); }
+  .gallery button { transition: transform .4s cubic-bezier(.2,.7,.2,1); }
+  .gallery button:hover { transform: translateY(-6px) rotate(-1deg); }
+
+  ::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+  @media (prefers-reduced-motion: reduce) {
+    .intro { display: none; }
+    .split.pre .wd > span, .stagger.pre > * { transform: none; opacity: 1; }
+    .clip.pre { clip-path: none; }
+  }
+
+
+  /* ---------- hero photo deck: swipe, drag, tap; cards fan out and fly away ---------- */
+  .deck { position: relative; aspect-ratio: 3 / 4; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+  .card { position: absolute; inset: 0; margin: 0; border-radius: 28px; overflow: hidden; background: var(--sky); cursor: grab;
+    box-shadow: 0 30px 60px -30px rgba(14,17,23,.5), 0 0 0 6px var(--card);
+    transform: translate(var(--x, 0px), var(--y, 0px)) rotate(var(--r, 0deg)) scale(var(--s, 1));
+    transition: transform .65s cubic-bezier(.2,.8,.2,1), opacity .5s, filter .5s; will-change: transform; }
+  .card img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
+  .card figcaption { position: absolute; left: 14px; bottom: 14px; background: rgba(14,17,23,.62); color: #fff; font-size: .85rem; font-weight: 500; padding: 6px 12px; border-radius: 999px;
+    opacity: 0; transform: translateY(8px); transition: opacity .4s .2s, transform .4s .2s; }
+  .card.top figcaption { opacity: 1; transform: none; }
+  .card.top img { animation: kenburns 7s ease-out both; }
+  .card:not(.top) { filter: saturate(.8) brightness(.96); }
+  .card.dragging { transition: none; cursor: grabbing; }
+  .card.fly { transition: transform .5s cubic-bezier(.5,0,.75,0), opacity .5s; opacity: 0; }
+  @keyframes kenburns { from { transform: scale(1.1); } to { transform: scale(1); } }
+  .deck.intro-fan .card { transition-duration: 1s; }
+  .deck-ui { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 22px; }
+  .nav-btn { width: 42px; height: 42px; border-radius: 50%; border: 1.5px solid var(--line); background: var(--card); color: var(--ink); font-size: 1.1rem; cursor: pointer;
+    transition: transform .2s, background .2s, color .2s, border-color .2s; }
+  .nav-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); transform: scale(1.08); }
+  .nav-btn:active { transform: scale(.94); }
+  .deck-dots { display: flex; gap: 8px; }
+  .deck-dots button { width: 9px; height: 9px; padding: 0; border: 0; border-radius: 999px; background: var(--line); cursor: pointer; transition: width .35s cubic-bezier(.2,.8,.2,1), background .3s; }
+  .deck-dots button[aria-current="true"] { width: 26px; background: var(--gold); }
+  .timer { height: 3px; border-radius: 3px; background: var(--line); margin: 14px auto 0; max-width: 12rem; overflow: hidden; }
+  .timer i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--gold), var(--pink)); transform-origin: 0 50%; transform: scaleX(0); }
+  .timer i.run { animation: timer 5s linear forwards; }
+  .timer i.paused { animation-play-state: paused; }
+  @keyframes timer { to { transform: scaleX(1); } }
+  .deck-hint { text-align: center; color: var(--muted); font-size: .85rem; margin: 8px 0 0; }
+  @media (prefers-reduced-motion: reduce) { .timer { display: none; } .card.top img { animation: none; } }
+
+
+
+
+  /* ---------- cover scene: pinned while you scroll; the photo circle opens to full screen ---------- */
+  .scene { position: relative; height: 230vh; background: #0A0F1C; }
+  .stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; color: #F4F6FA; isolation: isolate; }
+  .stage { background: radial-gradient(80% 90% at 20% 30%, #1B2B57, #0A0F1C 70%); }
+  .aurora { position: absolute; inset: -60%; z-index: -3;
+    background: conic-gradient(from 0deg at 30% 40%, #10204A, #2C79D3 12%, #0A0F1C 25%, #7357E0 40%, #0A0F1C 55%, #E0457B 68%, #0A0F1C 80%, #E9802F 92%, #10204A);
+    filter: blur(80px) saturate(1.2); opacity: .55; animation: spinA 26s linear infinite; }
+  @keyframes spinA { to { transform: rotate(360deg); } }
+  #stars { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; }
+  .ph { position: absolute; inset: 0; z-index: -1; clip-path: circle(var(--r, 17vmax) at var(--cx, 71%) var(--cy, 50%)); will-change: clip-path; }
+    .ph img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 30% 26%; transform: scale(var(--ps, 1.15)); transform-origin: 30% 40%; }
+  .ph::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(10,15,28,.85), rgba(10,15,28,.15) 60%); opacity: var(--shade, 0); }
+
+  .avatar { position: absolute; z-index: 0; left: var(--cx, 71%); top: var(--cy, 50%); width: calc(var(--r, 17vmax) * 2); aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; overflow: hidden; opacity: var(--ao, 1); pointer-events: none; }
+  .avatar img { width: 100%; height: 100%; max-width: none; object-fit: cover; object-position: 38% 30%; transform: scale(1.35); transform-origin: 38% 35%; animation: breathe 7s ease-in-out infinite; }
+  @keyframes breathe { 50% { transform: scale(1.42); } }
+  .ring2 { position: absolute; z-index: 0; left: var(--cx, 71%); top: var(--cy, 50%); width: calc(var(--r, 17vmax) * 2 + 18px); aspect-ratio: 1; transform: translate(-50%, -50%) rotate(var(--rot, 0deg)); border-radius: 50%;
+    background: conic-gradient(var(--gold), var(--pink), var(--violet), var(--blue), var(--teal), var(--gold)); opacity: var(--ro, 1); pointer-events: none;
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); mask: radial-gradient(farthest-side, transparent calc(100% - 5px), #000 calc(100% - 4px)); }
+  .copy { position: absolute; left: clamp(20px, 6vw, 90px); top: 50%; transform: translateY(calc(-50% + var(--ty, 0px))); max-width: min(56rem, 52vw); opacity: var(--op, 1); filter: blur(var(--bl, 0px)); }
+  .kicker { color: var(--gold); font-weight: 600; letter-spacing: .04em; margin: 0 0 14px; }
+  .big { font: 700 clamp(2.8rem, 7.6vw, 7rem)/.9 var(--display); letter-spacing: -0.045em; margin: 0; perspective: 600px; }
+  .big .lt { display: inline-block; background: linear-gradient(100deg, #fff 30%, #FFD3A8 45%, #fff 60%); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: flipIn .9s cubic-bezier(.2,.8,.2,1) both, sheen 5s ease-in-out 2.5s infinite; animation-delay: calc(1.2s + var(--d) * 40ms), calc(2.5s + var(--d) * 40ms); transform-origin: 50% 100%; }
+  @keyframes flipIn { from { opacity: 0; transform: rotateX(-90deg) translateY(30%); } }
+  @keyframes sheen { 0%, 60% { background-position: 100% 0; } 100% { background-position: -100% 0; } }
+  .seeking { margin: 22px 0 0; font: 600 clamp(1.05rem, 1.8vw, 1.4rem)/1.3 var(--display); color: #DCE3EE; min-height: 1.4em; }
+  .seeking .typed { color: #fff; border-right: 2px solid var(--gold); padding-right: 3px; }
+  .roles { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .roles span { padding: 7px 14px; border-radius: 999px; font-weight: 600; font-size: .95rem; color: #fff; animation: popIn .6s cubic-bezier(.3,1.6,.5,1) both; animation-delay: calc(2s + var(--d) * 120ms); }
+  @keyframes popIn { from { opacity: 0; transform: translateY(16px) scale(.6); } }
+  .clinks { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .clinks a { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 14px; color: #fff; text-decoration: none; font-weight: 600;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.22); backdrop-filter: blur(8px); transition: transform .25s cubic-bezier(.2,.7,.2,1), background .25s;
+    animation: popIn .6s cubic-bezier(.3,1.6,.5,1) both; animation-delay: calc(2.6s + var(--d) * 100ms); }
+  .clinks a:hover { transform: translateY(-3px); background: rgba(255,255,255,.18); }
+  .clinks a i { width: 8px; height: 8px; border-radius: 50%; }
+  .open-badge { position: absolute; left: var(--cx, 71%); top: calc(50% + var(--r, 17vmax) - 10px); transform: translate(-50%, 0); background: #fff; color: #0E1117; padding: 7px 14px; border-radius: 999px; font-weight: 600; font-size: .9rem;
+    opacity: var(--ro, 1); box-shadow: 0 10px 30px rgba(0,0,0,.35); animation: popIn .6s cubic-bezier(.3,1.6,.5,1) 2.9s both; }
+  .open-badge i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22C55E; margin-right: 8px; box-shadow: 0 0 0 0 rgba(34,197,94,.6); animation: pulse 1.8s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 10px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+  .finale { position: absolute; left: clamp(20px, 6vw, 90px); bottom: 14vh; max-width: 40rem; opacity: var(--fo, 0); transform: translateY(var(--fy, 40px)); }
+  .finale h2 { color: #fff; font-size: clamp(2rem, 5vw, 4rem); margin: 0 0 10px; }
+  .finale p { color: #E5EAF2; margin: 0; font-size: 1.1rem; }
+  .scrollcue { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); display: grid; justify-items: center; gap: 8px; color: #C9D3E2; font-size: .85rem; opacity: var(--op, 1); }
+  .scrollcue span { width: 24px; height: 38px; border: 2px solid #C9D3E2; border-radius: 14px; position: relative; }
+  .scrollcue span::after { content: ""; position: absolute; left: 50%; top: 7px; width: 4px; height: 8px; margin-left: -2px; border-radius: 2px; background: var(--gold); animation: wheel 1.6s ease-in-out infinite; }
+  @keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(12px); } }
+  @media (max-width: 760px) {
+    .copy { left: 20px; right: 20px; max-width: none; top: auto; bottom: 9vh; transform: translateY(var(--ty, 0px)); }
+    .ph { clip-path: circle(var(--r, 19vmax) at var(--cx, 50%) var(--cy, 25%)); }
+    .avatar { left: var(--cx, 50%); top: var(--cy, 25%); width: calc(var(--r, 19vmax) * 2); }
+    .ring2 { left: var(--cx, 50%); top: var(--cy, 25%); width: calc(var(--r, 19vmax) * 2 + 18px); }
+    .open-badge { left: 50%; top: calc(25% - var(--r, 19vmax) - 18px); }
+    .scrollcue { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .scene { height: auto; } .stage { position: relative; min-height: 100svh; }
+    .aurora, .big .lt, .roles span, .clinks a, .open-badge, .open-badge i { animation: none !important; }
+    .big .lt { color: #fff; background: none; }
+    .finale { display: none; }
+  }
+
+
+  /* ---------- more on GitHub ---------- */
+  .repo-top { display: flex; justify-content: space-between; align-items: end; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+  .repo-count { font: 700 clamp(2.4rem, 5vw, 3.6rem)/1 var(--display); letter-spacing: -0.03em; background: linear-gradient(90deg, var(--violet), var(--pink), var(--gold)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .repos { display: grid; grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr)); gap: 16px; align-items: start; }
+  .rp { --c: var(--blue); position: relative; border-radius: 20px; padding: 2px; background: var(--line); transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .35s; }
+  .rp::before { content: ""; position: absolute; inset: 0; border-radius: 20px; padding: 2px; opacity: 0; transition: opacity .35s;
+    background: conic-gradient(from var(--ang, 0deg), var(--c), var(--pink), var(--gold), var(--teal), var(--c)); animation: angle 4s linear infinite; }
+  .rp:hover::before { opacity: 1; }
+  .rp:hover { transform: translateY(-5px); }
+  @property --ang { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+  @keyframes angle { to { --ang: 360deg; } }
+  .rp-in { position: relative; background: var(--card); border-radius: 18px; padding: 18px 18px 16px; height: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .rp-in h3 { font: 700 1.08rem/1.25 var(--display); margin: 0; word-break: break-word; }
+  .rp-in h3 a { color: var(--ink); text-decoration: none; }
+  .rp-in h3 a:hover { color: var(--c); }
+  .rp-in p { margin: 0; color: var(--muted); font-size: .95rem; }
+  .rp-fact { font-weight: 600; color: var(--ink); font-size: .93rem; border-left: 3px solid var(--c); padding-left: 10px; }
+  .rp-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 6px; }
+  .rp-meta span { font-size: .78rem; font-weight: 600; padding: 2px 9px; border-radius: 999px; background: color-mix(in srgb, var(--c) 14%, var(--card)); }
+  .rp-meta .wip { background: color-mix(in srgb, var(--gold) 22%, var(--card)); }
+  .rp.out { opacity: .15; transform: scale(.97); }
+
+  /* ---------- now card + back to top ---------- */
+  .now { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: start; background: var(--card); border: 1px solid var(--line); border-radius: 24px; padding: 22px 24px; }
+  .now .pulse { width: 14px; height: 14px; border-radius: 50%; background: #22C55E; margin-top: 8px; box-shadow: 0 0 0 0 rgba(34,197,94,.6); animation: pulse 1.8s infinite; }
+  .now h3 { font: 700 1.2rem/1.2 var(--display); margin: 0 0 8px; }
+  .now ul { margin: 0; padding-left: 1.1rem; color: var(--muted); }
+  .now li { margin: 4px 0; }
+  .totop { position: fixed; right: 20px; bottom: 20px; z-index: 45; width: 52px; height: 52px; border-radius: 50%; border: 0; cursor: pointer; background: var(--ink); color: var(--bg); font-size: 1.2rem;
+    display: grid; place-items: center; opacity: 0; transform: translateY(16px); transition: opacity .3s, transform .3s; pointer-events: none; }
+  .totop.show { opacity: 1; transform: none; pointer-events: auto; }
+  .totop svg { position: absolute; inset: -4px; width: 60px; height: 60px; transform: rotate(-90deg); }
+  .totop circle { fill: none; stroke: var(--gold); stroke-width: 3; stroke-dasharray: 176; stroke-dashoffset: var(--off, 176); }
+  @media (prefers-reduced-motion: reduce) { .rp::before { animation: none; } }
+
+  /* reveal on scroll (content stays readable without script) */
+  .rv { transition: opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1); }
+  .rv.pre { opacity: 0; transform: translateY(34px); }
+
+  @media (max-width: 900px) {
+    .hero .wrap, .ask, .contact { grid-template-columns: 1fr; }
+    .portrait { max-width: 24rem; }
+    .cf1 { left: 8px; } .cf2 { right: 8px; }
+    .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .xp { grid-template-columns: 1fr; }
+    .contact img { max-width: 16rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .rv.pre { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="intro" aria-hidden="true"><div><span>Chrish Pep Felix A</span><i></i></div></div>
+<div class="grain" aria-hidden="true"></div>
+<div class="blobs" aria-hidden="true"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span><span class="blob b4"></span></div>
 
-<header class="top">
-  <div>
-    <h1>Chrish Pep Felix A</h1>
-    <p class="lede">I build forecasting models, LLM agents and guardrails for financial data, and I measure every one of them on data it has not seen. MSc Data Science and Artificial Intelligence, University of Liverpool.</p>
-    <nav class="links" aria-label="Contact">
-      <a href="https://github.com/ChrishA-tech">GitHub</a>
-      <a href="https://www.linkedin.com/in/chrish-pep-felix">LinkedIn</a>
-      <a href="mailto:chrishpepfelixa@gmail.com">chrishpepfelixa@gmail.com</a>
+
+<header class="nav" id="nav">
+  <div class="wrap">
+    <a class="me" href="#top">Chrish Pep Felix A</a>
+    <nav aria-label="Sections">
+      <a href="#ask">Ask me</a><a href="#work">Work</a><a href="#github">GitHub</a><a href="#experience">Experience</a><a href="#skills">Skills</a><a href="#resume">CV</a><a href="#contact">Contact</a>
+      <button class="theme" id="theme" type="button" aria-label="Switch colour theme">Dark mode</button>
     </nav>
   </div>
-  <div class="portrait" id="portrait"><span class="mono" aria-hidden="true">CP</span></div>
 </header>
 
-<figure class="chart" style="margin-inline:0">
-  <canvas id="brent" role="img" aria-label="Line chart of monthly Brent crude prices from January 2000 to October 2026, ranging from 18 to 133 US dollars a barrel, with a six-month forecast to April 2027 of about 124 dollars."></canvas>
-  <div class="tip" id="tip"></div>
-  <figcaption class="caption">
-    <span class="key"><span class="sw"></span>Brent crude, monthly average, USD/bbl (US EIA, Jan 2000 to Oct 2026)</span>
-    <span class="key"><span class="sw f"></span>My forecast to Apr 2027 (AR on log returns)</span>
-    <span class="key"><span class="sw b"></span>± backtest RMSE at 1, 3 and 6 months (interpolated between)</span>
-    <a href="https://github.com/ChrishA-tech/oil-price-forecasting">Code and data</a>
-  </figcaption>
-</figure>
-
-<section id="results" aria-labelledby="h-results">
-  <h2 id="h-results">Results, and what they were measured on</h2>
-  <p class="intro">Every number below comes from a held-out test or a rolling backtest that is reproducible from the linked repository. Where a result has a limitation, it is stated next to it.</p>
-  <div class="ledger">
-
-    <article class="row">
-      <div class="fig">0.885<small>F1</small></div>
-      <div>
-        <h3>FinMine: financial statements from SEC filings</h3>
-        <p>MSc dissertation. Extracts income-statement, balance-sheet and cash-flow line items from 10-K filings with a parser that handles year ordering, scale captions and label variants, then loads them into a knowledge graph.</p>
-        <p class="on">Measured on held-out real 10-K filings. Parsing latency 28.9% lower than the submitted version.</p>
+<main id="top">
+  <section class="scene" id="scene" aria-label="Introduction">
+    <div class="stage">
+      <div class="aurora" aria-hidden="true"></div>
+      <canvas id="stars" aria-hidden="true"></canvas>
+      <div class="ph" aria-hidden="true"><img src="img/smile.jpg" alt=""></div>
+      <div class="avatar" aria-hidden="true"><img src="img/smile.jpg" alt=""></div>
+      <div class="ring2" aria-hidden="true"></div>
+      <div class="open-badge"><i></i>Open to roles in the UK</div>
+      <div class="copy">
+        <p class="kicker">AI &amp; ML ENGINEER | LIVERPOOL, UK</p>
+        <h1 class="big" aria-label="Chrish Pep Felix A" data-letters>Chrish Pep Felix A</h1>
+        <p class="seeking">Seeking <span class="typed" id="typed">AI Engineer</span> roles</p>
+        <div class="roles" aria-label="Roles I'm seeking">
+          <span style="--d:0;background:var(--violet)">AI Engineer</span>
+          <span style="--d:1;background:var(--blue)">Machine Learning Engineer</span>
+          <span style="--d:2;background:var(--teal)">Data Scientist</span>
+          <span style="--d:3;background:var(--pink)">Applied AI</span>
+        </div>
+        <div class="clinks">
+          <a href="https://github.com/ChrishA-tech" style="--d:0"><i style="background:var(--violet)"></i>GitHub</a>
+          <a href="https://www.linkedin.com/in/chrish-pep-felix" style="--d:1"><i style="background:var(--blue)"></i>LinkedIn</a>
+          <a href="mailto:chrishpepfelixa@gmail.com" style="--d:2"><i style="background:var(--pink)"></i>Email</a>
+          <a href="Chrish_Pep_Felix_A_CV.pdf" download style="--d:3"><i style="background:var(--teal)"></i>CV</a>
+        </div>
       </div>
-      <div class="viz" aria-hidden="true">
-        <div class="bar"><i style="transform:scaleX(.885)"></i></div>
-        <div class="vlabel"><span>F1 on held-out filings</span><span>0.885</span></div>
-        <div class="bar"><i class="sig" style="transform:scaleX(.289)"></i></div>
-        <div class="vlabel"><span>Latency reduction</span><span>28.9%</span></div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="fig">86.7%<small>recall</small></div>
-      <div>
-        <h3>LangGraph prompt guard</h3>
-        <p>Rules alone caught 8% of real prompt-injection attacks. A TF-IDF and logistic-regression classifier, tuned by cross-validation on the training split only, raised that to 52 of 60, with no benign prompt wrongly blocked.</p>
-        <p class="on">Measured on the deepset/prompt-injections test split. It over-flags prompts unlike its training data, so it ships opt-in behind the explainable rules.</p>
-        <a class="repo" href="https://github.com/ChrishA-tech/langgraph-prompt-guard">langgraph-prompt-guard</a>
-      </div>
-      <div class="viz" aria-hidden="true">
-        <div class="bar"><i style="transform:scaleX(.083)"></i></div>
-        <div class="vlabel"><span>Rules only</span><span>8.3%</span></div>
-        <div class="bar"><i class="sig" style="transform:scaleX(.867)"></i></div>
-        <div class="vlabel"><span>Rules + classifier</span><span>86.7%</span></div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="fig">−16%<small>RMSE</small></div>
-      <div>
-        <h3>UK CPI inflation forecasting</h3>
-        <p>An ARX model using CPI lags, Bank Rate and Brent beats a no-change forecast at every horizon from 1 to 12 months, through the 2021 to 2023 inflation surge. I also audited the original reinforcement-learning model: it did worse than the naive forecast, and the README now says so.</p>
-        <p class="on">60 rolling origins, forecasts evaluated Oct 2021 to Sep 2026 on ONS, Bank of England and EIA data. The gains are not statistically significant.</p>
-        <a class="repo" href="https://github.com/ChrishA-tech/uk-cpi-forecasting">uk-cpi-forecasting</a>
-      </div>
-      <div class="viz" aria-hidden="true">
-        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i style="transform:scaleX(calc(.96 / 1.2))"></i></div>
-        <div class="vlabel"><span>1 month: 0.96 × naive</span><span>red = naive</span></div>
-        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i class="sig" style="transform:scaleX(calc(.84 / 1.2))"></i></div>
-        <div class="vlabel"><span>12 months: 0.84 × naive</span><span></span></div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="fig">−13%<small>RMSE</small></div>
-      <div>
-        <h3>Brent crude oil forecasting</h3>
-        <p>Seven models compared in a rolling backtest. At 12 months the AR(12) model beats a random walk with a statistically significant Diebold-Mariano test. At 1 to 3 months nothing reliably beats the random walk, which is what the oil-forecasting literature would lead you to expect.</p>
-        <p class="on">60 rolling origins on 322 months of EIA data, including the 2026 price spike.</p>
-        <a class="repo" href="https://github.com/ChrishA-tech/oil-price-forecasting">oil-price-forecasting</a>
-      </div>
-      <div class="viz" aria-hidden="true">
-        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i style="transform:scaleX(calc(.97 / 1.2))"></i></div>
-        <div class="vlabel"><span>1 month: 0.97 × random walk</span><span>red = random walk</span></div>
-        <div class="bar ref" style="--ref:calc(100% / 1.2 - 1px)"><i class="sig" style="transform:scaleX(calc(.87 / 1.2))"></i></div>
-        <div class="vlabel"><span>12 months: 0.87 × random walk</span><span>p &lt; 0.05</span></div>
-      </div>
-    </article>
-
-    <article class="row">
-      <div class="fig">7<small>tools</small></div>
-      <div>
-        <h3>Macro forecast agent</h3>
-        <p>Ask in plain English, such as "What happens to UK inflation if oil rises 20%?". A LangGraph agent with Claude routes the question to the oil and CPI models above, and every number in its answer is checked against the tool outputs before it is returned. Prompt-injection attempts are refused.</p>
-        <p class="on">Runs on the real data from the two forecasting projects; answers are reproducible offline without an API key.</p>
-        <a class="repo" href="https://github.com/ChrishA-tech/macro-forecast-agent">macro-forecast-agent</a>
-      </div>
-      <div class="viz" aria-hidden="true"></div>
-    </article>
-
-  </div>
-</section>
-
-<section id="projects" aria-labelledby="h-projects">
-  <h2 id="h-projects">Other projects</h2>
-  <p class="intro">Engineering projects with tests and CI. Several use synthetic data, marked where they do, so their scores test the pipeline rather than real-world accuracy.</p>
-  <div class="projects">
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/rag-pro">RAG Pro</a></h3>
-      <p>Hybrid retrieval (BM25 and dense, fused with reciprocal rank fusion), reranking, cited answers, a grounding check and abstention on questions it cannot answer, with an ablation harness.</p>
-      <p class="stack">Python, FastAPI, Docker</p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/finrisk-service">FinRisk Service</a></h3>
-      <p>Joins disclosed risk factors to market risk: search risk passages, compute volatility, 95% VaR and drawdown, and screen companies on both. Prometheus metrics and alert rules.</p>
-      <p class="stack">FastAPI, Prometheus <span class="note">Synthetic data</span></p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/fraud-detection">Fraud detection</a></h3>
-      <p>Imbalanced classification on 284k card transactions: time-ordered splits, thresholds set for analyst capacity, a delayed-label experiment, drift (PSI) and a 300 ms scoring budget.</p>
-      <p class="stack">XGBoost, scikit-learn</p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/qlora-finetune-pipeline">QLoRA fine-tuning pipeline</a></h3>
-      <p>Fine-tunes an open-weight LLM in 4-bit with LoRA adapters for strict JSON extraction of tax line items, compares it with the base model and serves it offline in Docker.</p>
-      <p class="stack">Transformers, PEFT, Docker <span class="note">Synthetic data</span></p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/insurance-ops-automation">Insurance operations automation</a></h3>
-      <p>Seven projects: bordereaux standardisation, data-quality controls with ledger reconciliation, complaint triage, an MCP server exposing the controls to agents, and Claude Code hooks.</p>
-      <p class="stack">pandas, MCP, Claude Code <span class="note">Synthetic data</span></p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/llm-prompt-guard">LLM prompt guard</a></h3>
-      <p>A LangGraph pipeline that screens prompts for injection, PII and harmful requests before the model, then checks the response for leaks with a canary token.</p>
-      <p class="stack">LangGraph, Anthropic API</p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/leetforge">LeetForge</a></h3>
-      <p>A practice toolkit that proves solutions correct and as fast as claimed: isolated test runs, differential fuzzing against brute force, and empirical complexity fits.</p>
-      <p class="stack">Python standard library</p></div>
-    <div class="proj"><h3><a href="https://github.com/ChrishA-tech/model-grid">Model Grid</a></h3>
-      <p>A spreadsheet-style operating model with live formulas, circular-reference detection and changes from the base case marked. Formulas go through a small parser, never eval.</p>
-      <p class="stack">React, TypeScript <a href="https://chrisha-tech.github.io/model-grid/">Try the live demo</a></p></div>
-  </div>
-</section>
-
-<section id="about" aria-labelledby="h-about">
-  <h2 id="h-about">Education</h2>
-  <div class="about">
-    <div>
-      <h3>MSc Data Science and Artificial Intelligence</h3>
-      <p>University of Liverpool. Dissertation: FinMine, extracting financial statements from SEC EDGAR filings, supervised by Dr Blaine Keetch.</p>
+      <div class="finale" aria-hidden="true"><h2>Measured, shipped, explained.</h2><p>Scroll on for the projects, the numbers behind them and how I work.</p></div>
+      <div class="scrollcue" aria-hidden="true"><span></span>Scroll</div>
     </div>
-    <div>
-      <h3>How I work</h3>
-      <p>Benchmarks first, so a model has to beat the simple answer. Held-out data for every headline number. Limits written next to results, and tests and CI on every repository.</p>
+  </section>
+
+  <div class="hero">
+    <canvas id="waves" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div>
+        <p class="hello">Hi, I'm</p>
+        <h1 class="name" id="name" aria-label="Chrish Pep Felix A"><span class="w" aria-hidden="true">Chrish</span><br><span class="w" aria-hidden="true">Pep Felix A</span></h1>
+        <p class="role">AI &amp; ML engineer building <span class="rot" id="rot">LLM agents</span></p>
+        <p class="sub">MSc Data Science and AI at the University of Liverpool, graduating June 2027. 2.5+ years shipping ML, LLM and data systems at a tax-tech startup and DHL. Authorised to work in the UK.</p>
+        <div class="ctas">
+          <a class="btn dark mag" href="#work">See my work</a>
+          <button class="btn mag" type="button" id="copy">Copy my email</button>
+          <a class="btn mag" href="Chrish_Pep_Felix_A_CV.pdf" download>Download CV</a>
+        </div>
+        <p class="copied" id="copied" aria-live="polite">chrishpepfelixa@gmail.com</p>
+      </div>
+      <div class="portrait">
+        <div class="deck" id="deck" role="region" aria-roledescription="carousel" aria-label="Photos of Chrish">
+          <figure class="card"><img src="img/smile.jpg" alt="Chrish smiling on the Liverpool waterfront"><figcaption>Liverpool waterfront</figcaption></figure>
+          <figure class="card"><img src="img/waterfront.jpg" alt="Chrish looking out over the Mersey"><figcaption>Golden hour on the Mersey</figcaption></figure>
+          <figure class="card"><img src="img/skyline.jpg" alt="Chrish by the railings with the Liverpool skyline behind"><figcaption>Liverpool skyline</figcaption></figure>
+          <figure class="card"><img src="img/lighthouse.jpg" alt="Chrish by a lighthouse on the coast"><figcaption>By the lighthouse</figcaption></figure>
+          <figure class="card"><img src="img/golden.jpg" alt="Chrish in the evening sun on the promenade"><figcaption>Evening on the promenade</figcaption></figure>
+        </div>
+        <div class="deck-ui">
+          <button class="nav-btn" id="prev" type="button" aria-label="Previous photo">&#8592;</button>
+          <div class="deck-dots" id="deckDots" aria-label="Choose photo"></div>
+          <button class="nav-btn" id="next" type="button" aria-label="Next photo">&#8594;</button>
+        </div>
+        <div class="timer" aria-hidden="true"><i id="timer"></i></div>
+        <p class="deck-hint">Swipe, drag or tap the photo</p>
+        <div class="chip-float cf1" aria-hidden="true"><b>0.994</b>PR-AUC, fraud model</div>
+        <div class="chip-float cf2" aria-hidden="true"><b>97.9%</b>agent accuracy</div>
+      </div>
     </div>
   </div>
-</section>
 
-<section id="photos" aria-labelledby="h-photos" hidden>
-  <h2 id="h-photos">Photos</h2>
-  <div class="gallery" id="gallery"></div>
-</section>
+  <section class="wrap" aria-label="Headline numbers">
+    <div class="stats stagger">
+      <div class="stat"><b data-count="0.94">0.94</b><span>extraction F1 on 200+ tax files a day</span></div>
+      <div class="stat"><b data-count="250" data-suffix="+">250+</b><span>hours of manual work saved a month at DHL</span></div>
+      <div class="stat"><b data-count="6.36" data-suffix="M">6.36M</b><span>transactions in my fraud lakehouse</span></div>
+      <div class="stat"><b data-count="215063" data-sep>215,063</b><span>patient reviews classified</span></div>
+    </div>
+  </section>
 
-<footer>
-  <span>Chrish Pep Felix A, Liverpool</span>
-  <span>Email: chrishpepfelixa@gmail.com</span>
-  <a href="https://github.com/ChrishA-tech">github.com/ChrishA-tech</a>
-</footer>
+  <section class="wrap" id="ask" aria-labelledby="ask-h">
+    <div class="ask">
+      <div class="ask-photo clip"><img src="img/waterfront.jpg" alt="Chrish on the Liverpool waterfront at golden hour" loading="lazy"></div>
+      <div class="rv">
+        <p class="eyebrow">Interactive</p>
+        <h2 class="split" id="ask-h">Ask me something</h2>
+        <p class="lead">Pick a question a recruiter usually asks. The answers are mine, short and specific.</p>
+        <div class="qs" id="qs" role="group" aria-label="Questions"></div>
+        <div class="answer" aria-live="polite"><div class="who">Chrish</div><span id="ans"></span><span class="caret" aria-hidden="true"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="work" aria-labelledby="work-h">
+    <p class="eyebrow">Selected work</p>
+    <h2 class="split" id="work-h">Six projects, each with a held-out result</h2>
+    <p class="lead">Filter by what you're hiring for, and open a card to see the method, the evaluation and where it falls short.</p>
+    <div class="filters" id="filters" role="group" aria-label="Filter projects">
+      <button class="filter" type="button" data-f="all" aria-pressed="true">All</button>
+      <button class="filter" type="button" data-f="llm" aria-pressed="false" style="border-color:color-mix(in srgb, var(--violet) 55%, var(--line))">LLMs and agents</button>
+      <button class="filter" type="button" data-f="ml" aria-pressed="false" style="border-color:color-mix(in srgb, var(--blue) 55%, var(--line))">Machine learning</button>
+      <button class="filter" type="button" data-f="mlops" aria-pressed="false" style="border-color:color-mix(in srgb, var(--teal) 55%, var(--line))">MLOps and cloud</button>
+      <button class="filter" type="button" data-f="fin" aria-pressed="false" style="border-color:color-mix(in srgb, var(--gold) 55%, var(--line))">Finance data</button>
+    </div>
+    <div class="grid" id="grid">
+      <article class="proj rv" id="pj-filings" data-tags="llm mlops fin">
+        <span class="k">Multi-agent RAG</span><div class="m">97.9%</div><div class="ml">accuracy on 95 questions, up from 91.2%</div>
+        <h3>Filings Analyst Agent</h3>
+        <p>Researcher and verifier agents answer questions on SEC 10-Ks with a citation for every claim.</p>
+        <div class="more"><div><dl>
+          <div><dt>Method</dt><dd>LangGraph agents over BM25 + ChromaDB retrieval fused with RRF; prompt-injection guard; FastAPI, Docker and an MCP server.</dd></div>
+          <div><dt>Evaluation</dt><dd>Numeric answers scored against XBRL; false abstentions cut from 13.3% to 1.7%; re-run on Databricks with Llama 3.3 70B.</dd></div>
+          <div><dt>Limitation</dt><dd>The verifier cost accuracy on held-out metrics (86.7% vs 93.3%) and latency (16.5 s vs 9.6 s).</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><a href="https://github.com/ChrishA-tech/filings-analyst-agent">Repository</a></div>
+      </article>
+      <article class="proj rv" id="pj-fraud" data-tags="ml mlops fin">
+        <span class="k">Fraud detection on Databricks</span><div class="m">0.994</div><div class="ml">PR-AUC on a held-out time period</div>
+        <h3>Fraud Lakehouse</h3>
+        <p>6.36M transactions from raw Delta tables to a registered XGBoost model and a business decision.</p>
+        <div class="more"><div><dl>
+          <div><dt>Method</dt><dd>Lakeflow bronze, silver and gold tables, data contract, Unity Catalog PII masking, XGBoost + SHAP in MLflow.</dd></div>
+          <div><dt>Evaluation</dt><dd>Precision 0.915, recall 0.994; an A/B simulation with power analysis and bootstrap CIs rejected a stricter rule.</dd></div>
+          <div><dt>Limitation</dt><dd>A leaking feature inflated the first score; it was removed before reporting.</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><a href="https://github.com/ChrishA-tech/fraud-lakehouse">Repository</a></div>
+      </article>
+      <article class="proj rv" id="pj-pfa" data-tags="ml mlops">
+        <span class="k">NLP on AWS SageMaker</span><div class="m">0.868</div><div class="ml">macro-F1, 95% CI 0.861–0.874</div>
+        <h3>Patient Feedback Analyser</h3>
+        <p>215,063 drug reviews classified, with side effects linked to negative experiences.</p>
+        <div class="more"><div><dl>
+          <div><dt>Data</dt><dd>Removed 26,819 test reviews duplicated in training before scoring anything.</dd></div>
+          <div><dt>Evaluation</dt><dd>Logistic regression beat a TensorFlow CNN (0.849) and scored 0.841 on 20 unseen conditions.</dd></div>
+          <div><dt>Deployment</dt><dd>SageMaker training job, Model Registry approval gate, endpoint and Model Monitor.</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><a href="https://github.com/ChrishA-tech/patient-feedback-analyser">Repository</a></div>
+      </article>
+      <article class="proj rv" id="pj-macro" data-tags="llm fin">
+        <span class="k">Tool-using agent</span><div class="m">0.87×</div><div class="ml">naive RMSE for 12-month UK CPI (ARX, rolling backtest)</div>
+        <h3>Macro Forecast Agent</h3>
+        <p>Answers Brent crude and UK CPI questions by calling forecasting tools; every number in an answer must come from a tool.</p>
+        <div class="more"><div><dl>
+          <div><dt>Method</dt><dd>LangGraph agent with validated routing, a grounding check and input/output guardrails, over forecasting tools from two companion repos.</dd></div>
+          <div><dt>Evaluation</dt><dd>60-origin rolling backtest with Diebold-Mariano tests: ARX 4.19pp vs 4.83pp naive at 12 months.</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><a href="https://github.com/ChrishA-tech/macro-forecast-agent">Repository</a></div>
+      </article>
+      <article class="proj rv" id="pj-finmine" data-tags="ml fin">
+        <span class="k">MSc dissertation</span><div class="m">0.95</div><div class="ml">extraction F1 against SEC EDGAR</div>
+        <h3>FinMine</h3>
+        <p>Structures balance sheets and income statements from XBRL, HTML and PDF filings.</p>
+        <div class="more"><div><dl>
+          <div><dt>Method</dt><dd>pdfplumber, regex and XBRL parsing into a Neo4j knowledge graph with GraphRAG; Streamlit dashboard.</dd></div>
+          <div><dt>Evaluation</dt><dd>96% precision, 94% recall, 70% lower parsing latency.</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><span style="color:var(--muted)">University of Liverpool</span></div>
+      </article>
+      <article class="proj rv" id="pj-ragpro" data-tags="llm">
+        <span class="k">Retrieval</span><div class="m">0.94</div><div class="ml">Recall@5, MRR 0.92</div>
+        <h3>RAG Pro</h3>
+        <p>A reusable RAG pipeline with cited, grounded answers and abstention.</p>
+        <div class="more"><div><dl>
+          <div><dt>Method</dt><dd>Heading-aware chunking, hybrid retrieval with RRF, multi-query expansion, reranking.</dd></div>
+          <div><dt>Limitation</dt><dd>Plain BM25 matched hybrid retrieval on this corpus.</dd></div>
+        </dl></div></div>
+        <div class="proj-foot"><button class="toggle" type="button" aria-expanded="false">Show details</button><a href="https://github.com/ChrishA-tech/rag-pro">Repository</a></div>
+      </article>
+    </div>
+  </section>
+
+  <section class="wrap" id="github" aria-labelledby="gh-h">
+    <div class="repo-top">
+      <div>
+        <p class="eyebrow">More on GitHub</p>
+        <h2 class="split" id="gh-h">Everything else I've built and pushed</h2>
+        <p class="lead" style="margin-bottom:0">Forecasting, finance data, guardrails, services and tools. Every card links to its repository, and work still running says so.</p>
+      </div>
+      <div style="text-align:right"><div class="repo-count">15+</div><div style="color:var(--muted)">public repositories</div></div>
+    </div>
+    <div class="filters" id="rfilters" role="group" aria-label="Filter repositories">
+      <button class="filter" type="button" data-r="all" aria-pressed="true">All</button>
+      <button class="filter" type="button" data-r="llm" aria-pressed="false">LLMs and agents</button>
+      <button class="filter" type="button" data-r="ml" aria-pressed="false">Machine learning</button>
+      <button class="filter" type="button" data-r="fin" aria-pressed="false">Finance and forecasting</button>
+      <button class="filter" type="button" data-r="mlops" aria-pressed="false">Services</button>
+      <button class="filter" type="button" data-r="tools" aria-pressed="false">Tools and other</button>
+    </div>
+    <div class="repos stagger">
+      <article class="rp" data-tags="fin" style="--c:var(--gold)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/bending-spoons-financial-analysis">Bending Spoons financial analysis</a></h3>
+        <p>Pulls every quarterly results release from SEC EDGAR and extracts the statements into one table, with a source link for every figure.</p>
+        <div class="rp-fact">Q2 2026: revenue +126.3% YoY, about 3% organic</div>
+        <div class="rp-meta"><span>Python</span><span>pandas</span><span>SEC EDGAR</span></div>
+      </div></article>
+      <article class="rp" data-tags="fin" style="--c:var(--teal)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/uk-cpi-forecasting">UK CPI inflation forecasting</a></h3>
+        <p>AR and ARX models with Bank Rate and Brent against a no-change benchmark, plus an oil-shock scenario with 95% CIs.</p>
+        <div class="rp-fact">ARX 0.87× naive RMSE at 12 months, 60-origin backtest</div>
+        <div class="rp-meta"><span>statsmodels</span><span>Diebold-Mariano</span><span>real ONS data</span></div>
+      </div></article>
+      <article class="rp" data-tags="fin" style="--c:var(--teal)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/oil-price-forecasting">Brent crude forecasting</a></h3>
+        <p>Seven time-series models in a rolling-origin backtest on 306 months of IMF data, with a Plotly dashboard and FastAPI service.</p>
+        <div class="rp-fact">AR(12) significantly beats naive at 12 months (0.84×)</div>
+        <div class="rp-meta"><span>ARIMA</span><span>ETS</span><span>FastAPI</span><span>Plotly</span></div>
+      </div></article>
+      <article class="rp" data-tags="llm" style="--c:var(--violet)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/langgraph-prompt-guard">LangGraph prompt guard</a></h3>
+        <p>Screens prompts for injection, extracts schema-valid JSON with self-repair retries, and checks outputs for PII and leaks.</p>
+        <div class="rp-fact">Held-out 662 prompts: no false positives, but it catches only 8% of attacks</div>
+        <div class="rp-meta"><span>LangGraph</span><span>FastAPI</span><span>Pydantic</span></div>
+      </div></article>
+      <article class="rp" data-tags="llm" style="--c:var(--violet)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/llm-prompt-guard">LLM prompt protection</a></h3>
+        <p>A LangGraph guardrail pipeline: sanitise, PII redaction, injection and policy checks, risk scoring and a canary token for leaks.</p>
+        <div class="rp-fact">Runs fully offline with a mock LLM</div>
+        <div class="rp-meta"><span>LangGraph</span><span>AI safety</span></div>
+      </div></article>
+      <article class="rp" data-tags="mlops" style="--c:var(--blue)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/finrisk-service">FinRisk service</a></h3>
+        <p>An observable FastAPI service for risk-factor retrieval and volatility, VaR and drawdown, with Prometheus metrics and alerts.</p>
+        <div class="rp-fact">Recall@5 0.90, MRR 0.825 as a CI regression gate (synthetic data)</div>
+        <div class="rp-meta"><span>FastAPI</span><span>Prometheus</span><span>TF-IDF</span></div>
+      </div></article>
+      <article class="rp" data-tags="llm" style="--c:var(--pink)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/insurance-ops-automation">Insurance ops automation</a></h3>
+        <p>Seven small projects: bordereaux standardisation, data-quality controls, complaint triage, an MCP server and an agent-routing eval.</p>
+        <div class="rp-fact">Synthetic data throughout, stated in the README</div>
+        <div class="rp-meta"><span>pandas</span><span>scikit-learn</span><span>MCP</span></div>
+      </div></article>
+      <article class="rp" data-tags="tools" style="--c:var(--blue)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/leetforge">LeetForge</a></h3>
+        <p>A LeetCode practice toolkit with isolated test runs, differential fuzzing, empirical Big-O fitting and SM-2 spaced repetition.</p>
+        <div class="rp-fact">Zero runtime dependencies, CI-checked docs</div>
+        <div class="rp-meta"><span>Python CLI</span><span>testing</span></div>
+      </div></article>
+      <article class="rp" data-tags="tools" style="--c:var(--pink)"><div class="rp-in">
+        <h3><a href="https://chrisha-tech.github.io/model-grid/">Model Grid</a></h3>
+        <p>A spreadsheet-style operating model in React and TypeScript with a safe formula parser and circular-reference detection.</p>
+        <div class="rp-fact">Live demo on GitHub Pages</div>
+        <div class="rp-meta"><span>React</span><span>TypeScript</span><span>Vite</span></div>
+      </div></article>
+      <article class="rp" data-tags="tools" style="--c:var(--teal)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/Geographic-Data-Science-Lab">Geographic Data Science Lab</a></h3>
+        <p>A GeoPandas pipeline linking point data to ONS 2021 LSOA boundaries, with validation and a choropleth map.</p>
+        <div class="rp-fact">Reconciles point totals and reports the match rate</div>
+        <div class="rp-meta"><span>GeoPandas</span><span>spatial joins</span></div>
+      </div></article>
+      <article class="rp" data-tags="ml" style="--c:var(--blue)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/fraud-detection">Fraud detection (ULB)</a></h3>
+        <p>Imbalanced classification with time-ordered splits, threshold tuning for analyst capacity, PSI drift and latency checks.</p>
+        
+        <div class="rp-meta"><span>XGBoost</span><span>PR-AUC</span><span>PSI</span><span class="wip">Results run in progress</span></div>
+      </div></article>
+      <article class="rp" data-tags="ml" style="--c:var(--violet)"><div class="rp-in">
+        <h3><a href="https://github.com/ChrishA-tech/qlora-finetune-pipeline">QLoRA fine-tuning pipeline</a></h3>
+        <p>Fine-tunes an open-weight LLM with 4-bit QLoRA for schema-constrained extraction, compares it with the base model and serves it.</p>
+        
+        <div class="rp-meta"><span>PEFT</span><span>Transformers</span><span>FastAPI</span><span>Docker</span><span class="wip">GPU run in progress</span></div>
+      </div></article>
+    </div>
+    <div style="margin-top:22px"><a class="btn dark" href="https://github.com/ChrishA-tech">See all repositories on GitHub</a></div>
+  </section>
+
+  <section class="wrap" aria-labelledby="now-h">
+    <div class="now">
+      <span class="pulse" aria-hidden="true"></span>
+      <div>
+        <h3 id="now-h">What I'm working on now</h3>
+        <ul>
+          <li>Running the Filings Analyst evaluation on more cloud platforms, after the full Databricks run.</li>
+          <li>Updating the Bending Spoons analysis with the Q3 2026 results.</li>
+          <li>Running the Patient Feedback Analyser end to end on AWS SageMaker.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap" id="experience" aria-labelledby="xp-h">
+    <p class="eyebrow">Experience</p>
+    <h2 class="split" id="xp-h">Where I've worked and studied</h2>
+    <div class="xp stagger">
+      <div class="job"><div class="logo uol" data-logo="university-of-liverpool">UoL</div><div class="when">Jan 2026 – June 2027</div><h3>MSc Data Science and AI</h3><p class="org">University of Liverpool</p>
+        <ul><li>Statistics for AI, databases, applied AI, research methods.</li><li>Dissertation: FinMine.</li></ul></div>
+      <div class="job"><div class="logo filed" data-logo="filed">F</div><div class="when">Sept 2025 – Dec 2025</div><h3>AI / ML Engineer</h3><p class="org">Filed (tax-tech startup), Bangalore</p>
+        <ul><li>Extraction F1 0.94 on 200+ tax files a day.</li><li>Fine-tuned LayoutLMv3 and RoBERTa; served quantised Llama 3 locally.</li><li>Recall@5 94.2% with a tuned pgvector index.</li></ul></div>
+      <div class="job"><div class="logo dhl" data-logo="dhl">DHL</div><div class="when">Dec 2021 – Feb 2024</div><h3>AI Engineer</h3><p class="org">DHL Global Forwarding, Chennai</p>
+        <ul><li>Saved 250+ hours of manual work a month.</li><li>Critical downtime down 80%; mentored 4 developers.</li><li>45%+ cost savings across 10 client projects.</li></ul></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="skills" aria-labelledby="skills-h">
+    <p class="eyebrow">Skills</p>
+    <h2 class="split" id="skills-h">What I bring to a team</h2>
+    <p class="lead">Three views: what I'm strongest at, the tools I use, and how I work. Select a tool to see which projects use it.</p>
+    <div class="tabs" role="tablist" aria-label="Skill views">
+      <button class="tab" role="tab" id="t-key" aria-controls="p-key" aria-selected="true">Key skills</button>
+      <button class="tab" role="tab" id="t-tech" aria-controls="p-tech" aria-selected="false" tabindex="-1">Technical skills</button>
+      <button class="tab" role="tab" id="t-qual" aria-controls="p-qual" aria-selected="false" tabindex="-1">My qualities</button>
+    </div>
+
+    <div class="tabpanel" id="p-key" role="tabpanel" aria-labelledby="t-key">
+      <div class="keys stagger">
+        <div class="key" style="--c:var(--violet)"><h3>LLM agents and RAG</h3><p>Multi-agent systems in LangGraph with hybrid retrieval, citations, guardrails and abstention.</p><div class="proof">97.9% accuracy on the Filings Analyst; Recall@5 94.2% at Filed</div></div>
+        <div class="key" style="--c:var(--blue)"><h3>Machine learning and NLP</h3><p>Classification, gradient boosting, transformers, NER and topic modelling, from features to fine-tuning.</p><div class="proof">PR-AUC 0.994 fraud model; macro-F1 0.868 on 215k reviews</div></div>
+        <div class="key" style="--c:var(--pink)"><h3>Evaluation and statistics</h3><p>Held-out tests, ablations, bootstrap confidence intervals, power analysis and A/B tests.</p><div class="proof">Published the ablation where my verifier lost (86.7% vs 93.3%)</div></div>
+        <div class="key" style="--c:var(--teal)"><h3>MLOps and cloud</h3><p>Databricks, MLflow, AWS SageMaker, Docker and FastAPI, with CI on GitHub Actions.</p><div class="proof">Registry approval gate, endpoint and Model Monitor on SageMaker</div></div>
+        <div class="key" style="--c:var(--gold)"><h3>Data engineering</h3><p>SQL, PySpark and Delta Lake pipelines with quality checks, data contracts and PII masking.</p><div class="proof">6.36M transactions through bronze, silver and gold tables</div></div>
+        <div class="key" style="--c:var(--violet)"><h3>Automation and delivery</h3><p>Turning manual workflows into reliable systems that teams use every day.</p><div class="proof">250+ hours saved a month and 99% fewer errors at DHL</div></div>
+      </div>
+    </div>
+
+    <div class="tabpanel" id="p-tech" role="tabpanel" aria-labelledby="t-tech" hidden>
+      <div class="tech" id="tech"></div>
+      <div class="usedin" id="usedin" aria-live="polite">Select a tool to see where I've used it.</div>
+    </div>
+
+    <div class="tabpanel" id="p-qual" role="tabpanel" aria-labelledby="t-qual" hidden>
+      <div class="quals" id="quals"></div>
+      <p class="langs">Languages: English (fluent), Tamil (native). Certified UiPath Solution Architect Professional and Advanced Developer; Microsoft SQL Server AI/ML for GeoData Analysis.</p>
+    </div>
+  </section>
+
+  <section class="wrap" id="resume" aria-labelledby="cv-h">
+    <div class="resume">
+      <div class="rv">
+        <p class="eyebrow">CV</p>
+        <h2 class="split" id="cv-h">My CV, on one click</h2>
+        <p class="lead">Two pages, ATS-friendly, with every result linked to its repository.</p>
+        <ul class="facts-list">
+          <li><b>2.5+</b><span>years shipping ML, LLM and data systems</span></li>
+          <li><b>6</b><span>projects, each with a held-out result</span></li>
+          <li><b>2027</b><span>MSc Data Science and AI, University of Liverpool</span></li>
+        </ul>
+        <div class="ctas">
+          <a class="btn dark mag" href="Chrish_Pep_Felix_A_CV.pdf" download>Download CV (PDF)</a>
+          <a class="btn mag" href="Chrish_Pep_Felix_A_CV.pdf" target="_blank" rel="noopener">Open in a new tab</a>
+        </div>
+        <p class="note">If the download doesn't start, email me at chrishpepfelixa@gmail.com and I'll send it.</p>
+      </div>
+      <a class="sheet rv" href="Chrish_Pep_Felix_A_CV.pdf" target="_blank" rel="noopener" aria-label="Open my CV" style="text-decoration:none">
+        <p class="nm">CHRISH PEP FELIX A</p>
+        <p class="tl">AI Engineer | Machine Learning Engineer | Data Scientist | Applied AI</p>
+        <h4>Personal profile</h4>
+        <p>AI and machine learning engineer (MSc Data Science and AI, University of Liverpool) with 2.5+ years shipping machine learning, deep learning, LLM and data systems…</p>
+        <h4>Work experience</h4>
+        <p class="r"><span>AI / ML Engineer, Filed</span><span>Sept 2025 – Dec 2025</span></p>
+        <p>Extraction F1 0.94 on unstructured tax filings across 200+ daily files…</p>
+        <p class="r"><span>AI Engineer, DHL Global Forwarding</span><span>Dec 2021 – Feb 2024</span></p>
+        <p>Saved 250+ hours of manual work per month…</p>
+        <h4>Projects</h4>
+        <p>Fraud Lakehouse (PR-AUC 0.994) · Filings Analyst Agent (97.9%) · Patient Feedback Analyser (macro-F1 0.868)…</p>
+      </a>
+    </div>
+  </section>
+
+  <section class="wrap" aria-labelledby="gal-h">
+    <p class="eyebrow">Off the clock</p>
+    <h2 class="split" id="gal-h">Liverpool, on the Mersey</h2>
+    <p class="lead">Drag or scroll sideways; select a photo to open it.</p>
+    <div class="gallery stagger" id="gallery">
+      <button type="button" data-src="img/lighthouse.jpg"><img src="img/lighthouse.jpg" alt="By New Brighton lighthouse" loading="lazy"></button>
+      <button type="button" data-src="img/skyline.jpg"><img src="img/skyline.jpg" alt="On the ferry with the Liverpool skyline" loading="lazy"></button>
+      <button type="button" data-src="img/golden.jpg"><img src="img/golden.jpg" alt="Golden hour on the waterfront" loading="lazy"></button>
+      <button type="button" data-src="img/sky.jpg"><img src="img/sky.jpg" alt="Clear sky over the Mersey" loading="lazy"></button>
+      <button type="button" data-src="img/waterfront.jpg"><img src="img/waterfront.jpg" alt="On the promenade" loading="lazy"></button>
+    </div>
+  </section>
+
+  <section class="wrap" id="contact" aria-labelledby="contact-h">
+    <div class="contact rv">
+      <div>
+        <h2 class="split" id="contact-h">Hiring for AI, ML or data science?</h2>
+        <p>chrishpepfelixa@gmail.com, +44 7587 872769. Looking for AI Engineer, Machine Learning Engineer and Data Scientist roles in the UK.</p>
+        <div class="ctas">
+          <a class="btn gold mag" href="mailto:chrishpepfelixa@gmail.com">Email me</a>
+          <a class="btn mag" href="https://www.linkedin.com/in/chrish-pep-felix">LinkedIn</a>
+          <a class="btn mag" href="https://github.com/ChrishA-tech">GitHub</a>
+        </div>
+      </div>
+      <img class="clip" src="img/smile.jpg" alt="Chrish smiling" loading="lazy">
+    </div>
+  </section>
+</main>
+<button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="28"/></svg>&#8593;</button>
+<footer class="wrap">Chrish Pep Felix A, Liverpool, UK.</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Photo">
+  <button type="button" id="close">Close</button>
+  <img id="lbimg" src="" alt="">
 </div>
 
 <script>
-const DATA = {"dates":["2000-01","2000-02","2000-03","2000-04","2000-05","2000-06","2000-07","2000-08","2000-09","2000-10","2000-11","2000-12","2001-01","2001-02","2001-03","2001-04","2001-05","2001-06","2001-07","2001-08","2001-09","2001-10","2001-11","2001-12","2002-01","2002-02","2002-03","2002-04","2002-05","2002-06","2002-07","2002-08","2002-09","2002-10","2002-11","2002-12","2003-01","2003-02","2003-03","2003-04","2003-05","2003-06","2003-07","2003-08","2003-09","2003-10","2003-11","2003-12","2004-01","2004-02","2004-03","2004-04","2004-05","2004-06","2004-07","2004-08","2004-09","2004-10","2004-11","2004-12","2005-01","2005-02","2005-03","2005-04","2005-05","2005-06","2005-07","2005-08","2005-09","2005-10","2005-11","2005-12","2006-01","2006-02","2006-03","2006-04","2006-05","2006-06","2006-07","2006-08","2006-09","2006-10","2006-11","2006-12","2007-01","2007-02","2007-03","2007-04","2007-05","2007-06","2007-07","2007-08","2007-09","2007-10","2007-11","2007-12","2008-01","2008-02","2008-03","2008-04","2008-05","2008-06","2008-07","2008-08","2008-09","2008-10","2008-11","2008-12","2009-01","2009-02","2009-03","2009-04","2009-05","2009-06","2009-07","2009-08","2009-09","2009-10","2009-11","2009-12","2010-01","2010-02","2010-03","2010-04","2010-05","2010-06","2010-07","2010-08","2010-09","2010-10","2010-11","2010-12","2011-01","2011-02","2011-03","2011-04","2011-05","2011-06","2011-07","2011-08","2011-09","2011-10","2011-11","2011-12","2012-01","2012-02","2012-03","2012-04","2012-05","2012-06","2012-07","2012-08","2012-09","2012-10","2012-11","2012-12","2013-01","2013-02","2013-03","2013-04","2013-05","2013-06","2013-07","2013-08","2013-09","2013-10","2013-11","2013-12","2014-01","2014-02","2014-03","2014-04","2014-05","2014-06","2014-07","2014-08","2014-09","2014-10","2014-11","2014-12","2015-01","2015-02","2015-03","2015-04","2015-05","2015-06","2015-07","2015-08","2015-09","2015-10","2015-11","2015-12","2016-01","2016-02","2016-03","2016-04","2016-05","2016-06","2016-07","2016-08","2016-09","2016-10","2016-11","2016-12","2017-01","2017-02","2017-03","2017-04","2017-05","2017-06","2017-07","2017-08","2017-09","2017-10","2017-11","2017-12","2018-01","2018-02","2018-03","2018-04","2018-05","2018-06","2018-07","2018-08","2018-09","2018-10","2018-11","2018-12","2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08","2026-09","2026-10"],"brent":[25.51,27.78,27.49,22.76,27.74,29.8,28.68,30.2,33.14,30.96,32.55,25.66,25.62,27.5,24.5,25.66,28.31,27.85,24.61,25.68,25.62,20.54,18.8,18.71,19.42,20.28,23.7,25.73,25.35,24.08,25.74,26.65,28.4,27.54,24.34,28.33,31.18,32.77,30.61,25.0,25.86,27.65,28.35,29.89,27.11,29.61,28.75,29.81,31.28,30.86,33.63,33.59,37.57,35.18,38.22,42.74,43.2,49.78,43.11,39.6,44.51,45.48,53.1,51.88,48.65,54.35,57.52,63.98,62.91,58.54,55.24,56.86,62.99,60.21,62.06,70.26,69.78,68.56,73.67,73.23,61.96,57.81,58.76,62.47,53.68,57.56,62.05,67.49,67.21,71.05,76.93,70.76,77.17,82.34,92.41,90.93,92.18,94.99,103.64,109.07,122.8,132.32,132.72,113.24,97.23,71.58,52.45,39.95,43.44,43.32,46.54,50.18,57.3,68.61,64.44,72.51,67.65,72.77,76.66,74.46,76.17,73.75,78.83,84.82,75.95,74.76,75.58,77.04,77.84,82.67,85.28,91.45,96.52,103.72,114.64,123.26,114.99,113.83,116.97,110.22,112.83,109.55,110.77,107.87,110.69,119.33,125.45,119.75,110.34,95.16,102.62,113.36,112.86,111.71,109.06,109.49,112.96,116.05,108.47,102.25,102.56,102.92,107.93,111.28,111.6,109.08,107.79,110.76,108.12,108.9,107.48,107.76,109.54,111.8,106.77,101.61,97.09,87.43,79.44,62.34,47.76,58.1,55.89,59.52,64.08,61.48,56.56,46.52,47.62,48.43,44.27,38.01,30.7,32.18,38.21,41.58,46.74,48.25,44.95,45.84,46.57,49.52,44.73,53.31,54.58,54.87,51.59,52.31,50.33,46.37,48.48,51.7,56.15,57.51,62.71,64.37,69.08,65.32,66.02,72.11,76.98,74.41,74.25,72.53,78.89,81.03,64.75,57.36,59.41,63.96,66.14,71.23,71.32,64.22,63.92,59.04,62.83,59.71,63.21,67.31,63.65,55.66,32.01,18.38,29.38,40.27,43.24,44.74,40.91,40.19,42.69,49.99,54.77,62.28,65.41,64.81,68.53,73.16,75.17,70.75,74.49,83.54,81.05,74.17,86.51,97.13,117.25,104.58,113.34,122.71,111.93,100.45,89.76,93.33,91.42,80.92,82.5,82.59,78.43,84.64,75.47,74.84,80.11,86.15,93.72,90.6,82.94,77.63,80.12,83.48,85.41,89.94,81.75,82.25,85.15,80.36,74.02,75.63,74.35,73.86,79.27,75.44,72.73,68.13,64.45,71.44,71.04,67.87,67.99,64.54,63.8,62.54,66.6,70.89,103.13,117.29,107.14,85.4,83.76,91.08,114.16,123.93]};
-const FORECAST = { start: "2026-11", values: [122.83, 121.40, 121.66, 122.47, 123.16, 123.74], rmse: [8.41, 12.54, 16.67, 17.28, 17.90, 18.51] };
-const PORTRAIT = null;   // data: URI or null
-const PHOTOS = [];       // [{src, caption}]
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 
-/* photos */
-if (PORTRAIT) {
-  document.getElementById("portrait").innerHTML = '<img alt="Chrish Pep Felix A" src="' + PORTRAIT + '">';
-}
-if (PHOTOS.length) {
-  const g = document.getElementById("gallery");
-  PHOTOS.forEach(p => {
-    const f = document.createElement("figure");
-    const img = new Image(); img.src = p.src; img.alt = p.caption || "Photo of Chrish Pep Felix A"; img.loading = "lazy";
-    f.appendChild(img);
-    if (p.caption) { const c = document.createElement("figcaption"); c.textContent = p.caption; f.appendChild(c); }
-    g.appendChild(f);
+  // ---------- theme toggle ----------
+  const root = document.documentElement, tbtn = $('#theme');
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  const label = () => { tbtn.textContent = isDark() ? 'Light mode' : 'Dark mode'; };
+  try { const t = localStorage.getItem('cpfa-theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  label();
+  tbtn.addEventListener('click', () => { root.dataset.theme = isDark() ? 'light' : 'dark'; label(); try { localStorage.setItem('cpfa-theme', root.dataset.theme); } catch (e) {} });
+
+  // ---------- name letters ----------
+  if (!reduce) $$('#name .w').forEach((w, wi) => {
+    const txt = w.textContent; w.textContent = '';
+    [...txt].forEach((c, i) => { const s = document.createElement('span'); s.className = 'l'; s.textContent = c === ' ' ? ' ' : c;
+      s.animate([{ transform: 'translateY(60%) rotate(6deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 700, delay: (wi * 6 + i) * 35, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' });
+      w.appendChild(s); });
   });
-  document.getElementById("photos").hidden = false;
-}
 
-/* hero chart */
-(function () {
-  const cv = document.getElementById("brent"), tip = document.getElementById("tip");
-  const ctx = cv.getContext("2d");
-  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-  const C = { ink: css("--ink"), muted: css("--muted"), grid: css("--grid"), signal: css("--signal"), shock: css("--shock"), paper: css("--paper") };
-  const hist = DATA.brent, dates = DATA.dates, H = hist.length, F = FORECAST.values.length, N = H + F;
-  const fDates = []; { let [y, m] = FORECAST.start.split("-").map(Number); for (let i = 0; i < F; i++) { fDates.push(y + "-" + String(m).padStart(2, "0")); m++; if (m > 12) { m = 1; y++; } } }
-  const allDates = dates.concat(fDates);
-  const YMAX = 150, YMIN = 0;
-  const notes = [
-    { d: "2008-07", t: "Jul 2008  $132.72", dy: -16 },
-    { d: "2020-04", t: "Apr 2020  $18.38", dy: 22 },
-    { d: "2026-10", t: "Oct 2026  $123.93", dy: -16, right: true },
+  // ---------- rotating role word ----------
+  const words = ['LLM agents', 'RAG systems', 'ML models', 'data pipelines'];
+  let wi = 0; const rot = $('#rot');
+  if (!reduce) setInterval(() => {
+    wi = (wi + 1) % words.length;
+    rot.animate([{ opacity: 1, transform: 'none' }, { opacity: 0, transform: 'translateY(-8px)' }], { duration: 220, fill: 'forwards' }).onfinish = () => {
+      rot.textContent = words[wi];
+      rot.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'none' }], { duration: 260, fill: 'forwards' });
+    };
+  }, 2400);
+
+  // ---------- copy email ----------
+  $('#copy').addEventListener('click', async () => {
+    const out = $('#copied');
+    try { await navigator.clipboard.writeText('chrishpepfelixa@gmail.com'); out.textContent = 'Copied: chrishpepfelixa@gmail.com'; }
+    catch (e) { out.textContent = 'Copy it from here: chrishpepfelixa@gmail.com'; }
+  });
+
+
+  // ---------- ask me ----------
+  const QA = [
+    ['Why should we hire you?', 'I ship working ML and LLM systems and I measure them honestly. At Filed I took tax-document extraction to F1 0.94 across 200+ files a day; in my own projects every headline number comes from a held-out test, and I publish the ablations that went against me.'],
+    ['Strongest project?', 'The Filings Analyst Agent. Two LangGraph agents answer questions on SEC 10-Ks with a citation per claim, and a verifier checks each one. Error analysis took accuracy from 91.2% to 97.9%. The ablation also showed the verifier costs accuracy on held-out metrics, and I kept that in the write-up.'],
+    ['Can you deploy models?', 'Yes. FastAPI and Docker services, an MCP server, MLflow on Databricks for my fraud model, and an AWS SageMaker pipeline with a registry approval gate, endpoint and Model Monitor for the patient feedback model.'],
+    ['Right to work?', "I'm authorised to work in the UK, based in Liverpool and open to relocation. I finish my MSc in Data Science and AI at the University of Liverpool, with graduation in June 2027."],
+    ['What are you looking for?', 'AI Engineer, Machine Learning Engineer or Data Scientist roles in the UK, ideally on LLM agents, retrieval or applied ML where evaluation matters.'],
   ];
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  let W = 0, Ht = 0, pad, progress = reduce ? 1 : 0, hover = -1;
-
-  function size() {
-    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
-    W = r.width; Ht = r.height; cv.width = W * dpr; cv.height = Ht * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    pad = { l: 44, r: W < 600 ? 18 : 34, t: 22, b: 30 };
-    draw();
+  const qs = $('#qs'), ans = $('#ans'); let typing = 0;
+  QA.forEach(([q, a], i) => { const b = document.createElement('button'); b.className = 'q'; b.type = 'button'; b.textContent = q; b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => answer(i)); qs.appendChild(b); });
+  function answer(i) {
+    $$('.q', qs).forEach((b, j) => b.setAttribute('aria-pressed', j === i));
+    const text = QA[i][1], id = ++typing;
+    if (reduce) { ans.textContent = text; return; }
+    ans.textContent = ''; let k = 0;
+    const step = () => { if (id !== typing) return; k += 2; ans.textContent = text.slice(0, k); if (k < text.length) setTimeout(step, 14); };
+    step();
   }
-  const x = i => pad.l + (i / (N - 1)) * (W - pad.l - pad.r);
-  const y = v => pad.t + (1 - (v - YMIN) / (YMAX - YMIN)) * (Ht - pad.t - pad.b);
-  const lbl = d => { const [yy, mm] = d.split("-"); return ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+mm - 1] + " " + yy; };
+  answer(0);
 
+  // ---------- project filters + expand ----------
+  $$('.filter').forEach((f) => f.addEventListener('click', () => {
+    $$('.filter').forEach((g) => g.setAttribute('aria-pressed', g === f));
+    const tag = f.dataset.f;
+    $$('.proj').forEach((p) => p.classList.toggle('out', tag !== 'all' && !p.dataset.tags.split(' ').includes(tag)));
+  }));
+  $$('.proj .toggle').forEach((t) => t.addEventListener('click', () => {
+    const card = t.closest('.proj'), open = !card.classList.contains('open');
+    card.classList.toggle('open', open); t.setAttribute('aria-expanded', open); t.textContent = open ? 'Hide details' : 'Show details';
+  }));
+
+  // ---------- gallery: drag to scroll, lightbox ----------
+  const gal = $('#gallery'); let down = false, sx = 0, sl = 0, moved = false;
+  gal.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'mouse') return; down = true; moved = false; sx = e.clientX; sl = gal.scrollLeft; gal.classList.add('drag'); });
+  addEventListener('pointerup', () => { down = false; gal.classList.remove('drag'); });
+  gal.addEventListener('pointermove', (e) => { if (!down) return; const dx = e.clientX - sx; if (Math.abs(dx) > 4) moved = true; gal.scrollLeft = sl - dx; });
+  const lb = $('#lightbox'), lbimg = $('#lbimg');
+  $$('button', gal).forEach((b) => b.addEventListener('click', (e) => { if (moved) { e.preventDefault(); return; }
+    lbimg.src = b.dataset.src; lbimg.alt = $('img', b).alt; lb.classList.add('open'); $('#close').focus(); }));
+  const closeLb = () => lb.classList.remove('open');
+  $('#close').addEventListener('click', closeLb);
+  lb.addEventListener('click', (e) => { if (e.target === lb) closeLb(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape') closeLb(); });
+
+  // ---------- scroll: progress, nav state, active link ----------
+  const prog = $('#progress'), nav = $('#nav'), links = $$('.nav nav a');
+  const onScroll = () => {
+    const h = document.documentElement.scrollHeight - innerHeight;
+    prog.style.transform = `scaleX(${h > 0 ? scrollY / h : 0})`;
+    nav.classList.toggle('scrolled', scrollY > 10);
+    let id = ''; ['ask', 'work', 'experience', 'contact'].forEach((s) => { const el = document.getElementById(s); if (el && el.getBoundingClientRect().top < innerHeight * .4) id = s; });
+    links.forEach((a) => a.classList.toggle('here', a.getAttribute('href') === '#' + id));
+  };
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  if (reduce || !('IntersectionObserver' in window)) return;
+
+  // ---------- reveal below-the-fold blocks ----------
+  const pending = $$('.rv').filter((el) => el.getBoundingClientRect().top > innerHeight);
+  pending.forEach((el) => el.classList.add('pre'));
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove('pre'); io.unobserve(e.target); } }), { threshold: .12 });
+  pending.forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+  // ---------- count up ----------
+  const cio = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; cio.unobserve(e.target);
+    const el = e.target, final = el.textContent, target = parseFloat(el.dataset.count), dec = (el.dataset.count.split('.')[1] || '').length, suf = el.dataset.suffix || '', sep = 'sep' in el.dataset, t0 = performance.now();
+    const tick = (now) => { const t = Math.min(1, (now - t0) / 1200), v = target * (1 - Math.pow(1 - t, 3));
+      el.textContent = (sep ? Math.round(v).toLocaleString('en-GB') : v.toFixed(dec)) + suf; if (t < 1) requestAnimationFrame(tick); else el.textContent = final; };
+    requestAnimationFrame(tick);
+  }), { threshold: .6 });
+  $$('[data-count]').forEach((el) => cio.observe(el));
+})();
+
+// ---------- background: Mersey waves in the hero, golden hour on scroll ----------
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const root = document.documentElement;
+  const setP = () => { const h = root.scrollHeight - innerHeight; root.style.setProperty('--p', h > 0 ? Math.min(1, scrollY / h * 1.3).toFixed(3) : 0); };
+  addEventListener('scroll', setP, { passive: true }); setP();
+
+  const cv = document.getElementById('waves'); if (!cv) return;
+  const ctx = cv.getContext('2d'); let W, H, t = 0, on = true;
+  const size = () => { const d = Math.min(2, devicePixelRatio || 1); W = cv.clientWidth; H = cv.clientHeight; cv.width = W * d; cv.height = H * d; ctx.setTransform(d, 0, 0, d, 0, 0); };
+  const col = (v) => getComputedStyle(root).getPropertyValue(v).trim();
   function draw() {
-    ctx.clearRect(0, 0, W, Ht);
-    ctx.font = "500 12px " + css("--body");
-    // grid + y labels
-    ctx.lineWidth = 1; ctx.textAlign = "right"; ctx.textBaseline = "middle";
-    for (let v = 0; v <= YMAX; v += 25) {
-      ctx.strokeStyle = C.grid; ctx.beginPath(); ctx.moveTo(pad.l, Math.round(y(v)) + .5); ctx.lineTo(W - pad.r, Math.round(y(v)) + .5); ctx.stroke();
-      ctx.fillStyle = C.muted; ctx.fillText("$" + v, pad.l - 8, y(v));
-    }
-    // x labels: every 5 years (fewer on small screens)
-    ctx.textAlign = "center"; ctx.textBaseline = "top";
-    const step = W < 600 ? 10 : 5;
-    allDates.forEach((d, i) => { if (d.endsWith("-01") && (+d.slice(0, 4)) % step === 0) { ctx.fillStyle = C.muted; ctx.fillText(d.slice(0, 4), x(i), Ht - pad.b + 9); } });
+    ctx.clearRect(0, 0, W, H);
+    const layers = [[col('--blue'), .10, 18, .010, 0], [col('--blue'), .14, 14, .014, 2], [col('--gold'), .12, 10, .018, 4]];
+    layers.forEach(([c, a, amp, k, ph], i) => {
+      ctx.fillStyle = c; ctx.globalAlpha = a; ctx.beginPath();
+      const base = H * (.45 + i * .16);
+      ctx.moveTo(0, H);
+      for (let x = 0; x <= W; x += 8) ctx.lineTo(x, base + Math.sin(x * k + t * (1 + i * .3) + ph) * amp + Math.sin(x * k * .5 - t) * amp * .4);
+      ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+    if (!reduce && on) { t += .012; requestAnimationFrame(draw); }
+  }
+  size(); draw(); addEventListener('resize', () => { size(); if (reduce) draw(); });
+  if (!reduce && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => { const was = on; on = e.isIntersecting; if (on && !was) requestAnimationFrame(draw); }).observe(cv);
+})();
 
-    // faint full series at rest, then the traced line on top
-    const shown = Math.max(2, Math.round(progress * H));
-    ctx.lineJoin = "round"; ctx.lineCap = "round";
-    ctx.strokeStyle = C.grid; ctx.lineWidth = 2; ctx.beginPath();
-    hist.forEach((v, i) => i ? ctx.lineTo(x(i), y(v)) : ctx.moveTo(x(i), y(v))); ctx.stroke();
-    ctx.strokeStyle = C.ink; ctx.lineWidth = 2; ctx.beginPath();
-    for (let i = 0; i < shown; i++) i ? ctx.lineTo(x(i), y(hist[i])) : ctx.moveTo(x(i), y(hist[i]));
-    ctx.stroke();
+// ---------- CV download: plain link on a normal site; the viewer's save dialog inside Claude ----------
+(() => {
+  const links = [...document.querySelectorAll('a[download]')];
+  if (!window.claude || typeof window.claude.use !== 'function') return;
+  window.claude.use('downloads').then((downloads) => {
+    if (!downloads) return;
+    links.forEach((a) => a.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const blob = await (await fetch(a.getAttribute('href'))).blob();
+        await downloads.save({ filename: 'Chrish_Pep_Felix_A_CV.pdf', data: blob });
+      } catch (err) { /* viewer declined or save failed; the email note below the buttons covers this */ }
+    }));
+  }).catch(() => {});
+})();
 
-    if (progress >= 1) {
-      // forecast band and line
-      const fx = i => x(H + i), last = hist[H - 1];
-      ctx.fillStyle = C.signal + "29"; ctx.beginPath(); ctx.moveTo(x(H - 1), y(last));
-      FORECAST.values.forEach((v, i) => ctx.lineTo(fx(i), y(v + FORECAST.rmse[i])));
-      for (let i = F - 1; i >= 0; i--) ctx.lineTo(fx(i), y(FORECAST.values[i] - FORECAST.rmse[i]));
-      ctx.closePath(); ctx.fill();
-      ctx.strokeStyle = C.signal; ctx.setLineDash([5, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x(H - 1), y(last));
-      FORECAST.values.forEach((v, i) => ctx.lineTo(fx(i), y(v))); ctx.stroke(); ctx.setLineDash([]);
-      // annotations
-      ctx.textBaseline = "middle";
-      notes.forEach(n => {
-        const i = dates.indexOf(n.d); if (i < 0) return;
-        const px = x(i), py = y(hist[i]);
-        ctx.fillStyle = C.shock; ctx.beginPath(); ctx.arc(px, py, 3.5, 0, 7); ctx.fill();
-        if (W < 520 && !n.right) return;
-        ctx.font = "600 12px " + css("--body"); ctx.textAlign = n.right ? "right" : "left";
-        ctx.fillStyle = C.ink; ctx.fillText(n.t, px + (n.right ? -10 : 8), py + n.dy);
-      });
-      // pulsing endpoint
-      const t = reduce ? 0 : (performance.now() % 2000) / 2000;
-      const ex = x(N - 1), ey = y(FORECAST.values[F - 1]);
-      ctx.fillStyle = C.signal; ctx.beginPath(); ctx.arc(ex, ey, 3.5, 0, 7); ctx.fill();
-      if (!reduce) { ctx.strokeStyle = C.signal; ctx.globalAlpha = 1 - t; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(ex, ey, 3.5 + t * 12, 0, 7); ctx.stroke(); ctx.globalAlpha = 1; }
-    }
-    // crosshair
-    if (hover >= 0) {
-      const v = hover < H ? hist[hover] : FORECAST.values[hover - H];
-      ctx.strokeStyle = C.muted; ctx.lineWidth = 1; ctx.setLineDash([2, 3]);
-      ctx.beginPath(); ctx.moveTo(Math.round(x(hover)) + .5, pad.t); ctx.lineTo(Math.round(x(hover)) + .5, Ht - pad.b); ctx.stroke(); ctx.setLineDash([]);
-      ctx.fillStyle = hover < H ? C.ink : C.signal; ctx.beginPath(); ctx.arc(x(hover), y(v), 4.5, 0, 7); ctx.fill();
-    }
+// ---------- skills: tabs, tool -> project map, flip cards ----------
+(() => {
+  const $$ = (q, r = document) => [...r.querySelectorAll(q)];
+  const tabs = $$('.tab');
+  const select = (t) => { tabs.forEach((x) => { const on = x === t; x.setAttribute('aria-selected', on); x.tabIndex = on ? 0 : -1;
+    document.getElementById(x.getAttribute('aria-controls')).hidden = !on; }); };
+  tabs.forEach((t, i) => { t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => { const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0; if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; select(n); n.focus(); } }); });
+
+  const P = { filings: 'Filings Analyst Agent', fraud: 'Fraud Lakehouse', pfa: 'Patient Feedback Analyser', macro: 'Macro Forecast Agent', finmine: 'FinMine', ragpro: 'RAG Pro', filed: 'Filed (AI / ML Engineer)', dhl: 'DHL (AI Engineer)' };
+  const T = [
+    ['LLMs and agents', 'var(--violet)', { LangGraph: ['filings', 'macro'], LangChain: ['filings'], 'RAG': ['filings', 'ragpro', 'filed'], 'Hybrid retrieval (BM25 + vectors)': ['filings', 'ragpro'], ChromaDB: ['filings'], pgvector: ['filed'], GraphRAG: ['finmine'], MCP: ['filings', 'macro'], 'Guardrails': ['filings', 'macro'], 'Llama 3 / Qwen2.5': ['filed', 'filings', 'macro'] }],
+    ['Machine learning', 'var(--blue)', { 'scikit-learn': ['pfa'], XGBoost: ['fraud'], PyTorch: ['filed'], 'TensorFlow / Keras': ['pfa'], 'Hugging Face (LayoutLMv3, RoBERTa)': ['filed'], spaCy: ['pfa'], BERTopic: ['pfa'], SHAP: ['fraud'], 'Time series (AR/ARX)': ['macro'] }],
+    ['Evaluation and statistics', 'var(--pink)', { 'Held-out testing': ['filings', 'fraud', 'pfa', 'macro'], Ablations: ['filings', 'ragpro'], 'Bootstrap CIs': ['pfa', 'macro', 'fraud'], 'A/B testing': ['fraud'], 'Power analysis': ['fraud'], 'F1, PR-AUC, Recall@k': ['fraud', 'pfa', 'ragpro', 'filed'] }],
+    ['MLOps and cloud', 'var(--teal)', { Databricks: ['fraud', 'filings'], MLflow: ['fraud', 'filings'], 'AWS SageMaker': ['pfa'], Docker: ['filings', 'ragpro'], FastAPI: ['filings', 'ragpro'], 'GitHub Actions CI': ['ragpro'], Azure: ['filings'] }],
+    ['Data', 'var(--gold)', { Python: ['filings', 'fraud', 'pfa', 'macro', 'finmine', 'ragpro', 'filed', 'dhl'], SQL: ['filed', 'dhl', 'fraud'], PySpark: ['fraud'], 'Delta Lake / Unity Catalog': ['fraud'], 'XBRL parsing': ['finmine', 'filings'], Neo4j: ['finmine'], 'Power BI': ['filed'], Streamlit: ['finmine'] }],
+  ];
+  const tech = document.getElementById('tech'), out = document.getElementById('usedin');
+  T.forEach(([name, c, tools]) => {
+    const g = document.createElement('div'); g.className = 'group'; g.style.setProperty('--c', c);
+    g.innerHTML = '<h3></h3><div class="chips"></div>'; g.querySelector('h3').textContent = name;
+    Object.entries(tools).forEach(([tool, used]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chipb'; b.textContent = tool; b.setAttribute('aria-pressed', 'false');
+      const pick = () => {
+        $$('.chipb').forEach((x) => x.setAttribute('aria-pressed', x === b));
+        out.innerHTML = ''; const strong = document.createElement('b'); strong.textContent = tool; out.append(strong, document.createTextNode(' used in: ' + used.map((k) => P[k]).join(', ') + '.'));
+        $$('.proj').forEach((p) => p.classList.toggle('glow', used.includes(p.id.replace('pj-', ''))));
+      };
+      b.addEventListener('click', pick); b.addEventListener('mouseenter', pick);
+      g.querySelector('.chips').appendChild(b);
+    });
+    tech.appendChild(g);
+  });
+
+  const Q = [
+    ['Honest about results', 'var(--pink)', 'I publish the numbers that went against me: my verifier lost on held-out metrics (86.7% vs 93.3%), and plain BM25 matched my hybrid retrieval.'],
+    ['Catches data problems early', 'var(--violet)', 'Removed a leaking feature before reporting the fraud model, and 26,819 duplicated reviews before scoring the NLP model.'],
+    ['Ships to production', 'var(--teal)', 'My extraction system ran on 200+ tax files a day at Filed. I serve models with FastAPI, Docker, MLflow and SageMaker.'],
+    ['Leads and mentors', 'var(--blue)', 'Mentored 4 developers at DHL, ran sprints and code reviews, and raised delivery velocity by 20%.'],
+    ['Speaks the business language', 'var(--gold)', 'Defined metrics with senior leaders, wrote Solution Design Documents, and turned an A/B test into a clear go/no-go memo.'],
+    ['Calm under pressure', 'var(--pink)', 'Led root cause analysis on production systems that cut critical downtime by 80%, to 99.4% uptime.'],
+    ['Keeps learning', 'var(--teal)', 'Self-directed upskilling in 2024–25, a Microsoft SQL Server AI/ML certification, and now an MSc in Data Science and AI.'],
+    ['Builds for people', 'var(--violet)', 'Streamlit dashboards for non-technical users and a voice assistant that routes client questions to the extraction API.'],
+  ];
+  const quals = document.getElementById('quals');
+  Q.forEach(([t, c, back]) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qual'; b.style.setProperty('--c', c); b.setAttribute('aria-pressed', 'false');
+    b.innerHTML = '<div class="in"><div class="f"><h3></h3><span>Select to see the evidence</span></div><div class="b"><b>Evidence</b><span></span></div></div>';
+    b.querySelector('h3').textContent = t; b.querySelector('.b span').textContent = back;
+    b.addEventListener('click', () => { const on = b.classList.toggle('flip'); b.setAttribute('aria-pressed', on); });
+    quals.appendChild(b);
+  });
+})();
+
+
+// ---------- effects: split headings, clip reveals, staggers, parallax, auto photos, theme transition ----------
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $$ = (q) => [...document.querySelectorAll(q)];
+  setTimeout(() => document.querySelector('.intro')?.remove(), 1600);
+
+  // split heading words
+  $$('h2.split').forEach((h) => {
+    const words = h.textContent.trim().split(/\s+/); h.setAttribute('aria-label', h.textContent.trim()); h.textContent = '';
+    words.forEach((w, i) => { const o = document.createElement('span'); o.className = 'wd'; o.setAttribute('aria-hidden', 'true');
+      const inner = document.createElement('span'); inner.textContent = w; inner.style.setProperty('--i', i); o.appendChild(inner); h.append(o, ' '); });
+  });
+  $$('.stagger').forEach((g) => [...g.children].forEach((c, i) => c.style.setProperty('--i', i)));
+
+  if (!reduce && 'IntersectionObserver' in window) {
+    const targets = $$('h2.split, .clip, .stagger').filter((el) => el.getBoundingClientRect().top > innerHeight * .9);
+    targets.forEach((el) => el.classList.add('pre'));
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.remove('pre'); io.unobserve(e.target); } }), { threshold: .15 });
+    targets.forEach((el) => io.observe(el));
   }
 
-  function onMove(e) {
-    const r = cv.getBoundingClientRect(), px = e.clientX - r.left;
-    const i = Math.round(((px - pad.l) / (W - pad.l - pad.r)) * (N - 1));
-    if (i < 0 || i >= N) return onLeave();
-    hover = i;
-    const isF = i >= H, v = isF ? FORECAST.values[i - H] : hist[i];
-    tip.innerHTML = lbl(allDates[i]) + "<br>" + (isF ? "Forecast $" + v.toFixed(2) + " ± " + FORECAST.rmse[i - H].toFixed(1) : "$" + v.toFixed(2) + " a barrel");
-    tip.style.left = Math.min(Math.max(x(i), 80), W - 80) + "px"; tip.style.top = y(v) + "px"; tip.classList.add("on");
-    if (reduce || progress >= 1) draw();
-  }
-  function onLeave() { hover = -1; tip.classList.remove("on"); draw(); }
-  cv.addEventListener("pointermove", onMove);
-  cv.addEventListener("pointerleave", onLeave);
 
-  addEventListener("resize", size);
-  size();
+  // scroll parallax (scroll only, no mouse)
+  const par = [[document.querySelector('.portrait'), -0.08], [document.querySelector('.ask-photo img'), 0.06]];
   if (!reduce) {
-    const t0 = performance.now(), dur = 2200;
-    (function frame(now) {
-      progress = Math.min(1, (now - t0) / dur);
-      progress = 1 - Math.pow(1 - progress, 3);
-      draw();
-      requestAnimationFrame(frame);
-    })(t0);
+    const onS = () => par.forEach(([el, k]) => { if (!el) return; const r = el.getBoundingClientRect(); const c = r.top + r.height / 2 - innerHeight / 2; el.style.transform = `translateY(${c * k}px)`; });
+    addEventListener('scroll', onS, { passive: true }); onS();
   }
+
+  // theme switch as a smooth cross-fade where supported
+  const tb = document.getElementById('theme');
+  if (document.startViewTransition && !reduce) tb.addEventListener('click', (e) => {
+    e.stopImmediatePropagation();
+    const root = document.documentElement;
+    const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    document.startViewTransition(() => { root.dataset.theme = dark ? 'light' : 'dark'; tb.textContent = dark ? 'Dark mode' : 'Light mode';
+      try { localStorage.setItem('cpfa-theme', root.dataset.theme); } catch (err) {} });
+  }, true);
+})();
+
+// ---------- hero photo deck ----------
+(() => {
+  const deck = document.getElementById('deck'); if (!deck) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const cards = [...deck.querySelectorAll('.card')];
+  const dotsBox = document.getElementById('deckDots'), timer = document.getElementById('timer');
+  let order = cards.map((_, i) => i);           // order[0] is the photo on top
+  const fan = [[0, 0, 0, 1], [18, 10, 5, .96], [-16, 16, -6, .93], [10, 24, 9, .9], [-8, 30, -3, .87]];
+  const dots = cards.map((c, i) => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Photo ' + (i + 1) + ': ' + c.querySelector('figcaption').textContent);
+    b.addEventListener('click', () => goTo(i)); dotsBox.appendChild(b); return b; });
+
+  function layout() {
+    order.forEach((idx, pos) => {
+      const c = cards[idx], f = fan[Math.min(pos, fan.length - 1)];
+      c.style.setProperty('--x', f[0] + 'px'); c.style.setProperty('--y', f[1] + 'px'); c.style.setProperty('--r', f[2] + 'deg'); c.style.setProperty('--s', f[3]);
+      c.style.zIndex = cards.length - pos; c.classList.toggle('top', pos === 0);
+      c.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
+    });
+    dots.forEach((d, i) => d.setAttribute('aria-current', i === order[0]));
+    restartTimer();
+  }
+  function fly(dir = -1, then) {
+    const top = cards[order[0]];
+    top.classList.add('fly');
+    top.style.setProperty('--x', dir * 140 + '%'); top.style.setProperty('--r', dir * 22 + 'deg');
+    setTimeout(() => { top.classList.remove('fly'); then(); }, reduce ? 0 : 420);
+  }
+  const next = (dir = -1) => fly(dir, () => { order.push(order.shift()); layout(); });
+  const prev = () => { order.unshift(order.pop()); layout(); };
+  function goTo(i) { if (order[0] === i) return; fly(-1, () => { while (order[0] !== i) order.push(order.shift()); layout(); }); }
+
+  document.getElementById('next').addEventListener('click', () => next(-1));
+  document.getElementById('prev').addEventListener('click', prev);
+  deck.tabIndex = 0;
+  deck.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight') next(-1); if (e.key === 'ArrowLeft') prev(); });
+
+  // drag or swipe the top card
+  let sx = 0, sy = 0, dx = 0, drag = null, movedFar = false;
+  deck.addEventListener('pointerdown', (e) => {
+    const c = e.target.closest('.card'); if (!c || !c.classList.contains('top')) return;
+    drag = c; sx = e.clientX; sy = e.clientY; dx = 0; movedFar = false; c.classList.add('dragging'); c.setPointerCapture(e.pointerId); pause(true);
+  });
+  deck.addEventListener('pointermove', (e) => {
+    if (!drag) return; dx = e.clientX - sx; const dy = (e.clientY - sy) * .3; if (Math.abs(dx) > 6) movedFar = true;
+    drag.style.setProperty('--x', dx + 'px'); drag.style.setProperty('--y', dy + 'px'); drag.style.setProperty('--r', dx / 14 + 'deg');
+  });
+  const end = () => {
+    if (!drag) return; const c = drag; drag = null; c.classList.remove('dragging'); pause(false);
+    if (Math.abs(dx) > 90) next(dx > 0 ? 1 : -1);
+    else if (!movedFar) next(-1);           // a tap flips to the next photo
+    else layout();                           // not far enough: spring back
+  };
+  deck.addEventListener('pointerup', end); deck.addEventListener('pointercancel', end);
+
+  // auto-advance with a visible timer; pauses on hover, focus and when the tab is hidden
+  let auto = null, hold = false;
+  function restartTimer() {
+    clearTimeout(auto); if (reduce) return;
+    timer.classList.remove('run', 'paused'); void timer.offsetWidth; timer.classList.add('run');
+    auto = setTimeout(() => { if (!hold && !document.hidden) next(-1); else restartTimer(); }, 5000);
+  }
+  function pause(on) { hold = on; timer.classList.toggle('paused', on); }
+  deck.addEventListener('mouseenter', () => pause(true)); deck.addEventListener('mouseleave', () => pause(false));
+  deck.addEventListener('focusin', () => pause(true)); deck.addEventListener('focusout', () => pause(false));
+
+  // opening: cards start stacked, then fan out
+  if (!reduce) {
+    cards.forEach((c) => { c.style.setProperty('--x', '0px'); c.style.setProperty('--y', '40px'); c.style.setProperty('--r', '0deg'); c.style.setProperty('--s', '.9'); });
+    deck.classList.add('intro-fan');
+    setTimeout(() => { layout(); setTimeout(() => deck.classList.remove('intro-fan'), 1100); }, 1300);
+  } else layout();
+})();
+
+// ---------- cover scene: letters, typing, stars, scroll-driven opening ----------
+(() => {
+  const scene = document.getElementById('scene'); if (!scene) return;
+  const stage = scene.querySelector('.stage'), reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // split name into letters
+  const big = scene.querySelector('[data-letters]');
+  if (!reduce) { const t = big.textContent; big.textContent = ''; let d = 0;
+    t.split(' ').forEach((w, wi, arr) => { const word = document.createElement('span'); word.style.whiteSpace = 'nowrap'; word.setAttribute('aria-hidden', 'true');
+      [...w].forEach((c) => { const s = document.createElement('span'); s.className = 'lt'; s.style.setProperty('--d', d++); s.textContent = c; word.appendChild(s); });
+      big.appendChild(word); if (wi < arr.length - 1) big.appendChild(document.createTextNode(' ')); }); }
+  else big.querySelectorAll('.lt').forEach(() => {});
+
+  // typing roles
+  const roles = ['AI Engineer', 'Machine Learning Engineer', 'Data Scientist', 'Applied AI'];
+  const typed = document.getElementById('typed');
+  if (!reduce) { let r = 0, i = roles[0].length, del = true;
+    setTimeout(function tick() {
+      const w = roles[r];
+      if (del) { i--; if (i <= 0) { del = false; r = (r + 1) % roles.length; } }
+      else { i++; if (i >= roles[r].length) { del = true; typed.textContent = roles[r]; return setTimeout(tick, 1600); } }
+      typed.textContent = roles[r].slice(0, Math.max(0, i)) || '​';
+      setTimeout(tick, del ? 35 : 65);
+    }, 3200); }
+
+  // drifting stars
+  const cv = document.getElementById('stars'), ctx = cv.getContext('2d'); let W, H, stars = [], on = true;
+  const size = () => { const dpr = Math.min(2, devicePixelRatio || 1); W = stage.clientWidth; H = stage.clientHeight; cv.width = W * dpr; cv.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    stars = Array.from({ length: Math.round(W * H / 6000) }, () => ({ x: Math.random() * W, y: Math.random() * H, z: Math.random() * .8 + .2, tw: Math.random() * 6.28 })); };
+  const draw = () => { ctx.clearRect(0, 0, W, H);
+    stars.forEach((s) => { if (!reduce) { s.y -= s.z * .25; s.tw += .03; if (s.y < -2) { s.y = H + 2; s.x = Math.random() * W; } }
+      ctx.globalAlpha = (.35 + .35 * Math.sin(s.tw)) * s.z; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(s.x, s.y, s.z * 1.4, 0, 6.283); ctx.fill(); });
+    if (!reduce && on) requestAnimationFrame(draw); };
+  size(); draw(); addEventListener('resize', () => { size(); if (reduce) draw(); });
+  if (!reduce && 'IntersectionObserver' in window) new IntersectionObserver(([e]) => { const was = on; on = e.isIntersecting; if (on && !was) requestAnimationFrame(draw); }).observe(stage);
+
+  if (reduce) return;
+  // scroll-driven opening
+  const ease = (t) => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+  const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+  function onScroll() {
+    const total = scene.offsetHeight - innerHeight; const p = clamp((scrollY - scene.offsetTop) / total);
+    const e = ease(p), small = innerWidth <= 760;
+    const r0 = small ? 19 : 17, r1 = 160;
+    const g = ease(clamp((p - .04) * 1.45));
+    stage.style.setProperty('--r', (r0 + (r1 - r0) * g) + 'vmax');
+    stage.style.setProperty('--cx', (small ? 50 : 71 - 21 * g) + '%');
+    stage.style.setProperty('--cy', (small ? 25 + 25 * g : 50) + '%');
+    stage.style.setProperty('--ao', clamp(1 - g * 3.2).toFixed(3));
+    stage.style.setProperty('--ps', (1.15 - .15 * g).toFixed(3));
+    stage.style.setProperty('--rot', (p * 220) + 'deg');
+    stage.style.setProperty('--ro', clamp(1 - p * 3).toFixed(3));
+    stage.style.setProperty('--op', clamp(1 - p * 2.2).toFixed(3));
+    stage.style.setProperty('--ty', (-p * 160) + 'px');
+    stage.style.setProperty('--bl', (p * 10).toFixed(1) + 'px');
+    stage.style.setProperty('--shade', clamp((p - .45) * 2.2).toFixed(3));
+    stage.style.setProperty('--fo', clamp((p - .55) * 3).toFixed(3));
+    stage.style.setProperty('--fy', (40 - 40 * clamp((p - .55) * 3)) + 'px');
+  }
+  addEventListener('scroll', onScroll, { passive: true }); addEventListener('resize', onScroll); onScroll();
+})();
+
+// ---------- repo filters, back-to-top ring ----------
+(() => {
+  const bs = [...document.querySelectorAll('#rfilters .filter')];
+  bs.forEach((b) => b.addEventListener('click', () => {
+    bs.forEach((x) => x.setAttribute('aria-pressed', x === b));
+    document.querySelectorAll('.rp').forEach((r) => r.classList.toggle('out', b.dataset.r !== 'all' && r.dataset.tags !== b.dataset.r));
+  }));
+  const top = document.getElementById('totop'), circ = top.querySelector('circle');
+  const upd = () => { const h = document.documentElement.scrollHeight - innerHeight, p = h > 0 ? scrollY / h : 0;
+    top.classList.toggle('show', scrollY > innerHeight * 1.5); circ.style.setProperty('--off', (176 * (1 - p)).toFixed(1)); };
+  addEventListener('scroll', upd, { passive: true }); upd();
+  top.addEventListener('click', () => scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
 })();
 </script>
 </body>
