@@ -476,7 +476,7 @@ header.scrolled{background:rgba(0,0,0,.82)}
 
 /* marquee band */
 .band{position:relative;display:block;height:min(88vh,700px);overflow:hidden;text-decoration:none;color:#fff}
-.band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 40%;filter:sepia(.35) saturate(1.5) hue-rotate(-12deg) brightness(.85) contrast(1.1)}
+.band img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 46%;filter:sepia(.35) saturate(1.5) hue-rotate(-12deg) brightness(.85) contrast(1.1)}
 .band::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.55))}
 .brow{position:absolute;left:0;white-space:nowrap;z-index:2;font:200 clamp(40px,6vw,88px)/1 var(--h);letter-spacing:-.03em;will-change:transform}
 .brow:nth-of-type(1){bottom:calc(14% + 1.1em)}
@@ -758,6 +758,293 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
 .ti:hover .node.co{transform:rotate(-8deg) scale(1.08);box-shadow:0 0 24px rgba(255,255,255,.35)}
 @media (max-width:900px){.seeking{font-size:14px}}
 
+
+/* =====================================================
+   v4: intro sequence, neon orbits around the photo,
+   name reveal, results charts, background, project hovers,
+   bigger contact
+   ===================================================== */
+/* hold every hero animation until the loader has gone */
+body:not(.ready) .hero,body:not(.ready) .hero *,body:not(.ready) .hero *::before,body:not(.ready) .hero *::after{animation-play-state:paused!important}
+.hero{--H:min(92vh,960px);--cx:72%}
+.hero::after{z-index:2}
+.hero-in{z-index:5}
+/* light sweep that opens the intro */
+.sweep{position:absolute;left:0;right:0;bottom:-10%;height:2px;background:#fff;box-shadow:0 0 18px 4px #fff,0 0 80px 20px rgba(255,255,255,.35);opacity:0;animation:sweepup 1.3s .05s cubic-bezier(.6,0,.2,1) forwards;z-index:4}
+@keyframes sweepup{0%{opacity:0;transform:translateY(0)}10%{opacity:1}80%{opacity:.9}100%{opacity:0;transform:translateY(-110vh)}}
+.grid{opacity:0;animation:gridmove 4s linear infinite,gridin 1.4s .35s ease-out forwards}
+@keyframes gridin{to{opacity:.45}}
+/* soft breathing aura behind the photo */
+.aura{position:absolute;left:var(--cx);bottom:calc(var(--H)*.38);width:calc(var(--H)*.75);height:calc(var(--H)*.95);transform:translate(-50%,50%);border-radius:50%;
+  background:radial-gradient(closest-side,rgba(255,255,255,.22),rgba(94,196,247,.10) 55%,transparent 75%);filter:blur(6px);opacity:0;animation:fade 1.6s .6s forwards,aura 5s 2.2s ease-in-out infinite}
+@keyframes aura{0%,100%{scale:1}50%{scale:1.06}}
+/* neon orbits: back half behind the photo, front half in front of it */
+.orbit{position:absolute;left:var(--cx);bottom:calc(var(--H)*var(--y));width:calc(var(--H)*var(--w));height:calc(var(--H)*var(--w)*.24);
+  transform:translate(-50%,50%) rotate(var(--rot));border-radius:50%;pointer-events:none;opacity:0;animation:tube 1.8s var(--d) forwards}
+.o1{--y:.34;--w:.86;--rot:-6deg;--d:1.05s}
+.o2{--y:.70;--w:.62;--rot:9deg;--d:1.45s}
+.orbit::before{content:"";position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(255,255,255,.7);
+  box-shadow:0 0 6px #fff,0 0 18px rgba(255,255,255,.7),0 0 46px rgba(255,255,255,.35),inset 0 0 8px rgba(255,255,255,.6)}
+.orbit::after{content:"";position:absolute;inset:-3px;border-radius:50%;
+  background:conic-gradient(from var(--ang),transparent 0 70%,rgba(255,255,255,.15) 80%,#fff 93%,rgba(94,196,247,.9) 96%,transparent 97%);
+  -webkit-mask:radial-gradient(closest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));mask:radial-gradient(closest-side,transparent calc(100% - 5px),#000 calc(100% - 4px));
+  filter:drop-shadow(0 0 6px #fff) drop-shadow(0 0 14px rgba(94,196,247,.8));animation:ang 3.6s linear infinite}
+.o2::after{animation-direction:reverse;animation-duration:4.8s}
+.orbits-front{position:absolute;inset:0;z-index:3;pointer-events:none}
+.orbit.front{clip-path:inset(50% -10% -10% -10%)}
+.orbit.back::before{opacity:.55}
+/* sparks rising around the photo */
+.sparks{position:absolute;inset:0;z-index:3;pointer-events:none}
+.sparks i{position:absolute;bottom:8%;left:calc(var(--cx) + var(--x));width:3px;height:3px;border-radius:50%;background:#fff;box-shadow:0 0 8px 2px rgba(255,255,255,.8);opacity:0;
+  animation:spark var(--t) var(--dl) linear infinite}
+.hero .sparks i:nth-child(1){--x:-15vh;--t:5.5s;--dl:2.0s}.hero .sparks i:nth-child(2){--x:-9vh;--t:6.5s;--dl:2.8s}.hero .sparks i:nth-child(3){--x:-3vh;--t:5s;--dl:3.4s}
+.hero .sparks i:nth-child(4){--x:4vh;--t:7s;--dl:2.4s}.hero .sparks i:nth-child(5){--x:11vh;--t:6s;--dl:3.1s}.hero .sparks i:nth-child(6){--x:17vh;--t:5.8s;--dl:2.2s}
+.hero .sparks i:nth-child(7){--x:-21vh;--t:7.5s;--dl:4.0s}.hero .sparks i:nth-child(8){--x:22vh;--t:6.8s;--dl:4.4s}.hero .sparks i:nth-child(9){--x:-6vh;--t:8s;--dl:5s}
+.hero .sparks i:nth-child(10){--x:8vh;--t:7.2s;--dl:5.6s}.hero .sparks i:nth-child(11){--x:-12vh;--t:6.2s;--dl:6.1s}.hero .sparks i:nth-child(12){--x:14vh;--t:7.8s;--dl:6.6s}
+@keyframes spark{0%{opacity:0;transform:translateY(0) scale(.6)}15%{opacity:1}70%{opacity:.7}100%{opacity:0;transform:translateY(-62vh) scale(1.2)}}
+.heroman{animation:manin 1.5s .25s var(--ease) forwards!important}
+/* name reveal */
+.hname{position:relative;display:inline-block;margin-bottom:-4px}
+.hn-l{display:inline-block;font:600 clamp(30px,4.2vw,64px)/1 var(--h);letter-spacing:.01em;color:#fff;perspective:600px;white-space:nowrap}
+.hn-l i{font-style:normal;display:inline-block;opacity:0;transform:translateY(60%) rotateX(-80deg);filter:blur(10px);transform-origin:50% 100%;
+  animation:letter .9s calc(.55s + var(--i)*.055s) var(--ease) forwards,namepulse 5s calc(2.6s + var(--i)*.04s) ease-in-out infinite}
+.hn-l .sp{width:.28em}
+@keyframes letter{60%{opacity:1;filter:blur(0);text-shadow:0 0 22px #fff,0 0 50px rgba(94,196,247,.9)}100%{opacity:1;transform:none;filter:none;text-shadow:0 0 10px rgba(255,255,255,.55),0 0 30px rgba(94,196,247,.35)}}
+@keyframes namepulse{0%,100%{text-shadow:0 0 10px rgba(255,255,255,.55),0 0 30px rgba(94,196,247,.35)}50%{text-shadow:0 0 14px rgba(255,255,255,.85),0 0 44px rgba(94,196,247,.6)}}
+.hn-bar{position:absolute;left:0;bottom:-10px;height:2px;width:100%;background:linear-gradient(90deg,#fff,var(--sky) 60%,transparent);box-shadow:0 0 12px var(--sky);transform:scaleX(0);transform-origin:0 50%;animation:barin 1s 1.5s var(--ease) forwards}
+@keyframes barin{to{transform:scaleX(1)}}
+.seeking{opacity:0;animation:fade .8s 1.55s forwards}
+.apex .ln>span{animation-delay:1.7s!important}.apex .ln:nth-child(3)>span{animation-delay:1.85s!important}
+.apex{font-size:clamp(36px,4.6vw,74px)!important}
+.hero .beams i:nth-child(1){left:3%!important}.hero .beams i:nth-child(2){left:44%!important;top:4%!important}
+.hero-side{animation:fade 1s 2.2s forwards!important}
+.scrollcue{opacity:0;animation:fade 1s 2.6s forwards}
+/* ---------- site background ---------- */
+#bgfx{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.55}
+main,footer{position:relative;z-index:1}
+body{background:radial-gradient(1200px 700px at 85% 10%,rgba(94,196,247,.07),transparent 60%),radial-gradient(900px 600px at 10% 60%,rgba(255,255,255,.04),transparent 60%),#000 fixed}
+.sec{position:relative}
+/* ---------- results charts ---------- */
+#results .pfilters{margin:0 auto 22px}
+#resTabs .pf[aria-selected="true"]{background:var(--sky)!important;color:#000!important;border-color:var(--sky)!important}
+.chartcard{position:relative;max-width:980px;margin:0 auto;padding:28px 30px 22px;background:linear-gradient(180deg,rgba(28,28,28,.92),rgba(16,16,16,.92));border:1px solid var(--line2);backdrop-filter:blur(6px)}
+.chartcard::before{content:"";position:absolute;inset:-1px;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(94,196,247,.7),transparent) top/100% 1px no-repeat}
+.ch-top{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.ch-top h3{font:400 clamp(20px,2.2vw,26px)/1.2 var(--h);letter-spacing:-.01em;color:#fff}
+.ch-top p{font-size:14px;color:var(--muted);margin-top:4px;max-width:60ch}
+.ch-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.ch-toggle{display:flex;gap:6px}
+.ch-toggle button,.ch-tbl{font:500 12px var(--b);padding:7px 12px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:#ddd;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.ch-toggle button[aria-pressed="true"],.ch-tbl[aria-pressed="true"]{background:#fff;color:#000;border-color:#fff}
+.ch-toggle button:hover,.ch-tbl:hover{border-color:var(--sky)}
+.ch-legend{display:flex;gap:18px;flex-wrap:wrap;margin:16px 0 4px;font-size:13px;color:#ccc}
+.ch-legend span{display:inline-flex;align-items:center;gap:8px}.ch-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ch-plot{position:relative;margin-top:8px}
+#chSvg{display:block;width:100%;height:auto;overflow:visible}
+#chSvg text{font-family:var(--b);fill:#cfcfcf}
+#chSvg .lbl{font-size:13px;fill:#e8e8e8}
+#chSvg .val{font-size:12px;fill:#bdbdbd}
+#chSvg .ax{font-size:11px;fill:#8a8a8a}
+#chSvg .gl{stroke:rgba(255,255,255,.08)}
+#chSvg .ref{stroke:#fff;stroke-dasharray:4 4;opacity:.7}
+#chSvg .reft{font-size:11px;fill:#fff}
+#chSvg .bar{transform-box:fill-box;transform-origin:0 50%;transform:scaleX(0);transition:transform .9s var(--ease),opacity .2s}
+#chSvg.on .bar{transform:scaleX(1)}
+#chSvg .ci{stroke:#fff;stroke-width:1.5;opacity:0;transition:opacity .4s .7s}
+#chSvg.on .ci{opacity:.85}
+#chSvg .hit{fill:transparent;cursor:pointer;outline:none}
+#chSvg g.m:hover .bar,#chSvg g.m:focus-within .bar{filter:brightness(1.25) drop-shadow(0 0 8px rgba(94,196,247,.6))}
+#chSvg.dim g.m:not(:hover):not(:focus-within) .bar{opacity:.45}
+.ch-tip{position:absolute;pointer-events:none;min-width:150px;padding:10px 12px;background:#0b0b0b;border:1px solid rgba(255,255,255,.25);font-size:13px;color:#eee;opacity:0;transform:translate(-50%,-110%);transition:opacity .15s;z-index:3;white-space:nowrap;box-shadow:0 10px 30px rgba(0,0,0,.6)}
+.ch-tip.on{opacity:1}.ch-tip b{display:block;color:#fff;font-size:15px}.ch-tip small{color:#aaa}
+.ch-table table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px}
+.ch-table th,.ch-table td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}.ch-table th{color:#aaa;font-weight:500}
+.ch-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.ch-foot a{color:var(--sky);text-decoration:underline;text-underline-offset:4px}
+/* ---------- project hover effects ---------- */
+.pj{position:relative;overflow:hidden;isolation:isolate}
+.pj::before{content:"";position:absolute;inset:0;z-index:-1;padding:1px;background:conic-gradient(from var(--ang),transparent 0 60%,rgba(94,196,247,.9) 80%,#fff 88%,transparent 92%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .4s}
+.pj::after{content:"";position:absolute;top:0;bottom:0;width:45%;left:-60%;z-index:1;pointer-events:none;background:linear-gradient(100deg,transparent,rgba(255,255,255,.09),transparent);transform:skewX(-18deg)}
+.pj:hover::before,.pj:focus-within::before{opacity:1;animation:ang 3s linear infinite}
+.pj:hover::after{animation:shine 1s var(--ease)}
+@keyframes shine{to{left:130%}}
+.pj:hover{transform:translateY(-10px) scale(1.015)!important;box-shadow:0 30px 70px -25px rgba(94,196,247,.35),0 0 0 1px rgba(94,196,247,.35)!important}
+.pj h3{background:linear-gradient(currentColor,currentColor) 0 100%/0 1px no-repeat;transition:background-size .5s var(--ease);display:inline-block;padding-bottom:2px}
+.pj:hover h3{background-size:100% 1px}
+.pj .met{transition:text-shadow .3s,letter-spacing .3s}
+.pj:hover .met{text-shadow:0 0 14px rgba(94,196,247,.8)}
+.pj .stack span{transition:transform .35s var(--ease),background .3s,color .3s}
+.pj:hover .stack span{transform:translateY(-3px);background:rgba(94,196,247,.16);color:#fff}
+.pj:hover .stack span:nth-child(2){transition-delay:.04s}.pj:hover .stack span:nth-child(3){transition-delay:.08s}.pj:hover .stack span:nth-child(4){transition-delay:.12s}.pj:hover .stack span:nth-child(5){transition-delay:.16s}.pj:hover .stack span:nth-child(6){transition-delay:.2s}
+.pj .num{transition:color .3s}.pj:hover .num{color:var(--sky)}
+/* repo cards */
+#repoGrid .cert{position:relative;overflow:hidden;transition:transform .4s var(--ease),border-color .3s,box-shadow .3s,background .3s}
+#repoGrid .cert::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--sky),#fff);transform:scaleX(0);transform-origin:0 50%;transition:transform .45s var(--ease)}
+#repoGrid .cert:hover{transform:translateY(-6px);border-color:rgba(94,196,247,.5);box-shadow:0 20px 50px -20px rgba(94,196,247,.35);background:#202020}
+#repoGrid .cert:hover::after{transform:scaleX(1)}
+#repoGrid .cert .ic{transition:transform .45s var(--ease),box-shadow .3s}
+#repoGrid .cert:hover .ic{transform:rotate(-10deg) scale(1.12);box-shadow:0 0 22px rgba(94,196,247,.45)}
+/* ---------- bigger contact ---------- */
+.contact{padding:200px 0 160px!important;position:relative}
+.ghost-word{display:block!important;font-size:clamp(90px,19vw,300px)!important;top:30px!important;-webkit-text-stroke:1px rgba(255,255,255,.12)!important;animation:ghostdrift 14s ease-in-out infinite alternate}
+@keyframes ghostdrift{to{transform:translateX(-46%)}}
+.contact .wrap{max-width:1280px}
+.cgrid{gap:40px!important}
+.live{padding:44px!important}
+.live h2{font-size:clamp(38px,4.4vw,68px)!important;line-height:1.12!important;font-weight:300!important;margin:20px 0 16px!important}
+.live h2 .wd{padding-bottom:.16em}
+.live p{font-size:17px!important}
+.bigcontact{display:grid;gap:12px;margin:24px 0 6px}
+.bc{display:flex;align-items:center;gap:16px;padding:16px 18px;border:1px solid var(--line2);color:#fff;text-decoration:none;transition:border-color .3s,background .3s,transform .35s var(--ease)}
+.bc svg{width:26px;height:26px;flex:none;color:var(--sky);transition:transform .35s var(--ease)}
+.bc span{font:400 clamp(17px,1.8vw,24px)/1.2 var(--h);word-break:break-word}.bc small{display:block;font:500 11px var(--b);letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:4px}
+.bc:hover,.bc:focus-visible{border-color:var(--sky);background:rgba(94,196,247,.08);transform:translateX(6px)}
+.bc:hover svg{transform:scale(1.15) rotate(-6deg)}
+.bcrow{display:grid;grid-template-columns:1fr 1fr;gap:12px}.bc.sm span{font-size:17px}
+.cform{padding:44px!important}
+.fld input,.fld textarea{font-size:16px!important;padding:18px 18px!important}
+.fld textarea{min-height:210px!important}
+.send{min-height:58px!important;padding:0 34px!important;font-size:16px!important}
+@media (max-width:900px){
+  .hero{--H:78vh;--cx:50%}
+  .o1{--w:.95}.o2{--w:.7}
+  .hn-l{font-size:clamp(26px,8vw,44px)}
+  .live,.cform{padding:26px!important}.bcrow{grid-template-columns:1fr}
+  .chartcard{padding:20px 16px}
+}
+@media (prefers-reduced-motion:reduce){
+  .orbit,.aura,.sweep,.sparks,.hn-l i,.hn-bar,.seeking,.scrollcue,.grid{animation:none!important;opacity:1!important;transform:none;filter:none}
+  .orbit{transform:translate(-50%,50%) rotate(var(--rot))!important}.aura{transform:translate(-50%,50%)!important}.sweep,.sparks{display:none}.hn-bar{transform:none!important}
+  #chSvg .bar{transform:none;transition:none}#chSvg .ci{opacity:.85}#bgfx{display:none}
+}
+
+/* ===== v5: case studies ===== */
+dialog#caseDlg{max-width:920px;background:#111;border:1px solid rgba(94,196,247,.35);border-radius:0;overflow:hidden;display:none;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,.04),0 40px 120px rgba(0,0,0,.8),0 0 80px rgba(94,196,247,.15)}
+dialog#caseDlg[open]{display:flex;animation:dlgin .7s var(--ease)}
+@keyframes dlgin{0%{opacity:0;clip-path:inset(48% 0 48% 0);filter:blur(8px)}55%{opacity:1;clip-path:inset(0 0 0 0);filter:blur(0)}100%{clip-path:inset(0 0 0 0)}}
+#caseDlg .dlg-scan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#fff,var(--sky),transparent);box-shadow:0 0 18px var(--sky);opacity:0;z-index:5;pointer-events:none}
+#caseDlg.play .dlg-scan{animation:dscan 1.1s .1s var(--ease)}
+@keyframes dscan{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(88vh)}}
+#caseDlg .dlg-head{background:#111;padding:22px 28px;align-items:flex-start;flex:none}
+#caseDlg .dlg-head h3{font:300 clamp(24px,3vw,36px)/1.1 var(--h);letter-spacing:-.02em;margin-top:6px}
+.dlg-tag{font:500 12px var(--b);color:var(--sky);letter-spacing:.02em}
+#caseDlg .dlg-body{overflow:auto;padding:8px 28px 10px;flex:1}
+.dlg-foot{flex:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 28px;border-top:1px solid var(--line);font-size:13px;color:#888;background:#0d0d0d}
+.dnav{font:500 13px var(--b);color:#fff;background:transparent;border:1px solid var(--line2);border-radius:999px;padding:9px 16px;cursor:pointer;transition:border-color .25s,background .25s,transform .3s var(--ease)}
+.dnav:hover{border-color:var(--sky);background:rgba(94,196,247,.1)}#caseNext:hover{transform:translateX(3px)}#casePrev:hover{transform:translateX(-3px)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:14px 0 22px}
+.kpi{padding:16px 18px;background:linear-gradient(180deg,#1c1c1c,#151515);border:1px solid var(--line);position:relative;overflow:hidden}
+.kpi::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--sky),transparent);transform:scaleX(0);transform-origin:0 50%}
+.kpi b{font:300 clamp(30px,3.6vw,44px)/1 var(--h);color:#fff;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.kpi i{font:300 20px var(--h);font-style:normal;color:var(--sky);margin-left:3px}
+.kpi span{display:block;margin-top:8px;font-size:12.5px;color:#9a9a9a}
+.pipe{list-style:none;display:flex;flex-wrap:wrap;gap:10px 0;margin:0 0 20px;padding:0;counter-reset:p}
+.pipe li{position:relative;display:flex;align-items:center;gap:8px;font-size:13px;color:#ddd;padding:9px 14px;border:1px solid var(--line2);background:#161616;margin-right:28px}
+.pipe li span{font:600 11px var(--b);color:var(--sky)}
+.pipe li:not(:last-child)::after{content:"";position:absolute;left:100%;top:50%;width:28px;height:1px;background:linear-gradient(90deg,var(--sky),rgba(94,196,247,.2));transform:scaleX(0);transform-origin:0 50%}
+.csrows .cs{grid-template-columns:130px 1fr}
+.cbars{margin:22px 0 6px;padding:18px 18px 10px;border:1px solid var(--line);background:#141414}
+.cbars h4,.climits h4{font:500 13px var(--b);color:#bbb;margin-bottom:12px}
+.cb{display:grid;grid-template-columns:minmax(120px,210px) 1fr 70px;gap:12px;align-items:center;margin-bottom:10px;font-size:13px}
+.cbl{color:#ddd}.cbv{color:#bbb;font-variant-numeric:tabular-nums}
+.cbt{height:12px;background:rgba(255,255,255,.05);border-radius:3px;overflow:hidden}
+.cbt i{display:block;height:100%;width:var(--w);background:#2a9fd8;border-radius:3px;transform:scaleX(0);transform-origin:0 50%}
+.cb.best .cbt i{background:linear-gradient(90deg,#2a9fd8,#7fd4ff);box-shadow:0 0 12px rgba(94,196,247,.6)}.cb.best .cbv{color:#fff}
+.climits{margin:20px 0 6px}.climits ul{margin:0;padding:0;list-style:none}
+.climits li{position:relative;padding:10px 0 10px 22px;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted)}
+.climits li::before{content:"";position:absolute;left:2px;top:17px;width:8px;height:8px;border:1px solid #d07a2c;transform:rotate(45deg)}
+.clinks{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:22px 0 14px}.cnote{font-size:13px;color:#888}
+/* staged entrance when a case opens */
+#caseDlg.play .kpi{animation:cin .7s calc(.15s + var(--d)*.1s) var(--ease) backwards}
+#caseDlg.play .kpi::after{animation:barx .9s calc(.5s + var(--d)*.1s) var(--ease) forwards}
+#caseDlg.play .pipe li{animation:pin .55s calc(.45s + var(--d)*.12s) var(--ease) backwards}
+#caseDlg.play .pipe li::after{animation:barx .4s calc(.75s + var(--d)*.12s) var(--ease) forwards}
+#caseDlg.play .pipe li span{animation:glowp 1s calc(.5s + var(--d)*.12s) ease}
+#caseDlg.play .cs{animation:cin .6s calc(.7s + var(--d)*.08s) var(--ease) backwards}
+#caseDlg.play .cb{animation:cin .5s calc(.9s + var(--d)*.08s) var(--ease) backwards}
+#caseDlg.play .cbt i{animation:barx 1s calc(1s + var(--d)*.1s) var(--ease) forwards}
+#caseDlg.play .climits li{animation:cin .5s calc(1.1s + var(--d)*.08s) var(--ease) backwards}
+@keyframes cin{from{opacity:0;transform:translateY(16px);filter:blur(6px)}}
+@keyframes pin{from{opacity:0;transform:scale(.85)}60%{border-color:var(--sky);box-shadow:0 0 18px rgba(94,196,247,.45)}}
+@keyframes barx{to{transform:scaleX(1)}}
+@keyframes glowp{50%{color:#fff;text-shadow:0 0 10px var(--sky)}}
+#repoGrid .rcs{display:block;margin-top:12px;font:400 13px var(--b);font-style:normal;color:var(--sky);text-decoration:underline;text-underline-offset:4px}
+/* ===== v5: cinematic credits ===== */
+footer{padding-bottom:0!important}
+.credits{position:relative;margin-top:50px;background:#000;color:#fff;text-align:center;padding:clamp(90px,14vw,180px) 20px clamp(70px,10vw,130px);overflow:hidden;isolation:isolate}
+.credits::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 50% at 50% 55%,rgba(94,196,247,.16),transparent 70%)}
+.lbx{position:absolute;left:0;right:0;height:16%;background:#000;z-index:3;transition:transform 1.6s var(--ease)}
+.lbx.t{top:0;transform:translateY(-100%);border-bottom:1px solid rgba(255,255,255,.06)}.lbx.b{bottom:0;transform:translateY(100%);border-top:1px solid rgba(255,255,255,.06)}
+.credits.play .lbx{transform:none}
+.cr-pre,.cr-post,.cr-copy{opacity:0;transition:opacity 1.2s,letter-spacing 2.2s var(--ease),filter 1.2s;filter:blur(6px)}
+.cr-pre{font:300 13px var(--b);letter-spacing:.6em;text-transform:uppercase;color:#9a9a9a;margin-bottom:26px}
+.credits.play .cr-pre{opacity:1;filter:none;letter-spacing:.35em;transition-delay:.3s}
+.cr-name{margin:0;font:600 clamp(56px,15vw,230px)/.86 var(--h);letter-spacing:-.04em;transform:scale(var(--zs,1.12));transition:transform .2s linear}
+.cr-name>span{display:block;white-space:nowrap}
+.cr-l2{font-weight:200;font-size:.42em;letter-spacing:.06em;margin-top:.18em}
+.cr-name i{font-style:normal;display:inline-block;opacity:0;filter:blur(18px);transform:translateY(18%) scale(1.25);color:#fff}
+.credits.play .cr-name i{animation:crin 1.5s calc(.6s + var(--i)*.07s) cubic-bezier(.2,.7,.1,1) forwards,crglint 7s calc(3.2s + var(--i)*.09s) ease-in-out infinite}
+@keyframes crin{60%{opacity:1;filter:blur(0);text-shadow:0 0 40px #fff,0 0 90px rgba(94,196,247,.9)}100%{opacity:1;filter:none;transform:none;text-shadow:0 0 18px rgba(255,255,255,.25)}}
+@keyframes crglint{0%,86%,100%{color:#fff;text-shadow:0 0 18px rgba(255,255,255,.25)}91%{color:#e8f7ff;text-shadow:0 0 22px #fff,0 0 60px var(--sky),0 0 120px rgba(94,196,247,.7)}}
+.cr-flare{position:absolute;top:44%;left:-30%;width:30%;height:2px;background:linear-gradient(90deg,transparent,#fff,transparent);box-shadow:0 0 30px 6px rgba(255,255,255,.55),0 0 120px 30px rgba(94,196,247,.35);opacity:0;z-index:2;pointer-events:none}
+.credits.play .cr-flare{animation:flare 2.4s 1.5s var(--ease) forwards}
+@keyframes flare{0%{opacity:0;left:-30%}20%{opacity:1}100%{opacity:0;left:110%}}
+.cr-post{margin-top:34px;font:400 clamp(14px,1.4vw,18px) var(--b);color:#cfcfcf;letter-spacing:.3em}
+.credits.play .cr-post{opacity:1;filter:none;letter-spacing:.08em;transition-delay:2.1s}
+.cr-copy{margin-top:18px;font-size:12px;color:#777}.credits.play .cr-copy{opacity:1;filter:none;transition-delay:2.6s}
+@media (max-width:700px){.csrows .cs{grid-template-columns:1fr;gap:4px}.cb{grid-template-columns:1fr 60px}.cbl{grid-column:1/-1}.pipe li{margin-right:18px}.pipe li:not(:last-child)::after{width:18px}#caseDlg .dlg-body,#caseDlg .dlg-head,.dlg-foot{padding-left:18px;padding-right:18px}}
+@media (prefers-reduced-motion:reduce){.cr-name i,.cr-pre,.cr-post,.cr-copy{opacity:1!important;filter:none!important;transform:none!important}.lbx{transform:none!important}.cbt i,.kpi::after,.pipe li::after{transform:none!important}.cr-name{transform:none!important}}
+
+
+/* ===== v6: Ask me something merged into its photo ===== */
+.askband{padding:150px 0!important;min-height:640px}
+.askbg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 35%;filter:brightness(.62) saturate(.95) contrast(1.05)!important;opacity:0;
+  clip-path:inset(0 0 0 100%)!important;transform:scale(1.14);transition:clip-path 1.25s cubic-bezier(.7,0,.2,1),opacity .01s 1.25s,transform 9s ease-out!important}
+.askbg img.on{opacity:1;clip-path:inset(0 0 0 0)!important;transform:scale(1);transition:clip-path 1.25s cubic-bezier(.7,0,.2,1),opacity 0s,transform 9s ease-out!important;z-index:1}
+.askbg img.was{opacity:1;clip-path:inset(0)!important;z-index:0;transition:none!important}
+.askwipe{position:absolute;top:0;bottom:0;right:0;width:2px;z-index:2;background:#fff;box-shadow:0 0 20px 4px #fff,0 0 80px 18px rgba(94,196,247,.55);opacity:0}
+.askbg.go .askwipe{animation:askwipe 1.25s cubic-bezier(.7,0,.2,1)}
+@keyframes askwipe{0%{opacity:1;right:0}90%{opacity:1}100%{opacity:0;right:100%}}
+.askgrid{position:absolute;inset:0;z-index:2;background:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px) 0 0/48px 48px;
+  -webkit-mask:radial-gradient(ellipse at 30% 50%,#000,transparent 70%);mask:radial-gradient(ellipse at 30% 50%,#000,transparent 70%);animation:gridmove 6s linear infinite}
+.askband::before{z-index:3!important;background:linear-gradient(90deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.25) 55%,rgba(0,0,0,.05) 100%),linear-gradient(0deg,rgba(0,0,0,.6),transparent 30%,transparent 70%,rgba(0,0,0,.6))!important}
+.askband .wrap{position:relative;z-index:4}
+.askcard{background:rgba(14,14,14,.42)!important;backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border:1px solid rgba(255,255,255,.14);overflow:visible;
+  box-shadow:0 30px 80px rgba(0,0,0,.55),0 0 0 1px rgba(94,196,247,.12),0 0 60px rgba(94,196,247,.12);transition:transform .8s var(--ease)}
+.askcard.swap .askbody{animation:askswap .7s var(--ease)}
+@keyframes askswap{0%{opacity:.2;filter:blur(8px);transform:translateX(-14px)}100%{opacity:1;filter:none;transform:none}}
+.askcard .asktab{box-shadow:0 0 18px rgba(94,196,247,.6)}
+/* ===== v6: background photo + neon edge on every card ===== */
+.fx{position:relative;overflow:hidden;isolation:isolate}
+.fx>.cbg{position:absolute;inset:0;z-index:-1;background:var(--img) center/cover no-repeat;opacity:.26;filter:grayscale(.35) contrast(1.1);transform:scale(1.04);transition:transform 1.6s var(--ease),opacity .6s}
+.fx>.cbg::after{content:"";position:absolute;inset:0;background:linear-gradient(160deg,rgba(12,12,12,.55),rgba(8,8,8,.92) 65%)}
+.fx:hover>.cbg{opacity:.34;transform:scale(1.14)}
+.fx>.nf{position:absolute;inset:0;z-index:3;pointer-events:none;padding:1px;
+  background:conic-gradient(from var(--ang),transparent 0 72%,rgba(94,196,247,.75) 86%,#fff 91%,rgba(94,196,247,.4) 94%,transparent 97%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.5;transition:opacity .4s}
+.fx.live>.nf{animation:ang var(--nd,8s) linear infinite;animation-delay:var(--ndl,0s)}
+.fx:hover>.nf,.fx:focus-within>.nf{opacity:1;animation-duration:2.6s}
+.fx:hover{box-shadow:0 0 0 1px rgba(94,196,247,.25),0 18px 50px -18px rgba(94,196,247,.4),0 0 36px rgba(94,196,247,.12)}
+.fx::selection{background:var(--sky)}
+.key.fx,.tg.fx,#repoGrid .cert.fx,#certifications .cert.fx,.ti .body.fx{background:#141414!important;border-color:rgba(255,255,255,.08)!important}
+.pstep.fx{padding:26px 24px 30px!important;margin-bottom:16px;background:#141414;border:1px solid rgba(255,255,255,.08)!important}
+.psteps{gap:16px!important}
+.qual .f.fx{background:#141414!important}
+.fx .proof,.fx h3,.fx b{text-shadow:0 1px 12px rgba(0,0,0,.6)}
+.ti:hover .body.fx{transform:translateX(6px)}
+/* ===== v6: matrix rain behind the name ===== */
+.cr-rain{position:absolute;inset:0;width:100%;height:100%;z-index:-1;opacity:0;transition:opacity 1.6s}
+.credits.play .cr-rain{opacity:1}
+.credits::after{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(50% 40% at 50% 52%,rgba(0,0,0,.92),rgba(0,0,0,.55) 60%,transparent 100%)}
+.cr-name i{opacity:1!important;filter:none!important;transform:none!important;text-align:center}
+.credits:not(.play) .cr-name i{color:transparent}
+.cr-name i.dec{color:#9fe3ff!important;text-shadow:0 0 12px var(--sky),0 0 30px rgba(94,196,247,.8)!important}
+.cr-name i.lock{animation:lockin .6s ease-out,crglint 7s calc(2.4s + var(--i)*.09s) ease-in-out infinite!important}
+@keyframes lockin{0%{color:#fff;text-shadow:0 0 30px #fff,0 0 70px var(--sky)}100%{text-shadow:0 0 18px rgba(255,255,255,.25)}}
+.credits.play .cr-name i{animation:none}
+@media (prefers-reduced-motion:reduce){.askbg img{transition:none!important}.askbg img.on{transform:none}.fx>.nf{animation:none!important}.cr-rain{display:none}.credits:not(.play) .cr-name i{color:#fff}}
+
 /* ---------- responsive ---------- */
 @media (max-width:1000px){
   .links{gap:18px}.links a{font-size:12px}
@@ -816,6 +1103,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
   <symbol id="i-award" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.4 7 22l5-3 5 3-1.2-8.6"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></symbol>
   <symbol id="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z"/></symbol>
   <symbol id="i-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
   <symbol id="i-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
   <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h5"/></symbol>
@@ -836,6 +1124,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
     <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="navLinks" aria-label="Open menu"><svg><use href="#i-menu"/></svg></button>
     <ul class="links" id="navLinks">
       <li><a href="#about">About</a></li>
+      <li><a href="#results">Results</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
@@ -846,20 +1135,25 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
   </nav>
 </header>
 
-<div class="progress" id="progress" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
+<canvas id="bgfx" aria-hidden="true"></canvas><div class="progress" id="progress" aria-hidden="true"></div><div class="grain" aria-hidden="true"></div>
 <main id="main">
 <!-- HERO -->
 <section class="hero" id="home" aria-label="Introduction">
   <div class="neon" id="neon" aria-hidden="true">
     <div class="haze"></div>
     <div class="grid"></div>
-    <span class="ring r1"></span><span class="ring r2"></span><span class="arc"></span>
+    <span class="aura"></span>
+    <span class="orbit o1 back"></span><span class="orbit o2 back"></span>
     <span class="floorline"></span>
+    <span class="sweep"></span>
   </div>
+  <div class="sparks" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
   <div class="beams" aria-hidden="true"><i></i><i></i><i></i></div>
   <img class="heroman" id="heroImg" src="img/hero-cut.webp" alt="Chrish Pep Felix A on the Liverpool waterfront" width="808" height="1267">
+  <div class="orbits-front" aria-hidden="true"><span class="orbit o1 front"></span><span class="orbit o2 front"></span></div>
   <a class="scrollcue" href="#about" aria-label="Scroll to About"></a>
   <div class="hero-in">
+    <div class="hname" aria-hidden="true"><span class="hn-l"><i style="--i:0">C</i><i style="--i:1">h</i><i style="--i:2">r</i><i style="--i:3">i</i><i style="--i:4">s</i><i style="--i:5">h</i><i class="sp"> </i><i style="--i:7">P</i><i style="--i:8">e</i><i style="--i:9">p</i><i class="sp"> </i><i style="--i:11">F</i><i style="--i:12">e</i><i style="--i:13">l</i><i style="--i:14">i</i><i style="--i:15">x</i><i class="sp"> </i><i style="--i:17">A</i></span><span class="hn-bar"></span></div>
     <p class="seeking">Seeking <span class="typed" id="typed">AI Engineer</span><span class="tcaret" aria-hidden="true"></span> roles in the UK</p>
     <h1 class="apex"><span class="sr-only">Chrish Pep Felix A, AI and ML Engineer. </span>
       <span class="ln"><span>AI &amp; ML Engineer,</span></span>
@@ -884,11 +1178,11 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
     <div class="ptext">
       <span class="eyebrow rv"><i></i>System profile</span>
       <h2 class="ttl rv d1">Hello, I'm<br><span>Chrish Pep Felix A</span></h2>
-      <p class="rv d2">An AI and machine learning engineer with 2.5+ years shipping ML, LLM and data systems at a tax-tech startup and DHL. I build LLM agents with hybrid retrieval and verifiers, explainable models on Databricks and AWS, and I test everything on data it hasn't seen. I'm doing an MSc in Data Science &amp; AI at the University of Liverpool (graduating June 2027), I'm authorised to work in the UK, and I'm open to AI Engineer, ML Engineer and Data Scientist roles.</p>
+      <p class="rv d2">An AI and machine learning engineer with 2.5+ years shipping ML, LLM and data systems at a tax-tech startup and DHL. I build LLM agents with hybrid retrieval and verifiers, explainable models on Databricks and Azure ML, and I test everything on data it hasn't seen. I'm doing an MSc in Data Science &amp; AI at the University of Liverpool (graduating June 2027), I'm authorised to work in the UK, and I'm open to AI Engineer, ML Engineer and Data Scientist roles.</p>
       <div class="pboxes rv d3">
         <div class="pbox"><b>LLMs &amp; RAG</b><span>Agents</span></div>
         <div class="pbox"><b>ML &amp; Stats</b><span>Core</span></div>
-        <div class="pbox"><b>MLOps</b><span>Databricks · AWS</span></div>
+        <div class="pbox"><b>MLOps</b><span>Databricks · Azure ML</span></div>
       </div>
       <div class="plinks rv d4">
         <a class="pill light" id="cvBtn" href="Chrish_Pep_Felix_A_CV.pdf" target="_blank" rel="noopener">Resume <svg><use href="#i-arrow"/></svg></a>
@@ -902,16 +1196,31 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
 <!-- NUMBERS -->
 <section class="sec" id="numbers" style="padding:40px 0 60px" aria-label="Headline numbers">
   <div class="wrap stats">
-    <div class="stat rv"><b data-count="0.94">0.94</b><span>extraction F1 on 100–200 tax files a day at Filed</span></div>
+    <div class="stat rv"><b data-count="0.94">0.94</b><span>extraction F1 on 200+ tax files a day at Filed</span></div>
     <div class="stat rv d1"><b data-count="250" data-suffix="+">250+</b><span>hours of manual work saved a month at DHL</span></div>
     <div class="stat rv d2"><b data-count="6.36" data-suffix="M">6.36M</b><span>transactions in my Fraud Lakehouse</span></div>
     <div class="stat rv d3"><b data-count="215063" data-sep>215,063</b><span>patient reviews classified</span></div>
   </div>
 </section>
 
+<!-- RESULTS CHARTS -->
+<section class="sec" id="results" aria-labelledby="resTitle">
+  <div class="wrap">
+    <div class="head rv"><span class="eyebrow"><i></i>Measured results</span><h2 id="resTitle">Results You Can Explore</h2><p>Pick a project, then hover or tab through the bars for exact numbers. Every figure comes from a held-out test in the project's repository.</p></div>
+    <div class="pfilters rv" id="resTabs" role="tablist" aria-label="Choose a chart"></div>
+    <div class="chartcard rv d1">
+      <div class="ch-top"><div><h3 id="chTitle"></h3><p id="chSub"></p></div><div class="ch-tools"><div class="ch-toggle" id="chToggle" role="group" aria-label="Metric"></div><button type="button" class="ch-tbl" id="chTblBtn" aria-pressed="false">Table view</button></div></div>
+      <div class="ch-legend" id="chLegend"></div>
+      <div class="ch-plot" id="chPlot"><svg id="chSvg" role="img" aria-labelledby="chTitle chSub"></svg><div class="ch-tip" id="chTip" role="status" aria-live="polite"></div></div>
+      <div class="ch-table" id="chTable" hidden></div>
+      <div class="ch-foot"><span id="chNote"></span><a id="chRepo" target="_blank" rel="noopener">See the code and full results →</a></div>
+    </div>
+  </div>
+</section>
+
 <!-- ASK ME -->
 <section id="ask" class="askband rvx" aria-label="Ask me something">
-  <div class="askbg" aria-hidden="true"><img src="img/lighthouse.jpg" alt="" loading="lazy"></div>
+  <div class="askbg" aria-hidden="true"><img class="on" src="img/lighthouse.jpg" alt="" loading="lazy"><img src="img/golden.jpg" alt="" loading="lazy"><img src="img/sky.jpg" alt="" loading="lazy"><img src="img/waterfront.jpg" alt="" loading="lazy"><span class="askwipe"></span><span class="askgrid"></span></div>
   <div class="wrap">
     <div class="askcard rv">
       <div class="asktab">Ask me something</div>
@@ -930,7 +1239,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
   <div class="wrap head rv">
     <span class="eyebrow"><i></i>Technical stack</span>
     <h2>Technologies I Work With</h2>
-    <p>LLM agents and retrieval, machine learning and statistics, MLOps on Databricks and AWS, and the data engineering underneath.</p>
+    <p>LLM agents and retrieval, machine learning and statistics, MLOps on Databricks and Azure ML, and the data engineering underneath.</p>
   </div>
   <div class="rows rv d1" aria-label="Skills">
     <div class="row"><div class="track" id="row1"></div></div>
@@ -946,7 +1255,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
       <div class="key"><h3>LLM agents &amp; RAG</h3><p>Multi-agent LangGraph systems with hybrid retrieval, citations, guardrails and abstention.</p><div class="proof">97.9% Filings Analyst · Recall@5 94.2% at Filed</div></div>
       <div class="key"><h3>Machine learning &amp; NLP</h3><p>Classification, gradient boosting, transformers, NER and topic modelling, from features to fine-tuning.</p><div class="proof">PR-AUC 0.994 · macro-F1 0.868 on 215k reviews</div></div>
       <div class="key"><h3>Evaluation &amp; statistics</h3><p>Held-out tests, ablations, bootstrap confidence intervals, power analysis and A/B tests.</p><div class="proof">Published the ablation my verifier lost (86.7% vs 93.3%)</div></div>
-      <div class="key"><h3>MLOps &amp; cloud</h3><p>Databricks, MLflow, AWS SageMaker, Docker and FastAPI, with CI on GitHub Actions.</p><div class="proof">Registry gate, endpoint and Model Monitor on SageMaker</div></div>
+      <div class="key"><h3>MLOps &amp; cloud</h3><p>Databricks, Azure Machine Learning, MLflow, Docker and FastAPI, with CI on GitHub Actions.</p><div class="proof">Azure ML managed endpoint at p95 121 ms</div></div>
       <div class="key"><h3>Data engineering</h3><p>SQL, PySpark and Delta Lake pipelines with quality checks, data contracts and PII masking.</p><div class="proof">6.36M transactions, bronze → silver → gold</div></div>
       <div class="key"><h3>Automation &amp; delivery</h3><p>Turning manual workflows into reliable systems that teams use every day.</p><div class="proof">250+ hours saved a month, 99% fewer errors at DHL</div></div>
     </div></div>
@@ -987,7 +1296,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
 
 <!-- MARQUEE BAND -->
 <a class="band rvx" href="#contact" aria-label="Hire me: go to the contact form">
-  <img src="img/golden.jpg" alt="" loading="lazy">
+  <img src="img/lighthouse.jpg" alt="" loading="lazy">
   <span class="brow" data-dir="-1" aria-hidden="true">Hire an AI / ML Engineer → Hire an AI / ML Engineer → Hire an AI / ML Engineer → Hire an AI / ML Engineer → </span>
   <span class="brow" data-dir="1" aria-hidden="true">Open to UK roles → Open to UK roles → Open to UK roles → Open to UK roles → Open to UK roles → Open to UK roles → </span>
 </a>
@@ -1028,7 +1337,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
         <li>Dissertation: FinMine, extracting financial statements from SEC EDGAR filings (F1 0.95) into a Neo4j knowledge graph with GraphRAG.</li></ul></div></div>
       <div class="ti rv"><div class="node co filed" aria-hidden="true">F</div><div class="body">
         <div class="t"><h3>AI / ML Engineer</h3><span class="when">Sep 2025 – Dec 2025</span></div><div class="org">Filed (tax-tech startup) · Bangalore</div>
-        <ul><li>Reached extraction F1 0.94 (95% precision, 93% recall) on US tax documents (W-2, 1099, Schedule C) with schema-constrained LLM output and a PyTorch token classifier, across 100–200 files a day.</li>
+        <ul><li>Reached extraction F1 0.94 (95% precision, 93% recall) on US tax documents (W-2, 1099, Schedule C) with schema-constrained LLM output and a PyTorch token classifier, across 200+ files a day.</li>
         <li>Fine-tuned LayoutLMv3 and RoBERTa and served quantised Llama 3 locally, keeping client data in-house.</li>
         <li>Reached Recall@5 94.2% (MRR 0.89) with semantic chunking and a tuned pgvector HNSW index; raised ingestion throughput by 65%.</li></ul></div></div>
       <div class="ti rv"><div class="node co dhl" aria-hidden="true">DHL</div><div class="body">
@@ -1064,7 +1373,7 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
       <span class="eyebrow"><i></i>Resume</span>
       <h2 class="ttl" style="text-align:left">My CV, One Click Away</h2>
       <p style="color:var(--muted)">Two pages, ATS-friendly, with every project result linked to its repository.</p>
-      <ul class="cvfacts"><li><b>2.5+</b>years shipping ML, LLM and data systems</li><li><b>7</b>featured projects, each with a held-out result</li><li><b>2027</b>MSc Data Science &amp; AI, University of Liverpool</li></ul>
+      <ul class="cvfacts"><li><b>2.5+</b>years shipping ML, LLM and data systems</li><li><b>8</b>featured projects, each with a held-out result</li><li><b>2027</b>MSc Data Science &amp; AI, University of Liverpool</li></ul>
       <div class="plinks"><a class="pill light" href="Chrish_Pep_Felix_A_CV.pdf" download>Download CV <svg><use href="#i-arrow"/></svg></a><a class="pill ghost" href="Chrish_Pep_Felix_A_CV.pdf" target="_blank" rel="noopener"><svg><use href="#i-doc"/></svg>Open in a new tab</a></div>
     </div>
     <a class="sheet rv d1" href="Chrish_Pep_Felix_A_CV.pdf" target="_blank" rel="noopener" aria-label="Open my CV">
@@ -1077,25 +1386,19 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
   </div>
 </section>
 
-<!-- GALLERY -->
-<section class="sec" id="gallery" style="padding-top:40px">
-  <div class="wrap head rv"><span class="eyebrow"><i></i>Off the clock</span><h2>Liverpool, on the Mersey</h2><p>Select a photo to open it.</p></div>
-  <div class="gal rv d1" id="gal">
-    <button type="button" data-src="img/lighthouse.jpg"><img src="img/lighthouse.jpg" alt="By a lighthouse on the coast" loading="lazy"><span class="gn">01</span></button>
-    <button type="button" data-src="img/golden.jpg"><img src="img/golden.jpg" alt="Golden hour on the promenade" loading="lazy"><span class="gn">02</span></button>
-    <button type="button" data-src="img/sky.jpg"><img src="img/sky.jpg" alt="Clear sky over the Mersey" loading="lazy"><span class="gn">03</span></button>
-    <button type="button" data-src="img/waterfront.jpg"><img src="img/waterfront.jpg" alt="On the waterfront" loading="lazy"><span class="gn">04</span></button>
-  </div>
-</section>
-
 <!-- CONTACT -->
 <section class="contact" id="contact">
-  <div class="ghost-word" aria-hidden="true">CONTACT</div>
+  <div class="ghost-word" aria-hidden="true">LET'S TALK</div>
   <div class="wrap cgrid">
     <div class="live rv">
       <div class="k"><i></i>Live dispatch mode</div>
       <h2>Let's Build Something Exceptional.</h2>
-      <p>Hiring for AI, ML or data science? Fill in the form, email chrishpepfelixa@gmail.com, or call +44 7587 872769.</p>
+      <p>Hiring for AI, ML or data science? Fill in the form, or reach me directly:</p>
+      <div class="bigcontact">
+        <a class="bc" href="mailto:chrishpepfelixa@gmail.com"><svg><use href="#i-mail"/></svg><span><small>Email</small>chrishpepfelixa@gmail.com</span></a>
+        <a class="bc" href="tel:+447587872769"><svg><use href="#i-phone"/></svg><span><small>Phone</small>+44 7587 872769</span></a>
+        <div class="bcrow"><a class="bc sm" href="https://www.linkedin.com/in/chrish-pep-felix" target="_blank" rel="noopener"><svg><use href="#i-in"/></svg><span>LinkedIn</span></a><a class="bc sm" href="https://github.com/ChrishA-tech" target="_blank" rel="noopener"><svg><use href="#i-gh"/></svg><span>GitHub</span></a></div>
+      </div>
       <div class="payload" aria-live="off">
         <div class="c">// payload_preview.json</div>
         <div><span class="kk">sender:</span> <span class="vv" id="pvName">[Awaiting Name]</span></div>
@@ -1118,7 +1421,6 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
   </div>
 </section>
 </main>
-<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo"><button class="x" id="lbClose" type="button" aria-label="Close photo">×</button><button class="lbnav prev" id="lbPrev" type="button" aria-label="Previous photo">←</button><img id="lbImg" src="" alt=""><button class="lbnav next" id="lbNext" type="button" aria-label="Next photo">→</button></div>
 <button class="totop" id="totop" type="button" aria-label="Back to top"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="28"/></svg>↑</button>
 
 <footer>
@@ -1128,16 +1430,22 @@ html[data-theme="light"] .heroman{filter:invert(1) hue-rotate(180deg)}
       <div class="fr"><p><a href="https://www.linkedin.com/in/chrish-pep-felix" target="_blank" rel="noopener">LinkedIn</a></p><p><a href="https://github.com/ChrishA-tech" target="_blank" rel="noopener">GitHub</a></p></div>
     </div>
     <div class="frow line"><p>Open to AI Engineer, ML Engineer and Data Scientist roles</p><p><a href="Chrish_Pep_Felix_A_CV.pdf" download>Download CV</a></p></div>
-    <div class="fbig">
-      <div class="fword"><span class="mark" aria-hidden="true">C</span>Chrish Pep Felix A</div>
-      <p class="fr">© 2026 Chrish Pep Felix A<br>Built with HTML, CSS and JavaScript</p>
-    </div>
+  </div>
+  <div class="credits" id="credits">
+    <span class="lbx t" aria-hidden="true"></span><span class="lbx b" aria-hidden="true"></span>
+    <canvas class="cr-rain" id="crRain" aria-hidden="true"></canvas><span class="cr-flare" aria-hidden="true"></span>
+    <p class="cr-pre">A portfolio by</p>
+    <h2 class="cr-name" aria-label="Chrish Pep Felix A"><span class="cr-l1" aria-hidden="true"><i style="--i:0">C</i><i style="--i:1">H</i><i style="--i:2">R</i><i style="--i:3">I</i><i style="--i:4">S</i><i style="--i:5">H</i></span><span class="cr-l2" aria-hidden="true"><i style="--i:6">P</i><i style="--i:7">E</i><i style="--i:8">P</i><i style="--i:9"> </i><i style="--i:10">F</i><i style="--i:11">E</i><i style="--i:12">L</i><i style="--i:13">I</i><i style="--i:14">X</i><i style="--i:15"> </i><i style="--i:16">A</i></span></h2>
+    <p class="cr-post">AI &amp; ML Engineer · Data Scientist · Liverpool, UK</p>
+    <p class="cr-copy">© 2026 Chrish Pep Felix A · Built with HTML, CSS and JavaScript</p>
   </div>
 </footer>
 
 <dialog id="caseDlg" aria-labelledby="caseTitle">
-  <div class="dlg-head"><h3 id="caseTitle">Case study</h3><button class="x" id="closeDlg" aria-label="Close case study">×</button></div>
+  <div class="dlg-scan" aria-hidden="true"></div>
+  <div class="dlg-head"><div><span class="dlg-tag" id="caseTag"></span><h3 id="caseTitle">Case study</h3></div><button class="x" id="closeDlg" aria-label="Close case study">×</button></div>
   <div class="dlg-body" id="caseBody"></div>
+  <div class="dlg-foot"><button type="button" class="dnav" id="casePrev">← Previous</button><span id="caseCount"></span><button type="button" class="dnav" id="caseNext">Next case study →</button></div>
 </dialog>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -1201,7 +1509,7 @@ document.querySelectorAll(".rv").forEach(el=>io.observe(el));
 
 /* ---------- tech stack rows ---------- */
 (function(){
-  const r1=["Python","SQL","PyTorch","TensorFlow","scikit-learn","XGBoost","SHAP","Hugging Face","LayoutLMv3","spaCy","BERTopic","PySpark","Delta Lake","Databricks","MLflow","AWS SageMaker","Azure","Docker","FastAPI"];
+  const r1=["Python","SQL","PyTorch","TensorFlow","scikit-learn","XGBoost","SHAP","Hugging Face","LayoutLMv3","spaCy","BERTopic","PySpark","Delta Lake","Databricks","MLflow","Azure Machine Learning","Docker","FastAPI"];
   const r2=["LangGraph","LangChain","RAG","BM25 + vectors (RRF)","ChromaDB","pgvector","GraphRAG","Neo4j","MCP","Ollama","Llama 3.3 70B","Guardrails","LLM Evaluation","A/B Testing","Bootstrap CIs","Time Series","Power BI","Streamlit","GitHub Actions","pytest"];
   const fill=(id,a)=>{ document.getElementById(id).innerHTML=[...a,...a].map((t,i)=>`<span class="chip"${i>=a.length?' aria-hidden="true"':''}>${esc(t)}</span>`).join(""); };
   fill("row1",r1); fill("row2",r2);
@@ -1212,16 +1520,123 @@ const GH="https://github.com/ChrishA-tech/";
 const PROJECTS=[
   {cat:"Multi-agent RAG",title:"Filings Analyst Agent",met:"97.9% accuracy · 95 questions",desc:"Researcher and verifier agents answer questions on SEC 10-Ks with a citation for every claim, over BM25 + ChromaDB retrieval fused with RRF. Re-run in full on Databricks with Llama 3.3 70B.",stack:["LangGraph","ChromaDB","FastAPI","MCP","Databricks","MLflow"],repo:"filings-analyst-agent",cs:"filings"},
   {cat:"Fraud & MLOps",title:"Fraud Lakehouse",met:"PR-AUC 0.994 · held-out period",desc:"6.36M transactions through Lakeflow bronze, silver and gold Delta tables with a data contract and PII masking, to an XGBoost + SHAP model in MLflow and an A/B decision.",stack:["PySpark","Delta Lake","Unity Catalog","XGBoost","SHAP","MLflow"],repo:"fraud-lakehouse",cs:"fraud"},
-  {cat:"NLP on AWS",title:"Patient Feedback Analyser",met:"macro-F1 0.868 · 95% CI 0.861–0.874",desc:"215,063 drug reviews after removing 26,819 leaked duplicates. Logistic regression beat a TensorFlow CNN and held 0.841 on 20 unseen conditions. SageMaker pipeline with a registry gate.",stack:["scikit-learn","TensorFlow","spaCy","BERTopic","SageMaker"],repo:"patient-feedback-analyser",cs:"pfa"},
-  {cat:"Agents & Forecasting",title:"Macro Forecast Agent",met:"ARX 0.87× naive RMSE · 12 months",desc:"A guarded LangGraph agent answers Brent crude and UK CPI questions by calling forecasting tools; every number in an answer must come from a tool.",stack:["LangGraph","Time series","Guardrails"],repo:"macro-forecast-agent"},
-  {cat:"MSc Dissertation",title:"FinMine",met:"F1 0.95 vs SEC EDGAR",desc:"Structures balance sheets and income statements from XBRL, HTML and PDF filings (96% precision, 94% recall) into a Neo4j knowledge graph with GraphRAG and a Streamlit dashboard.",stack:["XBRL","pdfplumber","Neo4j","GraphRAG","Streamlit"],note:"University of Liverpool"},
-  {cat:"Retrieval",title:"RAG Pro",met:"Recall@5 0.94 · MRR 0.92",desc:"Heading-aware chunking, hybrid retrieval with RRF, reranking, cited answers and a grounding check with abstention. The ablation found plain BM25 matched hybrid on this corpus.",stack:["Python","FastAPI","Docker","CI"],repo:"rag-pro"},
-  {cat:"Finance Analysis",title:"Bending Spoons Analysis",met:"Q2 2026 revenue +126.3% · ~3% organic",desc:"Every quarterly results release pulled from SEC EDGAR and extracted into one table with a source link per figure, answering five questions on growth, margins, cash, debt and guidance.",stack:["Python","pandas","SEC EDGAR","Excel"],repo:"bending-spoons-financial-analysis"}
+  {cat:"NLP",title:"Patient Feedback Analyser",met:"macro-F1 0.868 · 95% CI 0.861–0.874",desc:"215,063 drug reviews after removing 26,819 leaked duplicates. Logistic regression beat a TensorFlow CNN and held 0.841 on 20 unseen conditions.",stack:["scikit-learn","TensorFlow","spaCy","BERTopic"],repo:"patient-feedback-analyser",cs:"pfa"},
+  {cat:"Agents & Forecasting",title:"Macro Forecast Agent",met:"ARX 0.87× naive RMSE · 12 months",desc:"A guarded LangGraph agent answers Brent crude and UK CPI questions by calling forecasting tools; every number in an answer must come from a tool.",stack:["LangGraph","Time series","Guardrails"],repo:"macro-forecast-agent",cs:"macro"},
+  {cat:"MSc Dissertation",title:"FinMine",met:"F1 0.95 vs SEC EDGAR",desc:"Structures balance sheets and income statements from XBRL, HTML and PDF filings (96% precision, 94% recall) into a Neo4j knowledge graph with GraphRAG and a Streamlit dashboard.",stack:["XBRL","pdfplumber","Neo4j","GraphRAG","Streamlit"],note:"University of Liverpool",cs:"finmine"},
+  {cat:"Retrieval",title:"RAG Pro",met:"Recall@5 0.94 · MRR 0.92",desc:"Heading-aware chunking, hybrid retrieval with RRF, reranking, cited answers and a grounding check with abstention. The ablation found plain BM25 matched hybrid on this corpus.",stack:["Python","FastAPI","Docker","CI"],repo:"rag-pro",cs:"rag"},
+  {cat:"Finance Analysis",title:"Bending Spoons Analysis",met:"Q2 2026 revenue +126.3% · ~3% organic",desc:"Every quarterly results release pulled from SEC EDGAR and extracted into one table with a source link per figure, answering five questions on growth, margins, cash, debt and guidance.",stack:["Python","pandas","SEC EDGAR","Excel"],repo:"bending-spoons-financial-analysis",cs:"bending"},
+  {cat:"MLOps on Azure",title:"Fraud Detection on Azure ML",met:"PR-AUC 0.993 · p95 121 ms",desc:"Two-step Azure ML pipeline job (data-quality checks and 24-hour account features, then XGBoost) over 6.36M transactions, tracked in MLflow, registered and served from a managed online endpoint.",stack:["Azure ML","MLflow","XGBoost","Pipelines","Model Registry"],repo:"fraud-azureml",cs:"azure"}
 ];
 const CASES={
-  filings:{title:"Filings Analyst Agent",rows:[["Problem","Answer questions about company 10-K filings with <strong>no unsupported numbers</strong>, and abstain when the filing doesn't say."],["Method","LangGraph researcher and verifier agents over BM25 + ChromaDB retrieval fused with RRF, a prompt-injection guard, FastAPI, Docker and an MCP server, on local LLMs (Ollama)."],["Evaluation","95 questions, numeric answers scored against XBRL values. Error analysis raised accuracy from 91.2% to <strong>97.9%</strong> and cut false abstentions from 13.3% to 1.7%."],["Limitation","An ablation showed the verifier costs accuracy on held-out metrics (<strong>86.7% vs 93.3%</strong>) and latency (16.5 s vs 9.6 s). I kept that in the write-up."],["Cloud","Re-ran the full evaluation on Databricks with Llama 3.3 70B via Foundation Model APIs, logging both variants to MLflow."]]},
-  fraud:{title:"Fraud Lakehouse",rows:[["Problem","Flag fraudulent transactions end to end, from raw data to a registered model and a business decision."],["Data","6.36M transactions in Lakeflow bronze, silver and gold Delta tables with data-quality expectations, a data contract and Unity Catalog PII masking."],["Model","XGBoost + SHAP registered in MLflow: <strong>PR-AUC 0.994</strong>, precision 0.915, recall 0.994 on a later, held-out time period."],["Leakage","A leaking feature inflated the first result; I found it and removed it before reporting."],["Decision","An A/B simulation with power analysis and bootstrap CIs <strong>rejected</strong> a stricter fraud rule because it breached a 1% false-decline guardrail."]]},
-  pfa:{title:"Patient Feedback Analyser",rows:[["Problem","Classify patient drug reviews and find which side effects drive negative experiences."],["Data","215,063 reviews. <strong>26,819 test reviews were duplicated in training</strong>, so I removed them before scoring anything."],["Model","TF-IDF + logistic regression reached <strong>macro-F1 0.868</strong> (95% CI 0.861–0.874), beat a TensorFlow CNN (0.849) and held 0.841 on 20 conditions never seen in training."],["Insight","spaCy NER and odds ratios link side effects to negative reviews, with the condition being treated excluded; BERTopic surfaces complaint themes."],["Deployment","AWS SageMaker pipeline: training job, Model Registry approval gate, endpoint and Model Monitor."]]}
+  filings:{title:"Filings Analyst Agent",tag:"Multi-agent RAG",repo:"filings-analyst-agent",
+    kpis:[[97.9,"%","answer accuracy vs XBRL",1],[1.7,"%","false abstentions",1],[95,"","test questions",0]],
+    steps:["SEC 10-K filings","BM25 + ChromaDB","RRF fusion","Researcher agent","Verifier agent","Cited answer or abstain"],
+    rows:[["Problem","Answer questions about company 10-K filings with <strong>no unsupported numbers</strong>, and abstain when the filing doesn't say."],["Method","LangGraph researcher and verifier agents over BM25 + ChromaDB retrieval fused with RRF, a prompt-injection guard, FastAPI, Docker and an MCP server, on local LLMs (Ollama, Qwen2.5-7B)."],["Results","Numeric answers scored against XBRL values. Error analysis raised accuracy from 91.2% to <strong>97.9%</strong> and cut false abstentions from 13.3% to 1.7%."],["Cloud","Re-ran the full evaluation on Databricks with Llama 3.3 70B via Foundation Model APIs, logging both variants to MLflow."]],
+    bars:{t:"Before vs after error analysis",u:"%",max:100,d:[["Accuracy, before",91.2],["Accuracy, after",97.9],["False abstentions, before",13.3],["False abstentions, after",1.7]]},
+    limits:["An ablation showed the verifier cost accuracy on held-out metrics (86.7% vs 93.3%) and latency (16.5 s vs 9.6 s). I kept that in the write-up.","Five 10-Ks is a small corpus; more filings would test retrieval harder."]},
+  fraud:{title:"Fraud Lakehouse on Databricks",tag:"Fraud & MLOps",repo:"fraud-lakehouse",
+    kpis:[[0.994,"","PR-AUC, held-out period",3],[6.36,"M","transactions",2],[1,"%","false-decline guardrail",0]],
+    steps:["Raw transactions","Bronze","Silver: quality rules","Gold features","XGBoost + SHAP","A/B decision"],
+    rows:[["Problem","Flag fraudulent transactions end to end, from raw data to a registered model and a business decision."],["Data","6.36M transactions in Lakeflow bronze, silver and gold Delta tables with data-quality expectations, a data contract and Unity Catalog PII masking."],["Model","XGBoost + SHAP registered in MLflow: <strong>PR-AUC 0.994</strong>, precision 0.915, recall 0.994 on a later, held-out time period."],["Leakage","A leaking feature inflated the first result; I found it and removed it before reporting."],["Decision","An A/B simulation with power analysis, Welch's t-test and bootstrap CIs <strong>rejected</strong> a stricter fraud rule because it breached the 1% false-decline guardrail."]],
+    bars:{t:"Held-out metrics",max:1,dp:3,d:[["PR-AUC",0.994],["Precision",0.915],["Recall",0.994]]},
+    limits:["PaySim is simulated data, so real-world fraud patterns will be messier.","The A/B test is a simulation on historical data, not a live experiment."]},
+  pfa:{title:"Patient Feedback Analyser",tag:"NLP",repo:"patient-feedback-analyser",
+    kpis:[[0.868,"","macro-F1",3],[215063,"","patient reviews",0],[26819,"","leaked duplicates removed",0]],
+    steps:["215k reviews","De-duplicate (leakage)","TF-IDF features","Logistic regression vs CNN","spaCy NER + odds ratios","BERTopic themes"],
+    rows:[["Problem","Classify patient drug reviews and find which side effects drive negative experiences."],["Data","215,063 reviews. <strong>26,819 test reviews were duplicated in training</strong>, so I removed them before scoring anything."],["Model","TF-IDF + logistic regression reached <strong>macro-F1 0.868</strong> (95% CI 0.861–0.874), beat a TensorFlow CNN (0.849) and held 0.841 on 20 conditions never seen in training."],["Insight","spaCy/scispaCy NER and odds ratios link side effects to negative reviews; BERTopic surfaces complaint themes."]],
+    bars:{t:"Macro-F1 (axis from 0.80)",min:0.8,max:0.9,dp:3,d:[["Logistic regression",0.868],["TensorFlow CNN",0.849],["LR on 20 unseen conditions",0.841]]},
+    limits:["A SageMaker training and deployment pipeline is written; the cloud run is waiting on an AWS quota increase, so no SageMaker results are claimed yet.","Odds ratios show association, not cause."]},
+  macro:{title:"Macro Forecast Agent",tag:"Agents & Forecasting",repo:"macro-forecast-agent",
+    kpis:[[0.87,"×","CPI ARX RMSE vs naive",2],[6,"","forecasting tools",0]],
+    steps:["Question","Input guard","Route (Claude JSON)","Forecast tools","Compose answer","Grounding check","Output guard"],
+    rows:[["Problem","Answer questions on Brent crude and UK inflation without the LLM inventing numbers."],["Method","A LangGraph agent routes each question to forecasting tools from my oil and UK CPI projects: Brent forecast, CPI forecasts (naive / AR / ARX), oil-to-CPI scenarios with 95% CIs, model accuracy and latest data."],["Guardrails","Every number in an answer must come from a tool output, or the answer is replaced by a deterministic one. Prompt-injection screening on input, PII/secret redaction on output."],["Data","Real Brent, ONS CPI and Bank of England Bank Rate data."]],
+    limits:["Oil-to-CPI scenarios are regression associations, not causal effects; the agent says so in its answers.","Claude routing is optional; a rule-based fallback runs offline."]},
+  finmine:{title:"FinMine (MSc Dissertation)",tag:"Financial data extraction",note:"University of Liverpool dissertation",
+    kpis:[[0.95,"","extraction F1",2],[96,"%","precision",0],[70,"%","lower parsing latency",0]],
+    steps:["SEC EDGAR filings","XBRL / HTML / PDF parsers","Structured statements","Validate vs ground truth","Neo4j knowledge graph","GraphRAG + Streamlit"],
+    rows:[["Problem","Extract balance sheets and income statements reliably from filings that arrive as XBRL, HTML or PDF."],["Method","Python pipeline (pdfplumber, regex, XBRL parsing, BeautifulSoup, Camelot) that structures financial statements, then a Neo4j knowledge graph of filings and XBRL taxonomies queried with Cypher and GraphRAG multi-hop retrieval."],["Results","Extraction <strong>F1 0.95</strong> (96% precision, 94% recall) against SEC EDGAR ground truth, with 70% lower parsing latency."],["Users","Error analysis, confidence thresholds and a Streamlit dashboard for non-technical users."]],
+    bars:{t:"Extraction quality",max:1,dp:2,d:[["F1",0.95],["Precision",0.96],["Recall",0.94]]},
+    limits:["PDF tables remain the hardest format; confidence thresholds route low-confidence values for review."]},
+  rag:{title:"RAG Pro",tag:"Retrieval",repo:"rag-pro",
+    kpis:[[0.94,"","Recall@5",2],[0.92,"","MRR",2],[5,"","retrieval configs ablated",0]],
+    steps:["Documents","Heading-aware chunks","BM25 + dense","RRF + rerank","Cited answer","Grounding check / abstain"],
+    rows:[["Problem","Build retrieval-augmented generation that cites its sources and refuses when the evidence is missing."],["Method","Heading-aware chunking, hybrid BM25 + dense retrieval with Reciprocal Rank Fusion, multi-query expansion and reranking, cited answers and a per-sentence grounding check with abstention. FastAPI, Docker and CI."],["Results","<strong>Recall@5 0.94</strong> (MRR 0.92) on the test corpus."],["Honest ablation","Plain BM25 matched hybrid retrieval on this corpus, so the extra complexity isn't always worth it."]],
+    limits:["The test corpus is small; results need confirming on a larger document set."]},
+  bending:{title:"Bending Spoons Financial Analysis",tag:"Finance analysis",repo:"bending-spoons-financial-analysis",
+    kpis:[[126.3,"%","Q2 2026 revenue growth",1],[3.0,"%","of it organic",1],[20,"pt","GAAP vs adjusted margin gap",0]],
+    steps:["SEC 6-K releases","Table extraction","One table, source per figure","Metrics","Excel + charts","Written memo"],
+    rows:[["Question","How much of Bending Spoons' growth is bought, how far apart are GAAP and adjusted margins, and does profit turn into cash?"],["Method","A Python pipeline downloads every quarterly results release (Form 6-K), extracts the income statement, balance sheet, cash flow and non-GAAP reconciliations, and links every figure to its source filing."],["Findings","Q2 2026 revenue up 126.3% year on year with ~3% organic. Operating margin 34.1% (US GAAP) vs 54.1% adjusted. H1 2026 free cash flow $250m vs $2,286m spent on acquisitions, largely debt-funded."]],
+    bars:{t:"Q2 2026 operating margin",u:"%",max:60,d:[["US GAAP",34.1],["Adjusted",54.1]]},
+    limits:["Organic growth relies on the company's own disclosure.","Leverage uses a proxy; the company's own ratio uses adjusted EBITDA."]},
+  azure:{title:"Fraud Detection on Azure ML",tag:"MLOps on Azure",repo:"fraud-azureml",
+    kpis:[[0.993,"","PR-AUC, served model",3],[121,"ms","p95 endpoint latency",0],[408077,"","held-out transactions",0]],
+    steps:["Data asset (versioned)","Quality checks","24-hour account features","XGBoost training","MLflow + model registry","Managed online endpoint"],
+    rows:[["Problem","Rebuild the fraud model on Azure Machine Learning, from data asset to a live, low-latency endpoint."],["Method","A two-step pipeline job (data-quality checks and 24-hour account features, then XGBoost) over 6.36M transactions on an autoscaling compute cluster, with MLflow tracking, the model registry and a managed online endpoint."],["Results","<strong>PR-AUC 0.993</strong> (precision 0.91, recall 0.997) on 408,077 held-out transactions; p50 108 ms and <strong>p95 121 ms</strong> at the endpoint."],["Decision","A version using balance-error features scored higher (PR-AUC 0.999) but those features would not be reliable in production, so the served model leaves them out."]],
+    bars:{t:"Served model vs all-features model (PR-AUC, axis from 0.98)",min:0.98,max:1,dp:4,d:[["All features (not served)",0.9988],["Served model",0.9931]]},
+    limits:["Student subscription quota capped compute at 6 vCPUs.","The endpoint was deleted after testing to avoid cost."]},
+  cpi:{title:"UK CPI Inflation Forecasting",tag:"Time series",repo:"uk-cpi-forecasting",
+    kpis:[[0.87,"×","ARX RMSE vs naive",2],[60,"","rolling backtest origins",0],[12,"mo","forecast horizon",0]],
+    steps:["ONS CPI, Bank Rate, Brent","Naive / AR / ARX","60-origin rolling backtest","Diebold-Mariano tests","Oil-price scenarios"],
+    rows:[["Problem","Can simple, transparent models beat the no-change forecast for UK inflation a year ahead?"],["Method","AR and ARX models (CPI lags, Bank Rate, Brent) compared with a naive benchmark across a 60-origin rolling backtest, with Diebold-Mariano significance tests."],["Results","ARX RMSE <strong>4.19pp vs 4.83pp</strong> for naive at 12 months: 0.87× the naive error."]],
+    bars:{t:"12-month RMSE (pp, lower is better)",max:5,dp:2,d:[["Naive",4.83],["ARX",4.19]]},
+    limits:["Results depend on the data vintage and backtest window; a later run gives slightly different RMSEs."]},
+  oil:{title:"Brent Crude Forecasting",tag:"Time series",repo:"oil-price-forecasting",
+    kpis:[[0.84,"×","AR(12) RMSE vs naive",2],[306,"","months of IMF data",0],[7,"","models compared",0]],
+    steps:["IMF / FRED Brent data","AR, ARIMA, ETS + baselines","Rolling-origin backtest","Diebold-Mariano tests"],
+    rows:[["Problem","Forecast Brent crude prices and test honestly whether any model beats the naive forecast."],["Method","Seven models including AR(12), ARIMA and ETS against baselines, evaluated with a rolling-origin backtest and Diebold-Mariano tests."],["Results","On 306 months of data, AR(12) <strong>significantly beat the naive forecast</strong> at 12 months (0.84× naive RMSE)."]],
+    limits:["At 6 months the AR model's error was about the same as naive (1.02×), as expected for commodity prices."]},
+  lgguard:{title:"LangGraph Prompt Guard",tag:"AI safety",repo:"langgraph-prompt-guard",
+    kpis:[[52,"/60","held-out attacks caught",0],[0,"/56","benign prompts wrongly flagged",0],[0.929,"","F1 on held-out test",3]],
+    steps:["Prompt","Input guardrail (rules + classifier)","LLM JSON extraction","Self-repair retry","Output guard","Response + audit log"],
+    rows:[["Problem","Stop prompt injection and data leakage around an LLM extraction step, and measure it on attacks the rules never saw."],["Method","LangGraph workflow: explainable rules plus a TF-IDF + logistic regression classifier (trained on deepset/prompt-injections) on input; schema-constrained JSON with a self-repair retry; PII, secret and system-prompt leakage checks on output. FastAPI with request IDs and an audit log."],["Results","Held-out test split: rules + classifier caught <strong>52/60 attacks</strong> (recall 0.867, F1 0.929) with 0/56 benign prompts wrongly flagged."]],
+    bars:{t:"Held-out recall (attacks caught)",max:1,dp:3,d:[["Rules only",0.083],["Classifier",0.867],["Rules + classifier",0.867]]},
+    limits:["Rules alone caught only 5/60 held-out attacks, which is why the classifier was added.","The dev set was used while writing the rules, so it's in-sample for them."]},
+  llmguard:{title:"LLM Prompt Protection & Validation",tag:"AI safety (team project)",repo:"llm-prompt-guard",
+    kpis:[[2,"","nodes I built",0]],
+    steps:["Prompt","Input guardrail","Policy checks","LLM extraction","Output validation"],
+    rows:[["Project","A team-built LangGraph guardrail workflow: PII/secret redaction, prompt-injection and harmful-request detection, risk scoring and output validation."],["My part","I built the <strong>input-guardrail node</strong> that screens prompts for injection and misuse, and the <strong>LLM extraction node</strong> producing schema-constrained JSON."]],
+    limits:["Team project: the results reported in the repo cover the whole workflow, not only my nodes."]},
+  finrisk:{title:"FinRisk Service",tag:"Services",repo:"finrisk-service",
+    kpis:[[0.90,"","Recall@3",2],[0.825,"","MRR",3],[16,"","tests",0]],
+    steps:["Risk-factor passages","TF-IDF retrieval","Risk engine: vol, VaR, drawdown","/screen join","Prometheus metrics + alerts"],
+    rows:[["Problem","Answer two questions together: what risks do companies disclose, and how risky do their shares look?"],["Method","FastAPI service with retrieval over risk-factor passages, a risk engine (annualised volatility, 1-day 95% VaR, max drawdown) and a /screen endpoint joining both. Prometheus metrics, JSON logs, alert rules and Docker Compose."],["Results","Recall@3 0.90, MRR 0.825 on 20 hand-labelled queries, used as a CI gate (fails if Recall@5 < 0.85 or MRR < 0.80)."]],
+    limits:["All data is synthetic, with fictional companies; it's a regression gate, not evidence of real-world accuracy.","TF-IDF misses vocabulary mismatches; embeddings are the next step."]},
+  insurance:{title:"Insurance Operations Automation",tag:"Automation",repo:"insurance-ops-automation",
+    kpis:[[7,"","small projects",0]],
+    steps:["Partner bordereaux","Standardise","Data-quality controls","Ledger reconciliation","Complaints triage","MCP tools + agent eval"],
+    rows:[["Projects","Bordereaux standardisation, data-quality controls and ledger reconciliation, complaints triage with human review, a Google Apps Script validator, an MCP server exposing the controls as tools, an agent tool-routing eval and a Claude Code skill with hooks."],["Method","Python, pandas, scikit-learn (TF-IDF + logistic regression for triage), MCP."]],
+    limits:["All data is synthetic with injected errors, so perfect detection scores reflect the test setup, not real-world performance."]},
+  leetforge:{title:"LeetForge",tag:"Tools",repo:"leetforge",
+    kpis:[[17,"","problems",0],[37,"","implementations",0],[0,"","runtime dependencies",0]],
+    steps:["Brute-force reference","Optimised versions","Isolated test runner","Differential fuzzing","Empirical Big-O fit"],
+    rows:[["Problem","Practise algorithms and prove each solution is correct and as fast as claimed."],["Method","Each implementation runs in a subprocess with a timeout; random inputs are checked against the brute-force reference; timings on growing inputs are fitted in log-space and compared with the declared Big-O. Plus SM-2 spaced repetition and a practice coach."]],
+    limits:["Timing-based complexity fits can be noisy on small inputs."]},
+  geo:{title:"Geographic Data Science Lab",tag:"Geospatial",repo:"Geographic-Data-Science-Lab",
+    kpis:[[2021,"","ONS LSOA boundaries",0]],
+    steps:["Point CSV","Clean coordinates","Reproject to EPSG:27700","Spatial join to LSOAs","Count + density per km²","Validate + map"],
+    rows:[["Problem","Turn point data such as police.uk street crime into a neighbourhood-level dataset and map."],["Method","GeoPandas pipeline: cleaning, reprojection to British National Grid, spatial join to 2021 LSOAs, aggregation, validation (unique codes, reconciled totals, match rate) and a quantile choropleth, with clear error handling and exit codes."]],
+    limits:["Results depend on the point data supplied; the next step is shoreline-change analysis for coastal LSOAs."]},
+  fdetect:{title:"Credit-Card Fraud Detection (ULB)",tag:"Machine learning",repo:"fraud-detection",
+    kpis:[[0.17,"%","fraud rate",2],[284,"k","transactions",0],[300,"ms","latency budget",0]],
+    steps:["ULB transactions","Time-ordered split","XGBoost (class-weighted)","Threshold for min precision","PSI drift + latency checks"],
+    rows:[["Problem","Detect fraud at 0.17% prevalence the way a fraud team needs: PR-AUC, alert precision, delayed labels and drift."],["Method","Class weighting, a time-ordered split, a threshold tuned for the highest recall at a minimum precision, a label-delay experiment, PSI drift per feature and p50/p95/p99 latency against a 300 ms budget."],["Status","The pipeline and tests are built; the results table is not filled in yet, so no metrics are claimed."]],
+    limits:["V1–V28 are anonymised PCA features, which limits feature engineering and explainability."]},
+  qlora:{title:"QLoRA Fine-Tuning Pipeline",tag:"LLM fine-tuning",repo:"qlora-finetune-pipeline",
+    kpis:[[4,"-bit","NF4 base model",0]],
+    steps:["Seeded synthetic data","De-duplicated splits","QLoRA training","Base vs tuned eval","FastAPI in Docker (offline)"],
+    rows:[["Problem","Turn messy financial and tax line items into strict JSON with a small open-weight model that runs locally, so documents never leave the machine."],["Method","QLoRA (4-bit NF4, double quantisation, paged 8-bit AdamW, loss on answer tokens only) with Transformers + PEFT; evaluation of JSON-valid rate, exact match, per-field accuracy, micro-F1 and latency; served offline in a CUDA Docker image."],["Status","The GPU evaluation run hasn't been published yet, so no metrics are claimed."]],
+    limits:["Synthetic data is cleaner than real documents."]},
+  modelgrid:{title:"Model Grid",tag:"Front end",repo:"model-grid",live:"https://chrisha-tech.github.io/model-grid/",
+    kpis:[[0,"","uses of eval()",0]],
+    steps:["Cell input","Recursive-descent parser","Dependency-aware recalc","Circular-ref detection","Diff vs base case"],
+    rows:[["Problem","A spreadsheet-style operating model that behaves the way finance users expect: visible formulas, precise results, nothing changing silently."],["Method","React + TypeScript with a hand-written formula engine (cell refs, arithmetic, SUM over ranges). User text never goes to eval; circular references, division by zero and bad syntax show as #ERROR. Unit tests cover precedence, ranges, errors and code injection."]],
+    limits:["Next steps: undo/redo, named scenarios and keyboard navigation."]},
+  garment:{title:"Garment Vision Eval",tag:"Computer vision",repo:"garment-vision-eval",
+    kpis:[[95.1,"%","best article-type accuracy",1],[3087,"","held-out photos",0],[0,"","near-duplicate groups across splits",0]],
+    steps:["Catalogue photos","Leakage-free split","Zero-shot vs probe vs fine-tune","Calibration + robustness","CI regression gate","ONNX + FastAPI"],
+    rows:[["Question","For a garment product, is a zero-shot vision-language model good enough, or do you need a probe or a fine-tuned network?"],["Method","CLIP and SigLIP zero-shot and linear probes vs a fine-tuned ResNet-18 on the same held-out test set, with 95% bootstrap CIs, calibration (ECE), consistency under perturbation and a CI regression gate. ONNX model served by FastAPI in Docker."],["Results","SigLIP linear probe: <strong>95.1% accuracy</strong>, macro-F1 0.928 on article type (15 classes)."]],
+    bars:{t:"Article-type accuracy",u:"%",max:100,d:[["CLIP zero-shot",69.0],["SigLIP zero-shot",77.9],["CLIP probe",91.5],["ResNet-18 fine-tuned",92.7],["SigLIP probe",95.1]]},
+    limits:["Colour is harder: the best colour model reaches 79.4% accuracy.","Blur cuts the deployed model's article-type accuracy to 83.3%."]}
 };
 (function(){
   const tr=document.getElementById("ctrack"), dots=document.getElementById("cdots");
@@ -1256,10 +1671,7 @@ const CASES={
   addEventListener("pointerup",()=>{ if(!down) return; down=false; tr.classList.remove("drag"); go(active()); setTimeout(()=>moved=false,50); });
   // case study
   const dlg=document.getElementById("caseDlg"); let lastF=null;
-  tr.addEventListener("click",e=>{ const b=e.target.closest("[data-case]"); if(b){ lastF=b; const c=CASES[b.dataset.case]; document.getElementById("caseTitle").textContent="Case study: "+c.title; document.getElementById("caseBody").innerHTML=c.rows.map(([k,v])=>`<div class="cs"><b>${k}</b><p>${v}</p></div>`).join(""); dlg.showModal?dlg.showModal():dlg.setAttribute("open",""); } });
-  document.getElementById("closeDlg").onclick=()=>dlg.close();
-  dlg.addEventListener("click",e=>{ if(e.target===dlg) dlg.close(); });
-  dlg.addEventListener("close",()=>lastF&&lastF.focus());
+  tr.addEventListener("click",e=>{ const b=e.target.closest("[data-case]"); if(b) openCase(b.dataset.case,b); });
 })();
 
 /* ---------- more repositories ---------- */
@@ -1267,7 +1679,7 @@ const CASES={
   const R=[
     ["uk-cpi-forecasting","i-chart","UK CPI forecasting","ARX 0.87× naive RMSE at 12 months, 60-origin backtest with Diebold-Mariano tests."],
     ["oil-price-forecasting","i-chart","Brent crude forecasting","Seven models on 306 months of IMF data; AR(12) significantly beats naive at 12 months."],
-    ["langgraph-prompt-guard","i-shield","LangGraph prompt guard","Held-out 662 prompts: no false positives, but it catches only 8% of attacks. Stated plainly."],
+    ["langgraph-prompt-guard","i-shield","LangGraph prompt guard","Held-out test: rules alone catch 5/60 attacks; rules + classifier catch 52/60 with 0 false alarms."],
     ["llm-prompt-guard","i-shield","LLM prompt protection","Guardrail graph: PII redaction, injection and policy checks, risk scoring and a canary token."],
     ["finrisk-service","i-db","FinRisk service","FastAPI with Prometheus metrics and alerts; Recall@5 0.90 as a CI gate (synthetic data)."],
     ["insurance-ops-automation","i-brief","Insurance ops automation","Seven projects: data-quality controls, complaint triage, an MCP server and an agent-routing eval."],
@@ -1275,13 +1687,17 @@ const CASES={
     ["Geographic-Data-Science-Lab","i-pin","Geographic Data Science Lab","GeoPandas pipeline linking point data to ONS 2021 LSOAs, with validation and a map."],
     ["fraud-detection","i-flask","Fraud detection (ULB)","Time-ordered splits, threshold tuning, PSI drift and latency checks. Results run in progress."],
     ["qlora-finetune-pipeline","i-spark","QLoRA fine-tuning","4-bit QLoRA for schema-constrained extraction, base vs tuned. GPU run in progress."],
+    ["garment-vision-eval","i-flask","Garment Vision Eval","SigLIP probe 95.1% accuracy on 3,087 held-out photos vs CLIP, SigLIP zero-shot and ResNet-18."],
     ["model-grid","i-code","Model Grid","React and TypeScript spreadsheet model with a safe formula parser. Live demo."],
     ["chrisha-tech.github.io","i-doc","This portfolio","Plain HTML, CSS and JavaScript, published with GitHub Pages."]
   ];
-  const RT=["fin","fin","llm","llm","mlops fin","mlops llm","tools","ml tools","ml","llm ml","tools","tools"];
+  const RT=["fin","fin","llm","llm","mlops fin","mlops llm","tools","ml tools","ml","llm ml","ml","tools","tools"];
+  const RK=["cpi","oil","lgguard","llmguard","finrisk","insurance","leetforge","geo","fdetect","qlora","garment","modelgrid",null];
   document.getElementById("repoGrid").innerHTML=R.map(([slug,ic,t,d],i)=>{
     const href=slug==="model-grid"?"https://chrisha-tech.github.io/model-grid/":GH+slug;
-    return `<a class="cert rv${i%4?" d"+(i%4):""}" data-tags="${RT[i]}" href="${href}" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><div class="ic"><svg><use href="#${ic}"/></svg></div><b>${esc(t)}</b><span>${esc(d)}</span></a>`; }).join("");
+    const ck=RK[i];
+    return `<a class="cert rv${i%4?" d"+(i%4):""}" data-tags="${RT[i]}" href="${href}" target="_blank" rel="noopener"${ck?` data-rcase="${ck}"`:""} style="text-decoration:none;color:inherit"><div class="ic"><svg><use href="#${ic}"/></svg></div><b>${esc(t)}</b><span>${esc(d)}</span>${ck?`<em class="rcs">Case study →</em>`:""}</a>`; }).join("");
+  document.getElementById("repoGrid").addEventListener("click",e=>{ const a=e.target.closest("[data-rcase]"); if(!a||e.metaKey||e.ctrlKey||e.shiftKey||e.button) return; e.preventDefault(); openCase(a.dataset.rcase,a); });
   document.querySelectorAll("#repoGrid .rv").forEach(el=>io.observe(el));
 })();
 
@@ -1329,9 +1745,9 @@ const CASES={
 /* ---------- added: ask me ---------- */
 (function(){
   const QA=[
-    ["Why should we hire you?","I ship working ML and LLM systems and I measure them honestly. At Filed I took tax-document extraction to F1 0.94 across 100–200 files a day; in my own projects every headline number comes from a held-out test, and I publish the ablations that went against me."],
+    ["Why should we hire you?","I ship working ML and LLM systems and I measure them honestly. At Filed I took tax-document extraction to F1 0.94 across 200+ files a day; in my own projects every headline number comes from a held-out test, and I publish the ablations that went against me."],
     ["Strongest project?","The Filings Analyst Agent. Two LangGraph agents answer questions on SEC 10-Ks with a citation per claim, and a verifier checks each one. Error analysis took accuracy from 91.2% to 97.9%; the ablation also showed the verifier costs accuracy on held-out metrics, and I kept that in the write-up."],
-    ["Can you deploy models?","Yes. FastAPI and Docker services, an MCP server, MLflow on Databricks for my fraud model, and an AWS SageMaker pipeline with a registry approval gate, endpoint and Model Monitor."],
+    ["Can you deploy models?","Yes. FastAPI and Docker services, an MCP server, MLflow on Databricks for my fraud model, and the same model on an Azure ML managed online endpoint (p95 121 ms) with a model registry."],
     ["Right to work?","I'm authorised to work in the UK, based in Liverpool and open to relocation. I'm doing my MSc in Data Science and AI at the University of Liverpool, graduating June 2027."],
     ["What are you looking for?","AI Engineer, Machine Learning Engineer or Data Scientist roles in the UK, ideally on LLM agents, retrieval or applied ML where evaluation matters."]
   ];
@@ -1353,7 +1769,7 @@ const CASES={
     ["LLMs & agents",{LangGraph:[0,3],LangChain:[0],RAG:[0,5,"filed"],"Hybrid retrieval":[0,5],ChromaDB:[0],pgvector:["filed"],GraphRAG:[4],MCP:[0],Guardrails:[0,3],"Llama 3 / Qwen2.5":[0,"filed"]}],
     ["Machine learning",{"scikit-learn":[2],XGBoost:[1],PyTorch:["filed"],TensorFlow:[2],"Hugging Face":["filed"],spaCy:[2],BERTopic:[2],SHAP:[1],"Time series":[3]}],
     ["Evaluation & stats",{"Held-out testing":[0,1,2,3],Ablations:[0,5],"Bootstrap CIs":[1,2],"A/B testing":[1],"Power analysis":[1],"F1 / PR-AUC / Recall@k":[1,2,5,"filed"]}],
-    ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1],"AWS SageMaker":[2],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5]}],
+    ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1,7],"Azure ML":[7],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5]}],
     ["Data",{Python:[0,1,2,3,4,5,6,"filed","dhl"],SQL:[1,"filed","dhl"],PySpark:[1],"Delta Lake":[1],"XBRL parsing":[0,4],"SEC EDGAR":[0,4,6],Neo4j:[4],"Power BI":["filed"]}]
   ];
   const box=document.getElementById("tgroups"), out=document.getElementById("usedin");
@@ -1367,7 +1783,7 @@ const CASES={
   const Q=[
     ["Honest about results","I publish the numbers that went against me: my verifier lost on held-out metrics (86.7% vs 93.3%), and plain BM25 matched my hybrid retrieval."],
     ["Catches data problems early","Removed a leaking feature before reporting the fraud model, and 26,819 duplicated reviews before scoring the NLP model."],
-    ["Ships to production","My extraction system ran on 100–200 tax files a day at Filed. I serve models with FastAPI, Docker, MLflow and SageMaker."],
+    ["Ships to production","My extraction system ran on 200+ tax files a day at Filed. I serve models with FastAPI, Docker, MLflow and Azure ML managed endpoints."],
     ["Leads and mentors","Mentored 4 developers at DHL, ran sprints and code reviews, and raised delivery velocity by 20%."],
     ["Speaks the business language","Defined metrics with senior leaders, wrote Solution Design Documents, and turned an A/B test into a clear go/no-go decision."],
     ["Calm under pressure","Led root cause analysis on production systems that cut critical downtime by 80%, to 99.4% uptime."],
@@ -1387,7 +1803,7 @@ const CASES={
 
 /* ---------- added: gallery drag + lightbox ---------- */
 (function(){
-  const g=document.getElementById("gal"), lb=document.getElementById("lb"), im=document.getElementById("lbImg"); let d=false,sx=0,sl=0,mv=false,last=null;
+  const g=document.getElementById("gal"), lb=document.getElementById("lb"), im=document.getElementById("lbImg"); let d=false,sx=0,sl=0,mv=false,last=null; if(!g||!lb) return;
   g.addEventListener("pointerdown",e=>{ if(e.pointerType!=="mouse") return; d=true; mv=false; sx=e.clientX; sl=g.scrollLeft; g.classList.add("drag"); });
   addEventListener("pointermove",e=>{ if(!d) return; const dx=e.clientX-sx; if(Math.abs(dx)>4) mv=true; g.scrollLeft=sl-dx; });
   addEventListener("pointerup",()=>{ d=false; g.classList.remove("drag"); });
@@ -1469,13 +1885,6 @@ document.addEventListener("pointerdown",e=>{ const b=e.target.closest(".pill,.se
   if(!reduce){ const rows=[...document.querySelectorAll(".brow")]; let last=scrollY, sk=0;
     (function loop(){ const v=scrollY-last; last=scrollY; sk+=(Math.max(-12,Math.min(12,v*.6))-sk)*.12;
       rows.forEach(r=>{ const m=(r.style.transform||"").replace(/ skewX\([^)]*\)/,""); r.style.transform=m+` skewX(${(-sk).toFixed(2)}deg)`; }); requestAnimationFrame(loop); })(); }
-  /* lightbox prev/next + arrow keys */
-  const lb=document.getElementById("lb"), im=document.getElementById("lbImg"), photos=[...document.querySelectorAll("#gal button")];
-  const showAt=d=>{ let k=photos.findIndex(b=>b.dataset.src===im.getAttribute("src")); k=(k+d+photos.length)%photos.length;
-    im.classList.add("fade"); setTimeout(()=>{ im.src=photos[k].dataset.src; im.alt=photos[k].querySelector("img").alt; im.classList.remove("fade"); },200); };
-  document.getElementById("lbPrev").onclick=e=>{ e.stopPropagation(); showAt(-1); };
-  document.getElementById("lbNext").onclick=e=>{ e.stopPropagation(); showAt(1); };
-  addEventListener("keydown",e=>{ if(!lb.classList.contains("open")) return; if(e.key==="ArrowRight") showAt(1); if(e.key==="ArrowLeft") showAt(-1); });
   /* copy email */
   document.getElementById("copyEmail").onclick=()=>copy("chrishpepfelixa@gmail.com","Email copied");
 })();
@@ -1489,6 +1898,211 @@ document.addEventListener("pointerdown",e=>{ const b=e.target.closest(".pill,.se
 (function(){ const bs=[...document.querySelectorAll("#rfilters .pf")], cards=[...document.querySelectorAll("#repoGrid .cert")];
   bs.forEach(b=>b.onclick=()=>{ bs.forEach(x=>x.setAttribute("aria-pressed",x===b)); const f=b.dataset.r;
     cards.forEach(c=>{ const on=f==="all"||c.dataset.tags.split(" ").includes(f); if(on){ c.hidden=false; c.animate&&!reduce&&c.animate([{opacity:0,transform:"translateY(14px) scale(.97)"},{opacity:1,transform:"none"}],{duration:450,easing:"cubic-bezier(.2,.8,.2,1)"}); } else c.hidden=true; }); }); })();
+
+/* ---------- case studies (all projects) ---------- */
+const CASE_ORDER=["filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid"];
+let caseCur=null, caseOpener=null;
+function openCase(key,opener){
+  const dlg=document.getElementById("caseDlg"), c=CASES[key]; if(!c) return;
+  caseCur=key; if(opener) caseOpener=opener;
+  document.getElementById("caseTitle").textContent=c.title;
+  document.getElementById("caseTag").textContent="Case study · "+c.tag;
+  const fmtK=(v,dp)=>dp?v.toFixed(dp):Math.round(v).toLocaleString("en-GB");
+  const kp=(c.kpis||[]).map(([v,suf,l,dp],i)=>`<div class="kpi" style="--d:${i}"><b data-to="${v}" data-dp="${dp}">${reduce?fmtK(v,dp):fmtK(0,dp)}</b><i>${esc(suf)}</i><span>${esc(l)}</span></div>`).join("");
+  const st=(c.steps||[]).map((t,i)=>`<li style="--d:${i}"><span>${String(i+1).padStart(2,"0")}</span>${esc(t)}</li>`).join("");
+  const rows=c.rows.map(([k,v],i)=>`<div class="cs" style="--d:${i}"><b>${esc(k)}</b><p>${v}</p></div>`).join("");
+  let bars="";
+  if(c.bars){ const B=c.bars, mn=B.min||0, mx=B.max, top=Math.max(...B.d.map(d=>d[1]));
+    bars=`<div class="cbars"><h4>${esc(B.t)}</h4>${B.d.map(([l,v],i)=>{ const w=Math.max(2,(v-mn)/(mx-mn)*100); const lab=(B.dp!=null?v.toFixed(B.dp):v)+(B.u||"");
+      return `<div class="cb${v===top?" best":""}" style="--d:${i}"><span class="cbl">${esc(l)}</span><span class="cbt"><i style="--w:${w}%"></i></span><span class="cbv">${esc(lab)}</span></div>`; }).join("")}</div>`; }
+  const lim=(c.limits||[]).length?`<div class="climits"><h4>Limitations I'd flag</h4><ul>${c.limits.map((t,i)=>`<li style="--d:${i}">${esc(t)}</li>`).join("")}</ul></div>`:"";
+  const links=`<div class="clinks">${c.repo?`<a class="pill light" href="${GH+c.repo}" target="_blank" rel="noopener"><svg><use href="#i-gh"/></svg>View the code</a>`:""}${c.live?`<a class="pill ghost" href="${c.live}" target="_blank" rel="noopener">Live demo <svg><use href="#i-arrow"/></svg></a>`:""}${c.note?`<span class="cnote">${esc(c.note)}</span>`:""}</div>`;
+  const body=document.getElementById("caseBody");
+  body.innerHTML=`<div class="kpis">${kp}</div>${st?`<ol class="pipe">${st}</ol>`:""}<div class="csrows">${rows}</div>${bars}${lim}${links}`;
+  body.scrollTop=0;
+  const k=CASE_ORDER.indexOf(key); document.getElementById("caseCount").textContent=`${k+1} / ${CASE_ORDER.length}`;
+  if(!dlg.open){ dlg.showModal?dlg.showModal():dlg.setAttribute("open",""); }
+  dlg.classList.remove("play"); void dlg.offsetWidth; dlg.classList.add("play");
+  // count-up KPIs
+  if(!reduce) body.querySelectorAll(".kpi b").forEach((b,i)=>{ const to=+b.dataset.to, dp=+b.dataset.dp, t0=performance.now()+250+i*120, D=1100;
+    (function tick(t){ const p=Math.min(1,Math.max(0,(t-t0)/D)), e=1-Math.pow(1-p,3); b.textContent=fmtK(to*e,dp); if(p<1) requestAnimationFrame(tick); })(t0); });
+}
+(function(){
+  const dlg=document.getElementById("caseDlg");
+  const nav=d=>{ const k=CASE_ORDER.indexOf(caseCur); openCase(CASE_ORDER[(k+d+CASE_ORDER.length)%CASE_ORDER.length]); };
+  document.getElementById("casePrev").onclick=()=>nav(-1);
+  document.getElementById("caseNext").onclick=()=>nav(1);
+  dlg.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"&&!e.target.closest("input,textarea")) nav(1); if(e.key==="ArrowLeft"&&!e.target.closest("input,textarea")) nav(-1); });
+  document.getElementById("closeDlg").onclick=()=>dlg.close();
+  dlg.addEventListener("click",e=>{ if(e.target===dlg) dlg.close(); });
+  dlg.addEventListener("close",()=>caseOpener&&caseOpener.focus());
+})();
+
+/* ---------- results charts (interactive SVG) ---------- */
+(function(){
+  const C1="#2a9fd8", C2="#d07a2c";
+  const CH=[
+    {id:"filings",tab:"Filings Analyst",title:"Filings Analyst Agent: before vs after error analysis",sub:"Multi-agent RAG over SEC 10-Ks, scored against XBRL ground truth.",
+     series:["Before","After"],repo:"filings-analyst-agent",note:"Higher accuracy is better; fewer false abstentions is better.",
+     metrics:{"Answer accuracy":{unit:"%",min:0,max:100,fmt:v=>v.toFixed(1)+"%",groups:[["Accuracy vs XBRL",[91.2,97.9]]]},
+              "False abstentions":{unit:"%",min:0,max:20,fmt:v=>v.toFixed(1)+"%",lower:true,groups:[["Questions wrongly refused",[13.3,1.7]]]}}},
+    {id:"fraud",tab:"Fraud models",title:"Fraud detection: Databricks vs Azure ML",sub:"Same 6.36M-transaction problem, two platforms, held-out data.",
+     series:["Databricks Lakehouse","Azure ML (served model)"],repo:"fraud-azureml",note:"Axis starts at 0.80 so the differences are visible.",
+     metrics:{"All metrics":{min:.8,max:1,fmt:v=>v.toFixed(3),groups:[["PR-AUC",[0.994,0.993]],["Precision",[0.915,0.908]],["Recall",[0.994,0.997]]]}}},
+    {id:"garment",tab:"Garment vision",title:"Garment Vision Eval: which model to ship?",sub:"Article type, 15 classes, 3,087 held-out photos. Lines show 95% bootstrap confidence intervals.",
+     series:["Model"],repo:"garment-vision-eval",note:"Zero-shot = no training; probe = linear layer on frozen features.",
+     metrics:{"Accuracy":{min:0,max:1,fmt:v=>(v*100).toFixed(1)+"%",groups:[["CLIP zero-shot",[[.690,.675,.706]]],["SigLIP zero-shot",[[.779,.763,.793]]],["CLIP linear probe",[[.915,.905,.925]]],["ResNet-18 fine-tuned",[[.927,.917,.937]]],["SigLIP linear probe",[[.951,.943,.959]]]]},
+              "Macro-F1":{min:0,max:1,fmt:v=>v.toFixed(3),groups:[["CLIP zero-shot",[[.694,.672,.714]]],["SigLIP zero-shot",[[.840,.820,.857]]],["CLIP linear probe",[[.860,.839,.880]]],["ResNet-18 fine-tuned",[[.890,.870,.908]]],["SigLIP linear probe",[[.928,.912,.943]]]]}}},
+    {id:"pfa",tab:"Patient reviews",title:"Patient Feedback Analyser: simple model wins",sub:"215,063 drug reviews after removing 26,819 leaked duplicates.",
+     series:["Macro-F1"],repo:"patient-feedback-analyser",note:"The 0.868 result has a 95% CI of 0.861–0.874.",
+     metrics:{"Macro-F1":{min:.8,max:.9,fmt:v=>v.toFixed(3),groups:[["TF-IDF + logistic regression",[[.868,.861,.874]]],["TensorFlow/Keras CNN",[.849]],["Logistic regression, 20 unseen conditions",[.841]]]}}},
+    {id:"fc",tab:"Forecasting",title:"Forecasts vs the naive benchmark",sub:"12-month-ahead RMSE as a share of the no-change forecast's error. Below 1.0 beats naive.",
+     series:["RMSE vs naive"],repo:"uk-cpi-forecasting",note:"UK CPI: ARX 4.19pp vs naive 4.83pp over a 60-origin backtest, Diebold-Mariano tested.",
+     metrics:{"RMSE ratio":{min:0,max:1.2,lower:true,ref:[1,"Naive = 1.0"],fmt:v=>v.toFixed(2)+"×",groups:[["UK CPI inflation (ARX)",[0.87]],["Brent crude (AR(12))",[0.84]]]}}},
+    {id:"guard",tab:"Prompt guard",title:"LangGraph Prompt Guard on held-out attacks",sub:"deepset/prompt-injections test split: 60 attacks, 56 benign prompts.",
+     series:["Recall (attacks caught)","Precision"],repo:"langgraph-prompt-guard",note:"Rules alone catch 5/60; rules + classifier catch 52/60 with 0/56 false alarms.",
+     metrics:{"Recall and precision":{min:0,max:1,fmt:v=>v.toFixed(3),groups:[["Rules only (v2)",[0.083,1]],["Learned classifier",[0.867,1]],["Rules + classifier",[0.867,1]]]}}}
+  ];
+  const tabs=document.getElementById("resTabs"), svg=document.getElementById("chSvg"), tip=document.getElementById("chTip"), plot=document.getElementById("chPlot"),
+        tog=document.getElementById("chToggle"), leg=document.getElementById("chLegend"), tblBtn=document.getElementById("chTblBtn"), tbl=document.getElementById("chTable");
+  if(!tabs) return;
+  let cur=0, met=null, shown=false;
+  tabs.innerHTML=CH.map((c,i)=>`<button class="pf" type="button" role="tab" id="rt-${c.id}" aria-selected="${i===0}" aria-pressed="${i===0}" tabindex="${i?-1:0}">${esc(c.tab)}</button>`).join("");
+  const bts=[...tabs.children];
+  bts.forEach((b,i)=>{ b.addEventListener("click",()=>pick(i)); b.addEventListener("keydown",e=>{ if(e.key==="ArrowRight"||e.key==="ArrowLeft"){ const n=(i+(e.key==="ArrowRight"?1:-1)+bts.length)%bts.length; bts[n].focus(); pick(n);} }); });
+  function pick(i){ cur=i; met=Object.keys(CH[i].metrics)[0];
+    bts.forEach((b,k)=>{ b.setAttribute("aria-selected",k===i); b.setAttribute("aria-pressed",k===i); b.tabIndex=k===i?0:-1; }); draw(); }
+  const NS="http://www.w3.org/2000/svg";
+  const el=(t,a,p)=>{ const e=document.createElementNS(NS,t); for(const k in a) e.setAttribute(k,a[k]); if(p) p.appendChild(e); return e; };
+  function draw(){
+    const c=CH[cur], m=c.metrics[met], keys=Object.keys(c.metrics);
+    document.getElementById("chTitle").textContent=c.title;
+    document.getElementById("chSub").textContent=c.sub+(m.lower?" Lower is better.":"");
+    document.getElementById("chNote").textContent=c.note;
+    const a=document.getElementById("chRepo"); a.href=GH+c.repo;
+    tog.innerHTML=keys.length>1?keys.map(k=>`<button type="button" aria-pressed="${k===met}">${esc(k)}</button>`).join(""):"";
+    [...tog.children].forEach(b=>b.addEventListener("click",()=>{ met=b.textContent; draw(); }));
+    const ns=c.series.length, cols=[C1,C2];
+    leg.innerHTML=ns>1?c.series.map((s,i)=>`<span><i style="background:${cols[i]}"></i>${esc(s)}</span>`).join(""):"";
+    // layout
+    const W=880, L=Math.min(300,Math.max(...m.groups.map(g=>g[0].length))*7.4+24), R=70, bh=20, gap=4, gpad=22;
+    const gh=ns*bh+(ns-1)*gap, H=26+m.groups.length*(gh+gpad)+28;
+    svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML=""; svg.classList.remove("on","dim");
+    const x=v=>L+(Math.max(m.min,Math.min(m.max,v))-m.min)/(m.max-m.min)*(W-L-R);
+    // gridlines + axis
+    const ticks=5;
+    for(let t=0;t<=ticks;t++){ const v=m.min+(m.max-m.min)*t/ticks, X=x(v);
+      el("line",{x1:X,x2:X,y1:14,y2:H-24,class:"gl"},svg);
+      const tx=el("text",{x:X,y:H-6,"text-anchor":"middle",class:"ax"},svg); tx.textContent=m.fmt(v).replace(/\.0+(%|×)?$/,"$1"); }
+    if(m.ref){ const X=x(m.ref[0]); el("line",{x1:X,x2:X,y1:8,y2:H-24,class:"ref"},svg); const t=el("text",{x:X+6,y:16,class:"reft"},svg); t.textContent=m.ref[1]; }
+    const rows=[];
+    m.groups.forEach(([gname,vals],gi)=>{
+      const y0=26+gi*(gh+gpad);
+      const lt=el("text",{x:L-14,y:y0+gh/2+4,"text-anchor":"end",class:"lbl"},svg); lt.textContent=gname;
+      vals.forEach((raw,si)=>{
+        const [v,lo,hi]=Array.isArray(raw)?raw:[raw]; const y=y0+si*(bh+gap);
+        const g=el("g",{class:"m"},svg);
+        el("rect",{x:L,y,width:Math.max(2,x(v)-L),height:bh,rx:4,fill:cols[si],class:"bar",style:`transition-delay:${(gi*ns+si)*70}ms`},g);
+        if(lo!=null){ el("line",{x1:x(lo),x2:x(hi),y1:y+bh/2,y2:y+bh/2,class:"ci"},g); el("line",{x1:x(lo),x2:x(lo),y1:y+5,y2:y+bh-5,class:"ci"},g); el("line",{x1:x(hi),x2:x(hi),y1:y+5,y2:y+bh-5,class:"ci"},g); }
+        const vt=el("text",{x:Math.max(x(v),hi!=null?x(hi):0)+8,y:y+bh/2+4,class:"val"},g); vt.textContent=m.fmt(v);
+        const hit=el("rect",{x:L-4,y:y-gap/2,width:W-L-R+4,height:bh+gap,class:"hit",tabindex:0,role:"img","aria-label":`${gname}${ns>1?", "+c.series[si]:""}: ${m.fmt(v)}${lo!=null?`, 95% CI ${m.fmt(lo)} to ${m.fmt(hi)}`:""}`},g);
+        const show=()=>{ svg.classList.add("dim"); const pr=plot.getBoundingClientRect(), br=svg.getBoundingClientRect(), k=br.width/W;
+          tip.innerHTML=`<small>${esc(gname)}${ns>1?" · "+esc(c.series[si]):""}</small><b>${esc(m.fmt(v))}</b>${lo!=null?`<small>95% CI ${esc(m.fmt(lo))}–${esc(m.fmt(hi))}</small>`:""}`;
+          tip.style.left=Math.min(br.width-90,Math.max(90,x(v)*k))+"px"; tip.style.top=(y*k)+"px"; tip.classList.add("on"); };
+        const hide=()=>{ svg.classList.remove("dim"); tip.classList.remove("on"); };
+        hit.addEventListener("mouseenter",show); hit.addEventListener("focus",show); hit.addEventListener("mouseleave",hide); hit.addEventListener("blur",hide);
+        rows.push([gname,ns>1?c.series[si]:met,m.fmt(v),lo!=null?`${m.fmt(lo)}–${m.fmt(hi)}`:""]);
+      });
+    });
+    const hasCI=rows.some(r=>r[3]);
+    tbl.innerHTML=`<table><thead><tr><th>Item</th><th>Series</th><th>Value</th>${hasCI?"<th>95% CI</th>":""}</tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>${hasCI?`<td>${esc(r[3])}</td>`:""}</tr>`).join("")}</tbody></table>`;
+    if(shown||reduce) requestAnimationFrame(()=>requestAnimationFrame(()=>svg.classList.add("on")));
+  }
+  tblBtn.addEventListener("click",()=>{ const on=tbl.hidden; tbl.hidden=!on; plot.hidden=on; tblBtn.setAttribute("aria-pressed",on); tblBtn.textContent=on?"Chart view":"Table view"; });
+  pick(0);
+  new IntersectionObserver((es,o)=>es.forEach(en=>{ if(en.isIntersecting){ shown=true; svg.classList.add("on"); o.disconnect(); } }),{threshold:.3}).observe(plot);
+})();
+
+/* ---------- background: slow drifting data network (no pointer tracking) ---------- */
+(function(){
+  const cv=document.getElementById("bgfx"); if(!cv||reduce) return;
+  const cx=cv.getContext("2d"); let w,h,dpr,pts=[],run=true;
+  const N=()=>Math.round(Math.min(70,innerWidth*innerHeight/26000));
+  function size(){ dpr=Math.min(2,devicePixelRatio||1); w=innerWidth; h=innerHeight; cv.width=w*dpr; cv.height=h*dpr; cx.setTransform(dpr,0,0,dpr,0,0);
+    pts=Array.from({length:N()},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18,r:Math.random()*1.4+.4,b:Math.random()<.18})); }
+  size(); addEventListener("resize",size,{passive:true});
+  document.addEventListener("visibilitychange",()=>{ run=!document.hidden; if(run) requestAnimationFrame(loop); });
+  const D=140;
+  function loop(){ if(!run) return; cx.clearRect(0,0,w,h);
+    for(const p of pts){ p.x+=p.vx; p.y+=p.vy; if(p.x<-20)p.x=w+20; if(p.x>w+20)p.x=-20; if(p.y<-20)p.y=h+20; if(p.y>h+20)p.y=-20; }
+    for(let i=0;i<pts.length;i++){ const a=pts[i];
+      for(let j=i+1;j<pts.length;j++){ const b=pts[j], dx=a.x-b.x, dy=a.y-b.y, d=dx*dx+dy*dy;
+        if(d<D*D){ cx.strokeStyle=`rgba(94,196,247,${(1-Math.sqrt(d)/D)*.22})`; cx.lineWidth=.6; cx.beginPath(); cx.moveTo(a.x,a.y); cx.lineTo(b.x,b.y); cx.stroke(); } }
+      cx.fillStyle=a.b?"rgba(255,255,255,.85)":"rgba(170,220,255,.5)"; cx.beginPath(); cx.arc(a.x,a.y,a.b?a.r+.6:a.r,0,6.283); cx.fill(); }
+    requestAnimationFrame(loop); }
+  requestAnimationFrame(loop);
+})();
+
+/* ---------- cinematic credits: play once in view, slow zoom with scroll ---------- */
+(function(){ const c=document.getElementById("credits"); if(!c) return; const n=c.querySelector(".cr-name");
+  if(reduce){ c.classList.add("play"); return; }
+  new IntersectionObserver((es,o)=>es.forEach(en=>{ if(en.isIntersecting){ c.classList.add("play"); o.disconnect(); } }),{threshold:.35}).observe(c);
+  const up=()=>{ const r=c.getBoundingClientRect(), p=clamp(1-(r.top)/innerHeight); n.style.setProperty("--zs",(1.12-p*.12).toFixed(3)); };
+  addEventListener("scroll",up,{passive:true}); up(); })();
+
+/* ---------- Ask: change photo with a light wipe on every new question ---------- */
+(function(){ const bg=document.querySelector(".askbg"), q=document.getElementById("askQ"), card=document.querySelector(".askcard"); if(!bg||!q) return;
+  const ims=[...bg.querySelectorAll("img")]; let k=0, first=true;
+  new MutationObserver(()=>{ if(reduce) return;
+    const prev=ims[k]; k=(k+1)%ims.length; const nx=ims[k];
+    ims.forEach(im=>im.classList.remove("was")); prev.classList.remove("on"); prev.classList.add("was");
+    void nx.offsetWidth; nx.classList.add("on");
+    bg.classList.remove("go"); void bg.offsetWidth; bg.classList.add("go");
+    card.classList.remove("swap"); void card.offsetWidth; card.classList.add("swap");
+    setTimeout(()=>prev.classList.remove("was"),1300);
+  }).observe(q,{childList:true,characterData:true,subtree:true});
+})();
+
+/* ---------- cards: faint photo + running neon edge (animated only while on screen) ---------- */
+(function(){
+  const IMGS=["img/bg-lighthouse.webp","img/bg-port.webp","img/bg-wharf.webp","img/bg-cranes.webp"];
+  const SEL=".pj,.key,.tg,.qual .f,.pstep,#repoGrid .cert,.ti .body,#certifications .cert";
+  const vis=new IntersectionObserver(es=>es.forEach(en=>en.target.classList.toggle("live",en.isIntersecting)),{rootMargin:"80px"});
+  let n=0;
+  const decorate=()=>document.querySelectorAll(SEL).forEach(el=>{ if(el.classList.contains("fx")) return; el.classList.add("fx");
+    const b=document.createElement("span"); b.className="cbg"; b.setAttribute("aria-hidden","true"); b.style.setProperty("--img",`url(${IMGS[n%IMGS.length]})`);
+    b.style.backgroundPosition=["50% 30%","50% 60%","50% 40%","50% 70%","50% 50%"][n%5];
+    const f=document.createElement("span"); f.className="nf"; f.setAttribute("aria-hidden","true");
+    f.style.setProperty("--nd",(7+(n%4))+"s"); f.style.setProperty("--ndl",(-(n*1.3)%8)+"s");
+    el.prepend(b); el.appendChild(f); vis.observe(el); n++; });
+  decorate(); setTimeout(decorate,800); // tech-skill groups and qualities render a moment later
+})();
+
+/* ---------- credits: matrix rain + decoding name ---------- */
+(function(){ const c=document.getElementById("credits"), cv=document.getElementById("crRain"); if(!c||!cv||reduce) return;
+  const ctx=cv.getContext("2d"), G="アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン0123456789ABCDEFXYZ<>/*+=";
+  let w,h,cols,drops,fs=16,run=false,dpr;
+  const size=()=>{ dpr=Math.min(2,devicePixelRatio||1); w=c.clientWidth; h=c.clientHeight; cv.width=w*dpr; cv.height=h*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    fs=w<600?13:16; cols=Math.ceil(w/fs); drops=Array.from({length:cols},()=>Math.random()*-h/fs); ctx.fillStyle="#000"; ctx.fillRect(0,0,w,h); };
+  size(); addEventListener("resize",size,{passive:true});
+  let last=0;
+  function frame(t){ if(!run) return; if(t-last>55){ last=t;
+      ctx.fillStyle="rgba(0,0,0,.09)"; ctx.fillRect(0,0,w,h); ctx.font=`${fs}px monospace`;
+      for(let i=0;i<cols;i++){ const ch=G[Math.random()*G.length|0], x=i*fs, y=drops[i]*fs;
+        ctx.fillStyle=Math.random()<.04?"#ffffff":"rgba(94,196,247,.85)"; ctx.fillText(ch,x,y);
+        if(y>h&&Math.random()>.975) drops[i]=Math.random()*-20; drops[i]+=1; } }
+    requestAnimationFrame(frame); }
+  new IntersectionObserver(es=>es.forEach(en=>{ run=en.isIntersecting; if(run) requestAnimationFrame(frame); })).observe(c);
+  // decode letters once the credits start
+  const L=[...c.querySelectorAll(".cr-name i")];
+  L.forEach(i=>{ i.dataset.f=i.textContent; });
+  const decode=()=>{ L.forEach(i=>{ i.style.width=i.getBoundingClientRect().width+"px"; });
+    L.forEach((i,k)=>{ const fin=i.dataset.f; if(fin.trim()===""||fin===" "){ i.classList.add("lock"); return; }
+      let n=0; const start=600+k*90, steps=14+(k%4)*3;
+      setTimeout(()=>{ i.classList.add("dec"); const t=setInterval(()=>{ i.textContent=G[Math.random()*G.length|0];
+        if(++n>steps){ clearInterval(t); i.textContent=fin; i.classList.remove("dec"); i.classList.add("lock"); } },55); },start); }); };
+  const mo=new MutationObserver(()=>{ if(c.classList.contains("play")){ mo.disconnect(); decode(); } }); mo.observe(c,{attributes:true,attributeFilter:["class"]});
+})();
 </script>
 </body>
 </html>
