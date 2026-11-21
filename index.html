@@ -625,6 +625,10 @@ async function copy(t,m){ try{ await navigator.clipboard.writeText(t); say(m); }
 
 const GH="https://github.com/ChrishA-tech/";
 const PROJECTS=[
+  {cat:"Forecasting & Decisions",title:"Retail Demand Copilot",met:"£2,499/week lower cost · 95% CI £1.9k–£3.2k",desc:"Quantile LightGBM forecasts for 100 products from 1.07M real order lines, turned into cost-optimal orders (newsvendor). Served as FastAPI tools to a qwen2.5:7b agent that answered 75% correctly with no wrong numbers.",stack:["LightGBM","Fixed effects","FastAPI","Ollama","Docker","CI"],repo:"retail-demand-copilot",cs:"retail"},
+  {cat:"Causal Inference",title:"Email Uplift Targeting",met:"+7.7 pp visits · 64,000-customer RCT",desc:"A real randomised email test: balance checks, Holm-corrected effects, S/T/X-learner uplift models with Qini, and inverse-propensity policy value. No targeting rule beat emailing everyone, and it says so.",stack:["Uplift modelling","Qini","IPW","LightGBM","FastAPI"],repo:"email-uplift-targeting",cs:"uplift"},
+  {cat:"Customer Analytics",title:"Customer Retention & CLV",met:"43.5% of churn revenue reached · 500 contacts",desc:"Out-of-time churn model (ROC-AUC 0.804), BG/NBD lifetime value, Kaplan-Meier and Cox, and a retention-test plan. Ranking by risk alone reached 0% of lost revenue; ranking by value at risk reached 43.5%.",stack:["Logistic regression","BG/NBD","Survival","Power analysis","FastAPI"],repo:"customer-retention-clv",cs:"retention"},
+  {cat:"NLP & Grounded Q&A",title:"Review Insights",met:"0 unsupported answers with checks · 6 without",desc:"Aspect odds ratios across 22,621 real reviews, a label-free retrieval benchmark (BM25 beat hybrid), and an LLM analyst whose citations and numbers are checked against what it retrieved.",stack:["BM25","Odds ratios","TF-IDF","Ollama","FastAPI"],repo:"review-insights-rag",cs:"reviews"},
   {cat:"Multi-agent RAG",title:"Filings Analyst Agent",met:"97.9% accuracy · 95 questions",desc:"Researcher and verifier agents answer questions on SEC 10-Ks with a citation for every claim, over BM25 + ChromaDB retrieval fused with RRF. Re-run in full on Databricks with Llama 3.3 70B.",stack:["LangGraph","ChromaDB","FastAPI","MCP","Databricks","MLflow"],repo:"filings-analyst-agent",cs:"filings"},
   {cat:"Fraud & MLOps",title:"Fraud Lakehouse",met:"PR-AUC 0.994 · held-out period",desc:"6.36M transactions through Lakeflow bronze, silver and gold Delta tables with a data contract and PII masking, to an XGBoost + SHAP model in MLflow and an A/B decision.",stack:["PySpark","Delta Lake","Unity Catalog","XGBoost","SHAP","MLflow"],repo:"fraud-lakehouse",cs:"fraud"},
   {cat:"NLP",title:"Patient Feedback Analyser",met:"macro-F1 0.868 · 95% CI 0.861–0.874",desc:"215,063 drug reviews after removing 26,819 leaked duplicates. Logistic regression beat a TensorFlow CNN and held 0.841 on 20 unseen conditions.",stack:["scikit-learn","TensorFlow","spaCy","BERTopic"],repo:"patient-feedback-analyser",cs:"pfa"},
@@ -635,6 +639,46 @@ const PROJECTS=[
   {cat:"MLOps on Azure",title:"Fraud Detection on Azure ML",met:"PR-AUC 0.993 · p95 121 ms",desc:"Two-step Azure ML pipeline job (data-quality checks and 24-hour account features, then XGBoost) over 6.36M transactions, tracked in MLflow, registered and served from a managed online endpoint.",stack:["Azure ML","MLflow","XGBoost","Pipelines","Model Registry"],repo:"fraud-azureml",cs:"azure"}
 ];
 const CASES={
+  retail:{title:"Retail Demand Copilot",tag:"Forecasting & decisions",repo:"retail-demand-copilot",
+    kpis:[[2499,"","£ lower cost per week vs moving average",0],[75,"%","agent answers correct",0],[1.07,"M","real order lines",2]],
+    steps:["1.07M order lines","Weekly panel, 100 products","LightGBM quantiles","0.875 newsvendor order","FastAPI tools","Verified LLM agent"],
+    rows:[["Problem","Turn demand forecasts into order quantities that cost less, and let planners ask questions without the model inventing numbers."],["Method","Global LightGBM quantile models retrained every week; the champion order policy chosen on validation weeks and scored once on 12 held-out weeks, with product-block bootstrap CIs."],["Results","Ordering at the cost-optimal 0.875 quantile cost <strong>£2,499 a week less</strong> than ordering the moving average (95% CI £1,922–£3,166) and £417 less than a tuned safety stock. Point accuracy was not significantly better (WAPE 47.1% vs 49.5%)."],["Elasticity","Bulk discounts inflate price elasticity from −1.36 (list price) to −3.08 (revenue ÷ units) in a two-way fixed-effects model."],["Agent","qwen2.5:7b via Ollama: <strong>75%</strong> correct on 32 answerable questions, 8/8 correct refusals, no wrong numbers. The number verifier caught nothing and cost 6 points through false refusals."]],
+    bars:{t:"Cost per week on held-out weeks (£, assumed rates)",u:"",max:9000,d:[["Moving average",8362],["Moving average + safety stock",6281],["LightGBM 0.875 quantile",5864]]},
+    limits:["Cost rates (35% lost margin, 5% holding) are assumptions.","The p10–p90 intervals cover 72.8% of actuals, short of 80%."]},
+  uplift:{title:"Email Uplift Targeting",tag:"Causal inference",repo:"email-uplift-targeting",
+    kpis:[[64000,"","customers in a randomised test",0],[7.7,"pp","visit lift, men's email",1],[82,"%","of extra visits from top half",0]],
+    steps:["Randomised test","Balance check","Effects + Holm","Subgroups","Uplift models + Qini","Policy value (IPW)"],
+    rows:[["Problem","Decide who should get which email, from a real test where 64,000 customers were randomly sent a men's email, a women's email or nothing."],["Effects","Men's email: <strong>+7.7 pp visits</strong> and +$0.77 spend per customer (95% CI $0.49–$1.05). Women's email: +4.5 pp, almost entirely among women's-wear buyers (+7.3 vs +1.1 pp, interaction p &lt; 0.001)."],["Models","S-, T-, X-learner and class transformation, chosen on validation by Qini. For the women's email the top half reached 82% of the extra visits; for the men's email no model beat random."],["Decision","Six policies valued by inverse propensity weighting: none significantly beat emailing everyone the men's email (+$56 per 1,000 customers, CI −$60 to +$168)."]],
+    bars:{t:"Visit lift by subgroup (pp)",u:" pp",max:10,dp:1,d:[["Men's email, all",7.7],["Women's email, all",4.5],["Women's email, women's buyers",7.3],["Women's email, men's buyers",2.2]]},
+    limits:["A two-week window from 2008.","Margin and email cost are assumptions; the visit and spend effects are not."]},
+  retention:{title:"Customer Retention & CLV",tag:"Customer analytics",repo:"customer-retention-clv",
+    kpis:[[0.804,"","churn ROC-AUC, out of time",3],[43.5,"%","lost revenue reached, 500 contacts",1],[1363,"","customers per arm for a 5 pp test",0]],
+    steps:["5,852 customers","Features before cutoff","Churn model","BG/NBD lifetime value","Value-at-risk ranking","Test sizing"],
+    rows:[["Problem","Find who will stop buying, what they are worth, and who to contact first."],["Churn","Trained on customers as of Nov 2010, tested on customers as of Jun 2011: logistic regression <strong>ROC-AUC 0.804</strong>, beating LightGBM by 0.016 (95% CI 0.008–0.023)."],["Targeting","With 500 contacts, ranking by churn risk alone reached <strong>0%</strong> of revenue lost to churn (its top picks had already left); risk × 12-month spend reached <strong>43.5%</strong> (random 10.2%)."],["Model failure","BG/NBD gives every one-time buyer a 100% chance of being active; 72.8% never returned (AUC 0.44 as a churn score)."],["Agent","qwen2.5:7b answered all 24 answerable questions correctly and refused all 6 it should."]],
+    bars:{t:"Share of revenue lost to churn reached (500 contacts)",u:"%",max:50,dp:1,d:[["Random",10.2],["Highest churn risk",0],["Risk × 12-month spend",43.5]]},
+    limits:["One test cutoff and a 188-day window.","Whether an offer would keep these customers is unknown without a test."]},
+  reviews:{title:"Review Insights",tag:"NLP & grounded Q&A",repo:"review-insights-rag",
+    kpis:[[2.75,"×","odds of not recommending, fabric complaints",2],[0.962,"","classifier ROC-AUC",3],[0,"","unsupported answers with checks",0]],
+    steps:["22,621 reviews","Aspect rules","Odds ratios","Product-grouped classifier","BM25 / LSA / hybrid","Citation-checked agent"],
+    rows:[["Problem","Learn which complaints go with customers not recommending, and answer questions from reviews without inventing anything."],["Aspects","Fabric-quality complaints: <strong>2.75×</strong> the odds of not recommending (95% CI 2.52–3.01); runs large 1.71×; runs small no effect (1.05); comfort 0.27×."],["Retrieval","Label-free known-item benchmark on 1,000 held-out queries: BM25 Recall@10 14.0% vs hybrid 9.6% vs dense LSA 4.3%, so the dense retriever was dropped."],["Agent","With checks qwen2.5:7b gave <strong>no</strong> unsupported answers; without them it invented a citation 5 times and misstated a figure by 10× once, at the same 61% supported accuracy."]],
+    bars:{t:"Odds ratio for not recommending",u:"×",max:3,dp:2,d:[["Fabric quality",2.75],["Runs large",1.71],["Length",1.28],["Runs small",1.05],["Comfort",0.27]]},
+    limits:["Aspect rules are lexical and not yet audited by hand.","No neural embeddings were compared."]},
+  dqm:{title:"Data Quality Monitoring",tag:"Data engineering",repo:"data-quality-monitoring",
+    kpis:[[4.97,"×","lift: store channel root cause",2],[50500,"","synthetic orders",0],[0.59,"","PSI drift on shifted batch",2]],
+    steps:["Orders feed","Missing / duplicates / outliers","PSI drift","dq_log audit table","Airflow DAG","Power BI Pareto"],
+    rows:[["Problem","Catch bad data before it reaches reports, and point to the cause."],["Method","Python and SQL checks for missing values, duplicates, IQR outliers and PSI drift, logged to an auditable table and written as an Airflow DAG; a star schema with DAX measures for Power BI."],["Result","Traced missing order amounts to one sales channel (<strong>4.97× lift</strong>, 829 bad rows)."]],
+    limits:["Data is synthetic with injected problems.","The Docker Compose file for Airflow is an untested template."]},
+  dbt:{title:"dbt Orders Models",tag:"Analytics engineering",repo:"dbt-orders-dq",
+    kpis:[[9,"","schema and singular tests",0],[4,"","mart models",0],[50500,"","rows seeded",0]],
+    steps:["Seeded orders","Staging: types, flags, dedup","Star schema marts","Root-cause view","dbt tests","dbt docs"],
+    rows:[["Problem","The SQL layer for the data-quality project, versioned and tested."],["Method","dbt-duckdb staging and marts (fact, channel and country dimensions, a root-cause view) with not-null, unique, accepted-values and relationship tests plus singular tests."]],
+    limits:["Synthetic data."]},
+  logs:{title:"Clickstream Log Pipeline",tag:"Data engineering",repo:"log-analytics-pipeline",
+    kpis:[[4.0,"M","synthetic events",1],[31898,"","bad records quarantined",0],[1452,"×","faster point lookup (PostgreSQL)",0]],
+    steps:["Raw logs to S3","PySpark ETL + quarantine","MapReduce","DynamoDB serving","PostgreSQL tuning","Dashboard extracts"],
+    rows:[["Problem","Move 4M web/API events from raw files to queryable tables and fast lookups."],["Method","S3 raw zone and DynamoDB via boto3 (emulated locally with moto), PySpark ETL catching all 31,898 injected bad records, Hadoop-Streaming-style MapReduce cross-checked against Spark and SQL."],["Tuning","PostgreSQL 16 partitions, covering and partial indexes and a materialised view: point lookups 172.8 ms to 0.1 ms; scan-heavy queries 2.1× to 4.8× faster."]],
+    limits:["S3 and DynamoDB are emulated locally, so timings are not AWS figures.","Synthetic data."]},
+
   filings:{title:"Filings Analyst Agent",tag:"Multi-agent RAG",repo:"filings-analyst-agent",
     kpis:[[97.9,"%","answer accuracy vs XBRL",1],[1.7,"%","false abstentions",1],[95,"","test questions",0]],
     steps:["SEC 10-K filings","BM25 + ChromaDB","RRF fusion","Researcher agent","Verifier agent","Cited answer or abstain"],
@@ -746,7 +790,7 @@ const CASES={
     limits:["Colour is harder: the best colour model reaches 79.4% accuracy.","Blur cuts the deployed model's article-type accuracy to 83.3%."]}
 };
 
-const CASE_ORDER=["filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid"];
+const CASE_ORDER=["retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
 let caseCur=null, caseOpener=null;
 function openCase(key,opener){
   const dlg=document.getElementById("caseDlg"), c=CASES[key]; if(!c) return;
@@ -788,6 +832,16 @@ function openCase(key,opener){
 (function(){
   const C1="#f2f2ee", C2="#7a7a76";
   const CH=[
+    {id:"retail",tab:"Ordering cost",title:"Retail Demand Copilot: what each ordering policy cost",sub:"12 held-out weeks, 100 products; policy chosen on validation weeks.",
+     series:["Moving average","LightGBM 0.875 quantile"],repo:"retail-demand-copilot",note:"Cost rates (35% lost margin, 5% holding) are assumptions. 95% CI for the saving: £1,922–£3,166 a week.",
+     metrics:{"Cost per week":{unit:"£",min:0,max:9000,fmt:v=>"£"+Math.round(v).toLocaleString("en-GB"),lower:true,groups:[["Test weeks",[8362,5864]]]}}},
+    {id:"agents",tab:"LLM checks",title:"Review Insights agent: what the citation checks changed",sub:"qwen2.5:7b on 18 answerable questions; every answer checked against what the tools returned.",
+     series:["With checks","Without checks"],repo:"review-insights-rag",note:"Without checks the model invented a citation 5 times and misstated one figure by 10x.",
+     metrics:{"Unsupported answers":{unit:"",min:0,max:8,fmt:v=>String(Math.round(v)),lower:true,groups:[["Answers with invented citations or numbers",[0,6]]]},
+              "Correct and supported":{unit:"%",min:0,max:100,fmt:v=>v.toFixed(1)+"%",groups:[["Share of answerable questions",[61.1,61.1]]]}}},
+    {id:"uplift",tab:"Email test",title:"Email Uplift Targeting: who each email works for",sub:"Randomised test, 64,000 customers; visit lift vs no email.",
+     series:["Men's email","Women's email"],repo:"email-uplift-targeting",note:"Women's-email interaction for women's buyers: p < 0.001 (Holm-adjusted).",
+     metrics:{"Visit lift":{unit:"pp",min:0,max:10,fmt:v=>v.toFixed(1)+" pp",groups:[["All customers",[7.7,4.5]],["Bought women's last year",[8.3,7.3]],["Bought men's last year",[8.2,2.2]]]}}},
     {id:"filings",tab:"Filings Analyst",title:"Filings Analyst Agent: before vs after error analysis",sub:"Multi-agent RAG over SEC 10-Ks, scored against XBRL ground truth.",
      series:["Before","After"],repo:"filings-analyst-agent",note:"97.9% across all 95 questions after the fixes. On 15 held-out questions the verifier scored 86.7% vs 93.3% without it.",
      metrics:{"Answer accuracy":{unit:"%",min:0,max:100,fmt:v=>v.toFixed(1)+"%",groups:[["Accuracy, same 80 questions",[91.2,100]]]},
@@ -938,8 +992,8 @@ function openCase(key,opener){
 
 /* ---------- project cards ---------- */
 (function(){
-  const PTAGS=["llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
-  const BIG=["97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
+  const PTAGS=["ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
+  const BIG=["£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
   const g=document.getElementById("pgrid");
   g.innerHTML=PROJECTS.map((p,i)=>{ const bars=Array.from({length:7},(_,k)=>`<i style="height:${30+((i*37+k*53)%70)}%"></i>`).join("");
     return `<article class="pj trace rv" tabindex="0" role="button" data-case="${p.cs}" data-tags="${PTAGS[i]||""}" aria-label="${esc(p.title)}: open case study">
@@ -955,6 +1009,9 @@ function openCase(key,opener){
 /* ---------- repos ---------- */
 (function(){
   const R=[
+    ["data-quality-monitoring","Data quality monitoring","Missing, duplicate, outlier and PSI-drift checks with root-cause analysis and an Airflow DAG.","tools","dqm"],
+    ["dbt-orders-dq","dbt orders models","dbt-duckdb staging and star-schema marts with 9 tests.","tools","dbt"],
+    ["log-analytics-pipeline","Clickstream log pipeline","PySpark ETL, MapReduce, DynamoDB serving and PostgreSQL tuning on 4M events.","tools","logs"],
     ["uk-cpi-forecasting","UK CPI forecasting","ARX 0.87× naive RMSE at 12 months, 60-origin backtest with Diebold-Mariano tests.","fin","cpi"],
     ["oil-price-forecasting","Brent crude forecasting","Seven models on 306 months of IMF data; AR(12) significantly beats naive at 12 months.","fin","oil"],
     ["langgraph-prompt-guard","LangGraph prompt guard","Held-out test: rules alone catch 5/60 attacks; rules + classifier catch 52/60 with 0 false alarms.","llm","lgguard"],
@@ -1037,7 +1094,11 @@ function openCase(key,opener){
   const KB=[
     {k:"hire why should strength strong best good fit",a:"Chrish ships working ML and LLM systems and measures them honestly. At Filed he took tax-document extraction to F1 0.94 across 200+ files a day, and in his own projects every headline number comes from a held-out test, including the ablations that went against him."},
     {k:"project strongest favourite main proud filings analyst agent rag",a:"The Filings Analyst Agent: LangGraph researcher and verifier agents answer questions on SEC 10-Ks with a citation for every claim. Error analysis took accuracy from 91.2% to 100% on the same 80 questions (97.9% across all 95). On 15 held-out questions the verifier cost accuracy (86.7% vs 93.3%), and he published that. <a href='#' data-case='filings'>Open the case study</a>."},
-    {k:"projects list all portfolio work built",a:"Featured: Filings Analyst Agent, Fraud Lakehouse (PR-AUC 0.994), Patient Feedback Analyser (macro-F1 0.868), Macro Forecast Agent, FinMine (his MSc dissertation), RAG Pro, a Bending Spoons financial analysis, and Fraud Detection on Azure ML. More are on <a href='https://github.com/ChrishA-tech' target='_blank' rel='noopener'>GitHub</a>."},
+    {k:"retail demand forecast forecasting inventory order newsvendor copilot elasticity",a:"Retail Demand Copilot: LightGBM quantile forecasts for 100 products from 1.07M real order lines. Ordering at the cost-optimal 0.875 quantile cost £2,499 a week less than a moving-average order (95% CI £1,922–£3,166), even though point accuracy was not significantly better. A qwen2.5:7b agent on its FastAPI tools answered 75% correctly with no wrong numbers. <a href='#' data-case='retail'>Open the case study</a>."},
+    {k:"uplift causal experiment randomised randomized ab test email targeting treatment",a:"Email Uplift Targeting: a real randomised test of 64,000 customers. The men's email lifted visits 7.7 points; the women's email worked almost only for women's-wear buyers. Uplift models found that pattern, but no targeting rule significantly beat emailing everyone, and the write-up says so. <a href='#' data-case='uplift'>Open the case study</a>."},
+    {k:"churn retention clv lifetime value customer survival cox kaplan",a:"Customer Retention & CLV: an out-of-time churn model (ROC-AUC 0.804) and BG/NBD lifetime value on 5,852 real customers. Ranking by churn risk alone reached 0% of the revenue lost to churn; risk × spend reached 43.5% with 500 contacts. <a href='#' data-case='retention'>Open the case study</a>."},
+    {k:"review reviews nlp hallucination citation grounding verifier checks",a:"Review Insights: across 22,621 real reviews, fabric complaints carry 2.75× the odds of not recommending. Its LLM analyst checks every citation and number: with checks it gave no unsupported answers; without them it invented citations 5 times. <a href='#' data-case='reviews'>Open the case study</a>."},
+    {k:"projects list all portfolio work built",a:"Featured: Retail Demand Copilot, Email Uplift Targeting, Customer Retention & CLV, Review Insights, Filings Analyst Agent, Fraud Lakehouse (PR-AUC 0.994), Patient Feedback Analyser (macro-F1 0.868), Macro Forecast Agent, FinMine (his MSc dissertation), RAG Pro, a Bending Spoons financial analysis, and Fraud Detection on Azure ML. More are on <a href='https://github.com/ChrishA-tech' target='_blank' rel='noopener'>GitHub</a>."},
     {k:"deploy production mlops serve api docker azure databricks cloud endpoint",a:"Yes. FastAPI and Docker services, an MCP server, MLflow on Databricks for his fraud model, and the same model on an Azure ML managed online endpoint (p95 121 ms) with a model registry."},
     {k:"right work visa uk authorised sponsorship relocate location based where live",a:"He's authorised to work in the UK, based in Liverpool and open to relocation. Preferred locations include Liverpool, London and Manchester, on-site, hybrid or remote."},
     {k:"looking role roles job want open seeking position",a:"AI Engineer, Machine Learning Engineer or Data Scientist roles in the UK, ideally on LLM agents, retrieval or applied ML where evaluation matters."},
