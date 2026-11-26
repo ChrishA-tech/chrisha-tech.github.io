@@ -484,7 +484,7 @@ dialog[open]{animation:dlgin .6s cubic-bezier(.76,0,.24,1)}
 <section class="sec" id="projects" style="padding-top:40px">
   <div class="wrap">
     <div class="phead">
-      <div><h2 class="h2 rv">Featured<br>Projects</h2><p class="lead rv">Each one has a measured result on held-out data. Open a card for the full case study.</p></div>
+      <div><h2 class="h2 rv">Featured<br>Projects</h2><p class="lead rv">Open a card to see the method, results and limitations.</p></div>
       <div class="filters rv" id="pfilters" role="group" aria-label="Filter projects">
         <button class="f" type="button" data-f="all" aria-pressed="true">All</button>
         <button class="f" type="button" data-f="llm" aria-pressed="false">LLMs &amp; agents</button>
@@ -493,11 +493,6 @@ dialog[open]{animation:dlgin .6s cubic-bezier(.76,0,.24,1)}
         <button class="f" type="button" data-f="fin" aria-pressed="false">Finance data</button>
       </div>
     </div>
-    <article class="chartcard" style="margin:24px 0">
-      <div class="ch-top"><div><h3>VoltFlex UK · Energy scheduling replay</h3>
-      <p>Compare charging policies through 84 simulated cases, including negative tariffs and degraded feeds. Inspect where the optimiser loses, then explore five more UK projects.</p></div></div>
-      <p><a href="/replay/?project=voltflex-uk">Open the interactive replay</a> · <a href="/replay/tariffs/">Replay archived Octopus tariffs</a> · <a href="https://github.com/ChrishA-tech/voltflex-uk">View VoltFlex on GitHub</a></p>
-    </article>
     <div class="pgrid" id="pgrid"></div>
   </div>
 </section>
@@ -630,6 +625,7 @@ async function copy(t,m){ try{ await navigator.clipboard.writeText(t); say(m); }
 
 const GH="https://github.com/ChrishA-tech/";
 const PROJECTS=[
+  {cat:"Energy Scheduling",title:"VoltFlex UK · Energy scheduling replay",met:"9.9% lower replay cost · 84 region-days",desc:"Compare a rolling charging optimiser with immediate charging on archived Octopus Agile tariffs. Explore costs by region or scenario, and see how the policy performs when feeds degrade.",stack:["Python","Dynamic programming","Octopus Agile"],repo:"voltflex-uk",cs:"voltflex"},
   {cat:"Forecasting & Decisions",title:"Retail Demand Copilot",met:"£2,499/week lower cost · 95% CI £1.9k–£3.2k",desc:"Quantile LightGBM forecasts for 100 products from 1.07M real order lines, turned into cost-optimal orders (newsvendor). Served as FastAPI tools to a qwen2.5:7b agent that answered 75% correctly with no wrong numbers.",stack:["LightGBM","Fixed effects","FastAPI","Ollama","Docker","CI"],repo:"retail-demand-copilot",cs:"retail"},
   {cat:"Causal Inference",title:"Email Uplift Targeting",met:"+7.7 pp visits · 64,000-customer RCT",desc:"A real randomised email test: balance checks, Holm-corrected effects, S/T/X-learner uplift models with Qini, and inverse-propensity policy value. No targeting rule beat emailing everyone, and it says so.",stack:["Uplift modelling","Qini","IPW","LightGBM","FastAPI"],repo:"email-uplift-targeting",cs:"uplift"},
   {cat:"Customer Analytics",title:"Customer Retention & CLV",met:"43.5% of churn revenue reached · 500 contacts",desc:"Out-of-time churn model (ROC-AUC 0.804), BG/NBD lifetime value, Kaplan-Meier and Cox, and a retention-test plan. Ranking by risk alone reached 0% of lost revenue; ranking by value at risk reached 43.5%.",stack:["Logistic regression","BG/NBD","Survival","Power analysis","FastAPI"],repo:"customer-retention-clv",cs:"retention"},
@@ -646,6 +642,11 @@ const PROJECTS=[
   {cat:"Deep Learning",title:"Deep Learning Suite",met:"4 tasks · one Lightning harness · LoRA 7.3% params",desc:"A modality-agnostic PyTorch Lightning framework: one shared harness across vision (CNN 98.1%), time-series (LSTM), text (Transformer 95.5%) and recommendation, with LoRA from scratch and ONNX on every task.",stack:["PyTorch","Lightning","LoRA","Transformers","ONNX","CI"],repo:"deep-learning-suite",cs:"dlsuite"}
 ];
 const CASES={
+  voltflex:{title:"VoltFlex UK · Energy scheduling replay",tag:"Energy scheduling",repo:"voltflex-uk",live:"/replay/tariffs/",
+    kpis:[[9.9,"%","lower mean replay cost",1],[84,"","region-days of archived tariffs",0],[3,"","tariff regions",0]],
+    steps:["Archived Octopus Agile tariffs","Simulated EV sessions","Rolling optimiser","Immediate-charge baseline","Cost and failure analysis"],
+    rows:[["Benchmark","Across 84 region-days of published Octopus Agile prices, the rolling optimiser averaged <strong>£0.923</strong> per simulated session versus <strong>£1.024</strong> for immediate charging."],["Stress test","The <a href='/replay/?project=voltflex-uk'>scenario replay</a> includes negative prices and degraded feeds, with case-level errors and CSV export. The optimiser lost one of 27 degraded-feed cases."]],
+    limits:["The tariff prices are observed. EV sessions are simulated and the tariff replay assumes known day-ahead prices."]},
   retail:{title:"Retail Demand Copilot",tag:"Forecasting & decisions",repo:"retail-demand-copilot",
     kpis:[[2499,"","£ lower cost per week vs moving average",0],[75,"%","agent answers correct",0],[1.07,"M","real order lines",2]],
     steps:["1.07M order lines","Weekly panel, 100 products","LightGBM quantiles","0.875 newsvendor order","FastAPI tools","Verified LLM agent"],
@@ -808,7 +809,7 @@ const CASES={
     limits:["No HuggingFace or torchvision access, so LoRA is implemented from scratch and vision uses bundled digits.","Models are small by design; the harness, not leaderboard numbers, is the point."]}
 };
 
-const CASE_ORDER=["retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
+const CASE_ORDER=["voltflex","retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
 let caseCur=null, caseOpener=null;
 function openCase(key,opener){
   const dlg=document.getElementById("caseDlg"), c=CASES[key]; if(!c) return;
@@ -1010,8 +1011,8 @@ function openCase(key,opener){
 
 /* ---------- project cards ---------- */
 (function(){
-  const PTAGS=["ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
-  const BIG=["£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
+  const PTAGS=["ml","ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
+  const BIG=["9.9%","£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
   const g=document.getElementById("pgrid");
   g.innerHTML=PROJECTS.map((p,i)=>{ const bars=Array.from({length:7},(_,k)=>`<i style="height:${30+((i*37+k*53)%70)}%"></i>`).join("");
     return `<article class="pj trace rv" tabindex="0" role="button" data-case="${p.cs}" data-tags="${PTAGS[i]||""}" aria-label="${esc(p.title)}: open case study">
