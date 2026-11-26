@@ -19,3 +19,19 @@ h1{font-size:clamp(3.1rem,9vw,7.5rem);line-height:.95;margin:12px 0 16px}
 select,button{border-radius:9px}
 .scores .panel{overflow-wrap:anywhere}
 .state{border-top:1px solid var(--line);padding-top:12px}
+
+[hidden]{display:none!important}
+.filters.single-project{grid-template-columns:repeat(2,minmax(0,1fr))}
+.chart canvas{cursor:crosshair}
+.case-inspector{margin-top:16px;padding:12px 0;border-top:1px solid var(--line)}
+.case-inspector label{display:block;margin:8px 0 4px}
+.case-inspector input{width:100%;margin:0;accent-color:var(--candidate)}
+.case-inspector p:last-child{font-variant-numeric:tabular-nums;color:var(--ink)}
+@media(max-width:670px){.filters.single-project{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:no-preference){
+  .topnav{animation:replay-nav-in .65s cubic-bezier(.2,.8,.2,1) both}
+  .hero,.filters,.scores,.chart,.details{animation:replay-reveal .7s cubic-bezier(.2,.8,.2,1) both}
+  .filters{animation-delay:.08s}.scores{animation-delay:.14s}.chart{animation-delay:.2s}.details{animation-delay:.26s}
+}
+@keyframes replay-reveal{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes replay-nav-in{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:none}}

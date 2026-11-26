@@ -626,6 +626,11 @@ async function copy(t,m){ try{ await navigator.clipboard.writeText(t); say(m); }
 const GH="https://github.com/ChrishA-tech/";
 const PROJECTS=[
   {cat:"Energy Scheduling",title:"VoltFlex UK · Energy scheduling replay",met:"9.9% lower replay cost · 84 region-days",desc:"Compare a rolling charging optimiser with immediate charging on archived Octopus Agile tariffs. Explore costs by region or scenario, and see how the policy performs when feeds degrade.",stack:["Python","Dynamic programming","Octopus Agile"],repo:"voltflex-uk",cs:"voltflex"},
+  {"cat": "Housing Retrofit", "title": "GridGuard UK", "met": "Modelled retrofit estimates", "desc": "Explore how housing retrofit estimates change across neighbourhoods and cold-home scenarios.", "repo": "gridguard-uk", "cs": "gridguard-uk", "big": "Retrofit"},
+  {"cat": "Rail Reliability", "title": "RailPulse UK", "met": "Rail delay replay", "desc": "Explore how delays propagate across rail corridors under normal service, disruption and degraded feeds.", "repo": "railpulse-uk", "cs": "railpulse-uk", "big": "Rail"},
+  {"cat": "River Health", "title": "AquaSentinel UK", "met": "Spill probability replay", "desc": "Explore how rainfall and sensor gaps affect forecasts of sewage spill events.", "repo": "aquasentinel-uk", "cs": "aquasentinel-uk", "big": "Rivers"},
+  {"cat": "Crop Monitoring", "title": "HarvestShield UK", "met": "Crop yield replay", "desc": "Compare weather-only and canopy-adjusted crop yield estimates across growing regions.", "repo": "harvestshield-uk", "cs": "harvestshield-uk", "big": "Crops"},
+  {"cat": "Hospital Operations", "title": "AE-Watch UK", "met": "Winter pressure replay", "desc": "Explore how cold spells and degraded feeds affect estimates of winter hospital pressure.", "repo": "ae-watch-uk", "cs": "ae-watch-uk", "big": "Winter"},
   {cat:"Forecasting & Decisions",title:"Retail Demand Copilot",met:"£2,499/week lower cost · 95% CI £1.9k–£3.2k",desc:"Quantile LightGBM forecasts for 100 products from 1.07M real order lines, turned into cost-optimal orders (newsvendor). Served as FastAPI tools to a qwen2.5:7b agent that answered 75% correctly with no wrong numbers.",stack:["LightGBM","Fixed effects","FastAPI","Ollama","Docker","CI"],repo:"retail-demand-copilot",cs:"retail"},
   {cat:"Causal Inference",title:"Email Uplift Targeting",met:"+7.7 pp visits · 64,000-customer RCT",desc:"A real randomised email test: balance checks, Holm-corrected effects, S/T/X-learner uplift models with Qini, and inverse-propensity policy value. No targeting rule beat emailing everyone, and it says so.",stack:["Uplift modelling","Qini","IPW","LightGBM","FastAPI"],repo:"email-uplift-targeting",cs:"uplift"},
   {cat:"Customer Analytics",title:"Customer Retention & CLV",met:"43.5% of churn revenue reached · 500 contacts",desc:"Out-of-time churn model (ROC-AUC 0.804), BG/NBD lifetime value, Kaplan-Meier and Cox, and a retention-test plan. Ranking by risk alone reached 0% of lost revenue; ranking by value at risk reached 43.5%.",stack:["Logistic regression","BG/NBD","Survival","Power analysis","FastAPI"],repo:"customer-retention-clv",cs:"retention"},
@@ -642,6 +647,11 @@ const PROJECTS=[
   {cat:"Deep Learning",title:"Deep Learning Suite",met:"4 tasks · one Lightning harness · LoRA 7.3% params",desc:"A modality-agnostic PyTorch Lightning framework: one shared harness across vision (CNN 98.1%), time-series (LSTM), text (Transformer 95.5%) and recommendation, with LoRA from scratch and ONNX on every task.",stack:["PyTorch","Lightning","LoRA","Transformers","ONNX","CI"],repo:"deep-learning-suite",cs:"dlsuite"}
 ];
 const CASES={
+  "gridguard-uk":{"title": "GridGuard UK", "tag": "Housing Retrofit", "repo": "gridguard-uk", "live": "/replay/?project=gridguard-uk", "rows": [["Project", "Explore how housing retrofit estimates change across neighbourhoods and cold-home scenarios."], ["Method", "Housing profiles, EPC data and uncertainty modelling"], ["Replay", "Compares a simple estimate with a scenario-adjusted estimate against simulated annual outcomes."]], "limits": ["Replay inputs and outcomes are simulated."]},
+  "railpulse-uk":{"title": "RailPulse UK", "tag": "Rail Reliability", "repo": "railpulse-uk", "live": "/replay/?project=railpulse-uk", "rows": [["Project", "Explore how delays propagate across rail corridors under normal service, disruption and degraded feeds."], ["Method", "Corridor graphs and delay forecasting"], ["Replay", "Compares a last-delay baseline with a schedule-recovery heuristic on simulated corridor data."]], "limits": ["Replay inputs and outcomes are simulated."]},
+  "aquasentinel-uk":{"title": "AquaSentinel UK", "tag": "River Health", "repo": "aquasentinel-uk", "live": "/replay/?project=aquasentinel-uk", "rows": [["Project", "Explore how rainfall and sensor gaps affect forecasts of sewage spill events."], ["Method", "Catchment telemetry and event forecasting"], ["Replay", "Compares a rainfall threshold with a scenario-based estimate using Brier scores on simulated spill events."]], "limits": ["Replay inputs and outcomes are simulated."]},
+  "harvestshield-uk":{"title": "HarvestShield UK", "tag": "Crop Monitoring", "repo": "harvestshield-uk", "live": "/replay/?project=harvestshield-uk", "rows": [["Project", "Compare weather-only and canopy-adjusted crop yield estimates across growing regions."], ["Method", "Satellite canopy signals and weather features"], ["Replay", "Compares predictions on simulated yield data, including weather stress and degraded feeds."]], "limits": ["Replay inputs and outcomes are simulated."]},
+  "ae-watch-uk":{"title": "AE-Watch UK", "tag": "Hospital Operations", "repo": "ae-watch-uk", "live": "/replay/?project=ae-watch-uk", "rows": [["Project", "Explore how cold spells and degraded feeds affect estimates of winter hospital pressure."], ["Method", "Aggregate forecasting and weather signals"], ["Replay", "Compares a seasonal baseline with a weather-adjusted estimate using simulated aggregate outcomes."]], "limits": ["Replay inputs and outcomes are simulated."]},
   voltflex:{title:"VoltFlex UK · Energy scheduling replay",tag:"Energy scheduling",repo:"voltflex-uk",live:"/replay/tariffs/",
     kpis:[[9.9,"%","lower mean replay cost",1],[84,"","region-days of archived tariffs",0],[3,"","tariff regions",0]],
     steps:["Archived Octopus Agile tariffs","Simulated EV sessions","Rolling optimiser","Immediate-charge baseline","Cost and failure analysis"],
@@ -809,7 +819,7 @@ const CASES={
     limits:["No HuggingFace or torchvision access, so LoRA is implemented from scratch and vision uses bundled digits.","Models are small by design; the harness, not leaderboard numbers, is the point."]}
 };
 
-const CASE_ORDER=["voltflex","retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
+const CASE_ORDER=["voltflex","gridguard-uk","railpulse-uk","aquasentinel-uk","harvestshield-uk","ae-watch-uk","retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
 let caseCur=null, caseOpener=null;
 function openCase(key,opener){
   const dlg=document.getElementById("caseDlg"), c=CASES[key]; if(!c) return;
@@ -1011,12 +1021,12 @@ function openCase(key,opener){
 
 /* ---------- project cards ---------- */
 (function(){
-  const PTAGS=["ml","ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
-  const BIG=["9.9%","£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
+  const PTAGS=["ml",...Array(5).fill("ml"),"ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
+  const BIG=["9.9%",...Array(5).fill(""),"£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
   const g=document.getElementById("pgrid");
   g.innerHTML=PROJECTS.map((p,i)=>{ const bars=Array.from({length:7},(_,k)=>`<i style="height:${30+((i*37+k*53)%70)}%"></i>`).join("");
     return `<article class="pj trace rv" tabindex="0" role="button" data-case="${p.cs}" data-tags="${PTAGS[i]||""}" aria-label="${esc(p.title)}: open case study">
-      <div class="vis"><span class="k">// ${String(i+1).padStart(2,"0")} · ${esc(p.cat)}</span><span class="big">${esc(BIG[i]||"")}</span><span class="mini">${bars}</span></div>
+      <div class="vis"><span class="k">// ${String(i+1).padStart(2,"0")} · ${esc(p.cat)}</span><span class="big">${esc(p.big||BIG[i]||"")}</span><span class="mini">${bars}</span></div>
       <div class="bd"><span class="cat">${esc(p.met)}</span><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p><div class="go"><span>Case study</span><span aria-hidden="true">→</span></div></div></article>`; }).join("");
   g.querySelectorAll(".pj").forEach(el=>{ io.observe(el); el.addEventListener("mouseenter",()=>{ scramble(el.querySelector(".big")); el.querySelectorAll(".mini i").forEach(b=>b.style.height=(25+Math.random()*75)+"%"); }); el.addEventListener("focus",()=>scramble(el.querySelector(".big"))); el.onclick=()=>openCase(el.dataset.case,el); el.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); openCase(el.dataset.case,el); } }; });
   const bs=[...document.querySelectorAll("#pfilters .f")];

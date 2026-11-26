@@ -22,7 +22,7 @@ try {
 <p id="failure" role="alert" class="panel hidden"></p>
 <div id="interactive" class="hidden">
 <div class="filters panel">
-<label>Project<select id="project"></select></label>
+<label id="project-filter">Project<select id="project"></select></label>
 <label>Region or group<select id="group"></select></label>
 <label>Scenario<select id="scenario"></select></label>
 </div>
@@ -34,8 +34,14 @@ try {
 </section>
 <section class="panel chart">
 <div class="row"><h2>Replay by case</h2><button id="download" type="button">Export visible cases</button></div>
-<canvas id="chart" role="img" aria-label="Baseline and candidate scores by replay case. Values are available in the table."></canvas>
+<canvas id="chart" role="img" aria-label="Baseline and candidate scores by replay case" aria-describedby="case-hint"></canvas>
 <div class="legend"><span id="base-legend"></span><span id="candidate-legend"></span></div>
+<div class="case-inspector" id="case-inspector">
+  <p id="case-hint">Hover or tap the chart, or use the arrow keys on the case slider.</p>
+  <label for="case-slider">Replay case</label>
+  <input type="range" id="case-slider" min="0" max="0" value="0" aria-describedby="case-hint">
+  <p id="case-readout" aria-live="polite"></p>
+</div>
 <p class="state" id="status" aria-live="polite"></p>
 </section>
 <section class="panel details">
@@ -52,7 +58,7 @@ try {
 const el = id => document.getElementById(id);
 const number = new Intl.NumberFormat('en-GB',{maximumFractionDigits:3});
 const fmt = value => Number.isFinite(value) ? number.format(value) : '—';
-let catalogue, selected, cases=[];
+let catalogue, selected, cases=[], activeCase=0;
 const themeButton = el('themeBtn');
 const root = document.documentElement;
 function syncThemeButton() {
@@ -90,15 +96,51 @@ function plot() {
     ctx.strokeStyle=colors.getPropertyValue('--line'); ctx.beginPath();ctx.moveTo(44,y(v));ctx.lineTo(w-12,y(v));ctx.stroke();
     ctx.fillStyle=colors.getPropertyValue('--sub');ctx.fillText(fmt(v),0,y(v)+4);
   }
+  if (cases[activeCase]) {
+    ctx.strokeStyle=colors.getPropertyValue('--sub');
+    ctx.setLineDash([3,4]);
+    ctx.beginPath();ctx.moveTo(x(activeCase),12);ctx.lineTo(x(activeCase),h-18);ctx.stroke();
+    ctx.setLineDash([]);
+  }
   for(const [key,variable] of [['baseline','--base'],['candidate','--candidate']]){
     ctx.strokeStyle=ctx.fillStyle=colors.getPropertyValue(variable);ctx.lineWidth=2;
     ctx.beginPath();cases.forEach((row,i)=>i?ctx.lineTo(x(i),y(row[key])):ctx.moveTo(x(i),y(row[key])));ctx.stroke();
-    if(cases.length===1){ctx.beginPath();ctx.arc(x(0),y(cases[0][key]),4,0,Math.PI*2);ctx.fill();}
+    ctx.beginPath();ctx.arc(x(activeCase),y(cases[activeCase][key]),4,0,Math.PI*2);ctx.fill();
   }
+}
+function selectCase(index) {
+  if (!cases.length) return;
+  activeCase=Math.min(cases.length-1,Math.max(0,index));
+  const row=cases[activeCase], config=selected.config;
+  const label='Case '+row.period+' · '+row.group+' · '+row.scenario;
+  const scores=config.baseline+': '+fmt(row.baseline)+' · '+config.candidate+': '+fmt(row.candidate)+' ('+config.units+')';
+  const slider=el('case-slider');
+  slider.value=activeCase;
+  slider.setAttribute('aria-valuetext',label+' · '+scores);
+  el('case-readout').textContent=label+' · '+scores;
+  plot();
+}
+function pointCase(event) {
+  const box=el('chart').getBoundingClientRect();
+  if (box.width<=56) return;
+  const fraction=(event.clientX-box.left-44)/(box.width-56);
+  const index=Math.min(cases.length-1,Math.max(0,Math.round(fraction*(cases.length-1))));
+  if (index!==activeCase) selectCase(index);
 }
 function render() {
   const group=el('group').value, scenario=el('scenario').value;
   cases=selected.cases.filter(row=>(!group||row.group===group)&&(!scenario||row.scenario===scenario));
+  activeCase=0;
+  const slider=el('case-slider');
+  slider.max=Math.max(0,cases.length-1);
+  slider.value=0;
+  slider.disabled=cases.length<2;
+  el('case-inspector').hidden=!cases.length;
+  if (cases.length) selectCase(0);
+  else {
+    slider.removeAttribute('aria-valuetext');
+    el('case-readout').textContent='';
+  }
   const mean=key=>cases.length?cases.reduce((sum,row)=>sum+row[key],0)/cases.length:NaN;
   const wins=cases.filter(row=>row.candidate<row.baseline-1e-8).length;
   const losses=cases.filter(row=>row.candidate>row.baseline+1e-8).sort((a,b)=>(b.candidate-b.baseline)-(a.candidate-a.baseline));
@@ -130,12 +172,24 @@ try {
   if(!Array.isArray(catalogue)||!catalogue.length||catalogue.some(item=>!item.config||!Array.isArray(item.cases))) throw Error('Invalid replay data');
   options(el('project'),catalogue.map(row=>[row.config.slug,row.config.name]));
   const requested=new URLSearchParams(location.search).get('project');
-  if(catalogue.some(row=>row.config.slug===requested)) el('project').value=requested;
+  const requestedProject=catalogue.find(row=>row.config.slug===requested);
+  if(requestedProject) {
+    catalogue=[requestedProject];
+    options(el('project'),[[requestedProject.config.slug,requestedProject.config.name]]);
+  }
+  const singleProject=catalogue.length===1;
+  el('project-filter').hidden=singleProject;
+  el('project-filter').parentElement.classList.toggle('single-project',singleProject);
+  const archiveLink=el('archive-link');
+  if(archiveLink) archiveLink.parentElement.hidden=singleProject && catalogue[0].config.slug!=='voltflex-uk';
   el('interactive').classList.remove('hidden');
   setProject();
   el('project').addEventListener('change',setProject);
   ['group','scenario'].forEach(id=>el(id).addEventListener('change',render));
   window.addEventListener('resize',plot);
+  el('case-slider').addEventListener('input',event=>selectCase(Number(event.target.value)));
+  el('chart').addEventListener('pointermove',event=>{ if(event.pointerType==='mouse') pointCase(event); });
+  el('chart').addEventListener('pointerdown',pointCase);
   el('download').addEventListener('click',()=>{
     const quote=value=>'"'+String(value).replaceAll('"','""')+'"';
     const lines=cases.map(row=>[row.period,row.group,row.scenario,row.baseline,row.candidate,selected.provenance].map(quote).join(','));
