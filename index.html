@@ -475,7 +475,7 @@ dialog[open]{animation:dlgin .6s cubic-bezier(.76,0,.24,1)}
 <section class="sec" id="stack" style="padding-top:60px">
   <div class="wrap">
     <h2 class="h2 rv">Tech Stack</h2>
-    <p class="lead rv">Select a tool to see where I've used it.</p>
+    <p class="lead rv">Select a skill or tool to see where I've used it.</p>
     <div class="stackgrid rv" id="stackgrid"></div>
     <p class="usedin" id="usedin" aria-live="polite"></p>
   </div>
@@ -1008,13 +1008,15 @@ function openCase(key,opener){
     ["Evaluation & stats",{"Held-out testing":[0,1,2,3],Ablations:[0,5],"Bootstrap CIs":[1,2],"A/B testing":[1],"Power analysis":[1],"F1 / PR-AUC / Recall@k":[1,2,5,"filed"]}],
     ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1,7],"Azure ML":[7],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5]}],
     ["Data",{Python:[0,1,2,3,4,5,6,"filed","dhl"],SQL:[1,"filed","dhl"],PySpark:[1],"Delta Lake":[1],"XBRL parsing":[0,4],"SEC EDGAR":[0,4,6],Neo4j:[4],"Power BI":["filed"]}],
-    ["Automation",{"UiPath":["dhl"],"SAP":["dhl"],"CargoWise":["dhl"],"Root cause analysis":["dhl"]}]
+    ["Automation",{"UiPath":["dhl"],"SAP":["dhl"],"CargoWise":["dhl"],"Root cause analysis":["dhl"]}],
+    ["UI design",{"Apple-inspired UI design":["voltflex"]}]
   ];
+  const EXAMPLES={voltflex:'<a href="/replay/tariffs/">VoltFlex UK interactive dashboard</a>'};
   const box=document.getElementById("stackgrid"), out=document.getElementById("usedin");
   T.forEach(([name,tools])=>{ const g=document.createElement("div"); g.className="sg"; g.innerHTML=`<h3>${esc(name)}</h3><div class="chips"></div>`;
     Object.entries(tools).forEach(([tool,used])=>{ const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=tool; b.setAttribute("aria-pressed","false");
       const pick=()=>{ document.querySelectorAll(".chip").forEach(x=>x.setAttribute("aria-pressed",x===b));
-        out.innerHTML=`<b>${esc(tool)}</b> used in: ${used.map(u=>typeof u==="number"?P[u]:JOB[u]).map(esc).join(", ")}.`; };
+        out.innerHTML=`<b>${esc(tool)}</b> used in: ${used.map(u=>EXAMPLES[u]||esc(typeof u==="number"?P[u]:JOB[u])).join(", ")}.`; };
       b.style.setProperty("--ci",g.querySelectorAll(".chip").length); b.onclick=pick; g.querySelector(".chips").appendChild(b); });
     box.appendChild(g); });
 })();
