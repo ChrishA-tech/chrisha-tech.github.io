@@ -411,6 +411,16 @@ dialog[open]{animation:dlgin .6s cubic-bezier(.76,0,.24,1)}
 @media (max-width:1000px){.pgrid{grid-template-columns:repeat(2,1fr)}.igrid{grid-template-columns:1fr 1fr}.itext{grid-column:1/-1}.cgrid{grid-template-columns:1fr}.fstrip{grid-template-columns:1fr 1fr}.fstrip>div:first-child{grid-column:1/-1}}
 @media (max-width:640px){.sec{padding:84px 0}.pgrid{grid-template-columns:1fr}.igrid{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.stat:nth-child(3){border-left:0;padding-left:0}.rrow{grid-template-columns:1fr;gap:4px}.xi{grid-template-columns:1fr;gap:8px}.f2{grid-template-columns:1fr}.fstrip{grid-template-columns:1fr}.fl{grid-template-columns:repeat(2,auto)}.cs{grid-template-columns:1fr;gap:4px}.cb{grid-template-columns:1fr 60px}.cb .cbl{grid-column:1/-1}.hmeta{bottom:12vh}.askbtn .lbl{display:none}.topnav .nm{margin-right:8px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.rv,.hero .intro-l,.hphoto{opacity:1!important;transform:none!important}.skyline .draw{stroke-dashoffset:0!important}}
+/* Theme reveal */
+html.ink-transition body{transition:none}
+html.ink-transition::view-transition-group(root),
+html.ink-transition::view-transition-old(root),
+html.ink-transition::view-transition-new(root){animation:none}
+html.ink-transition::view-transition-old(root),
+html.ink-transition::view-transition-new(root){mix-blend-mode:normal}
+html.ink-transition::view-transition-old(root){z-index:1}
+html.ink-transition::view-transition-new(root){z-index:2;clip-path:var(--ink-start)}
+
 </style>
 </head>
 <body class="loading">
@@ -966,7 +976,58 @@ function openCase(key,opener){
   const root=document.documentElement, t=document.getElementById("themeBtn");
   const apply=md=>{ if(md==="light") root.dataset.theme="light"; else delete root.dataset.theme; t.textContent=md==="light"?"☾":"☀"; t.setAttribute("aria-label",md==="light"?"Switch to dark mode":"Switch to light mode"); try{localStorage.setItem("chrish-theme",md);}catch(e){} };
   try{ if(localStorage.getItem("chrish-theme")==="light") apply("light"); }catch(e){}
-  t.onclick=()=>{ const n=root.dataset.theme==="light"?"dark":"light"; document.startViewTransition&&!reduce?document.startViewTransition(()=>apply(n)):apply(n); };
+  let activeTransition;
+  t.onclick=async()=>{
+    const next=root.dataset.theme==="light"?"dark":"light";
+    if(activeTransition) return;
+    if(!document.startViewTransition||matchMedia("(prefers-reduced-motion: reduce)").matches){
+      apply(next);
+      return;
+    }
+
+    const button=t.getBoundingClientRect();
+    const x=button.left+button.width/2;
+    const y=button.top+button.height/2;
+    const distance=Math.hypot(Math.max(x,innerWidth-x),Math.max(y,innerHeight-y));
+    const count=144;
+    const duration=980;
+    // Each frame starts at the toggle and grows an irregular edge with tapered fingers.
+    const frames=Array.from({length:33},(_,i)=>{
+      const time=i/32;
+      const growth=time*time*(3-2*time);
+      const feather=Math.sin(Math.PI*time);
+      const points=Array.from({length:count},(_,j)=>{
+        const angle=j/count*Math.PI*2;
+        const drift=angle+.14*Math.sin(time*4+angle*3);
+        const finger=Math.pow(.5+.5*Math.sin(drift*9+.8),6);
+        const filament=Math.pow(.5+.5*Math.sin(drift*17-1.2),12);
+        const wave=.075*Math.sin(angle*5+time*7)+.04*Math.cos(angle*13-time*5);
+        const r=Math.max(0,distance*(1.12*growth+feather*(wave+.22*finger+.095*filament)));
+        return (x+Math.cos(angle)*r).toFixed(1)+"px "+(y+Math.sin(angle)*r).toFixed(1)+"px";
+      });
+      return {clipPath:"polygon("+points.join(",")+")"};
+    });
+
+    root.style.setProperty("--ink-start",frames[0].clipPath);
+    root.classList.add("ink-transition");
+    const transition=document.startViewTransition(()=>apply(next));
+    activeTransition=transition;
+    // Handle failed snapshots while preserving the normal theme change.
+    transition.finished.catch(()=>{});
+    try {
+      await transition.ready;
+      const reveal=root.animate(frames,{duration,fill:"both",pseudoElement:"::view-transition-new(root)"});
+      await reveal.finished;
+      await transition.finished;
+    } catch {
+      transition.skipTransition();
+      await transition.updateCallbackDone.catch(()=>{});
+    } finally {
+      root.classList.remove("ink-transition");
+      root.style.removeProperty("--ink-start");
+      activeTransition=null;
+    }
+  };
 })();
 
 /* ---------- hero: code background, glitch, 3D tilt on scroll ---------- */
