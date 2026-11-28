@@ -670,9 +670,30 @@ const PROJECTS=[
   {cat:"Finance Analysis",title:"Bending Spoons Analysis",met:"Q2 2026 revenue +126.3% · ~3% organic",desc:"Every quarterly results release pulled from SEC EDGAR and extracted into one table with a source link per figure, answering five questions on growth, margins, cash, debt and guidance.",stack:["Python","pandas","SEC EDGAR","Excel"],repo:"bending-spoons-financial-analysis",cs:"bending"},
   {cat:"MLOps on Azure",title:"Fraud Detection on Azure ML",met:"PR-AUC 0.993 · p95 121 ms",desc:"Two-step Azure ML pipeline job (data-quality checks and 24-hour account features, then XGBoost) over 6.36M transactions, tracked in MLflow, registered and served from a managed online endpoint.",stack:["Azure ML","MLflow","XGBoost","Pipelines","Model Registry"],repo:"fraud-azureml",cs:"azure"},
   {cat:"MLOps",title:"MLOps Platform",met:"ROC-AUC 0.835 · registry · drift · Kubernetes",desc:"End-to-end MLOps on real churn data: pandera validation, Optuna HPO, MLflow tracking and model registry, FastAPI/Kubernetes serving, PSI/KS drift monitoring, Prefect orchestration, Terraform and CI.",stack:["MLflow","Optuna","Kubernetes","FastAPI","Prefect","Terraform"],repo:"mlops-platform",cs:"mlops"},
-  {cat:"Deep Learning",title:"Deep Learning Suite",met:"4 tasks · one Lightning harness · LoRA 7.3% params",desc:"A modality-agnostic PyTorch Lightning framework: one shared harness across vision (CNN 98.1%), time-series (LSTM), text (Transformer 95.5%) and recommendation, with LoRA from scratch and ONNX on every task.",stack:["PyTorch","Lightning","LoRA","Transformers","ONNX","CI"],repo:"deep-learning-suite",cs:"dlsuite"}
+  {cat:"Deep Learning",title:"Deep Learning Suite",met:"4 tasks · one Lightning harness · LoRA 7.3% params",desc:"A modality-agnostic PyTorch Lightning framework: one shared harness across vision (CNN 98.1%), time-series (LSTM), text (Transformer 95.5%) and recommendation, with LoRA from scratch and ONNX on every task.",stack:["PyTorch","Lightning","LoRA","Transformers","ONNX","CI"],repo:"deep-learning-suite",cs:"dlsuite"},
+  {cat:"Growth Experimentation",title:"Growth Experimentation Platform",met:"+5.9 pp activation · 9× faster decisions",desc:"End-to-end growth stack on 70,645 product events: Pub/Sub-style streaming into a dbt warehouse (BigQuery dialect), funnel and cohort marts, and an experimentation engine with power/MDE, CUPED and sequential testing.",stack:["dbt","BigQuery","Pub/Sub","CUPED","mSPRT","Streamlit"],repo:"growth-experimentation-platform",cs:"growth"},
+  {cat:"Sports Forecasting",title:"Premier League Match Forecasting",met:"RPS 0.1996 · 1,140 held-out matches",desc:"Probabilistic 1X2 forecasts over 15 seasons (5,700 matches) with margin-aware Elo, time-decayed Dixon-Coles, a LightGBM stack and a 3-model ensemble on leak-free walk-forward splits, plus a mid-season Monte Carlo title race.",stack:["Elo","Dixon-Coles","LightGBM","Monte Carlo","RPS"],repo:"football-forecasting",cs:"football"},
+  {cat:"Credit Risk (R)",title:"Credit-Risk Modelling in R",met:"GAM AUC 0.766 · 24% lower expected loss",desc:"German Credit (1,000 loans) in R: logistic, L1-regularised glmnet and a GAM compared on a held-out split, then a cost-sensitive 5:1 decision threshold that cuts expected loss from 231 to 175.",stack:["R","glmnet","mgcv GAM","pROC","R Markdown"],repo:"r-credit-risk",cs:"creditr"}
 ];
 const CASES={
+  growth:{title:"Growth Experimentation Platform",tag:"Growth & experimentation",repo:"growth-experimentation-platform",
+    kpis:[[5.9,"pp","activation lift (95% CI 4.9–6.9)",1],[9,"×","faster decision vs fixed horizon",0],[70645,"","product events",0]],
+    steps:["Product-event stream","Pub/Sub-style landing","dbt marts (BigQuery dialect)","Funnel & cohort analytics","Experiment engine","Streamlit growth app"],
+    rows:[["Problem","Own a growth funnel end to end — acquisition, activation, retention, expansion — and run experiments the way a product growth team does."],["Experiment","An onboarding A/B lifted activation from <strong>41.8% to 47.7%</strong> (+5.9 pp, 95% bootstrap CI 4.9–6.9, p &lt; 1e-10), with a minimum detectable effect of 1.39 pp at 80% power."],["Sequential testing","An mSPRT always-valid confidence interval cleared zero at <strong>~4,242 users versus 40,000</strong> for the fixed-horizon test — about 9× faster — and CUPED cut revenue variance 15.3%."],["Warehouse","dbt build passes 7/7 models and tests on a DuckDB dev warehouse; the identical SQL runs on BigQuery with a Pub/Sub → BigQuery stream."]],
+    bars:{t:"Onboarding A/B — activation rate",u:"%",max:50,dp:1,d:[["Control",41.8],["Treatment",47.7]]},
+    limits:["Events are generated with a fixed seed for reproducibility; the pipeline is GCP-ready but the figures are from the local DuckDB run."]},
+  football:{title:"Premier League Match Forecasting",tag:"Sports forecasting",repo:"football-forecasting",
+    kpis:[[0.1996,"","RPS, best model",4],[1140,"","held-out matches",0],[54.8,"%","accuracy, Elo + logistic",1]],
+    steps:["15 seasons, 5,700 matches","Leak-free walk-forward","Elo / Dixon-Coles / LightGBM","3-model ensemble","Paired bootstrap CIs","Mid-season Monte Carlo"],
+    rows:[["Problem","Forecast 1X2 match outcomes probabilistically, scored by Ranked Probability Score, with no leakage and no inflated claims."],["Models","Margin-aware Elo + logistic, time-decayed Dixon-Coles, a LightGBM stack on Elo/Dixon-Coles outputs and rolling form, and a 3-model average, tuned only on 2019–2021."],["Result","A tuned <strong>Elo + logistic</strong> led at RPS 0.1996; every model beat base rates (ensemble −0.0322, 95% CI −0.0398 to −0.0241)."],["Honest negative","Nothing significantly beat the simple Elo — the LightGBM stack and ensemble were statistically indistinguishable from it, and the write-up says so."],["Monte Carlo","Simulating the second half of a season 4,000 times gave final-points MAE 5.4 vs 6.0 for pace extrapolation; the eventual champions sat at 68%, 51% and 82% title probability at the halfway point."]],
+    bars:{t:"Match-outcome accuracy on 1,140 held-out matches",u:"%",max:60,dp:1,d:[["Base rates",45.1],["Dixon-Coles",53.1],["LightGBM stack",54.4],["Ensemble",54.3],["Elo + logistic",54.8]]},
+    limits:["The data mirror has no bookmaker odds, so nothing is benchmarked against the market and no profit or ROI is claimed.","The Monte Carlo 80% intervals held 42 of 60 team-season totals (70%), so they are still a little narrow."]},
+  creditr:{title:"Credit-Risk Modelling in R",tag:"Credit risk (R)",repo:"r-credit-risk",
+    kpis:[[0.766,"","GAM test AUC",3],[24,"%","lower expected loss vs 0.5 cutoff",0],[1000,"","German Credit loans",0]],
+    steps:["German Credit, 70/30 split","Logistic baseline","L1 glmnet (10-fold CV)","GAM smooth terms","Held-out AUC","Cost-sensitive threshold"],
+    rows:[["Problem","Model default risk on the German Credit benchmark in R, and — the part that matters in banking — set the decision threshold by cost, not at a naive 0.5."],["Models","Logistic regression, L1-regularised <strong>glmnet</strong> (λ by 10-fold CV) and a <strong>GAM</strong> (mgcv) with smooth terms on duration, amount and age, scored once on a held-out test set."],["Result","The GAM won at <strong>test AUC 0.766</strong> (logistic 0.752, LASSO 0.753) — non-linear risk the linear models miss."],["The decision","With a 5:1 cost matrix (a bad loan costs 5× a declined good one), the cost-optimal cutoff is P(bad) ≥ 0.21, not 0.5, cutting expected loss from <strong>231 to 175 — about 24% lower</strong>."]],
+    bars:{t:"Test AUC by model",u:"",max:0.8,dp:3,d:[["Logistic",0.752],["LASSO (glmnet)",0.753],["GAM (mgcv)",0.766]]},
+    limits:["1,000 rows is the canonical benchmark, so AUC ≈ 0.77 is expected — the value is the method (regularisation, non-linear modelling, held-out evaluation, cost-aware threshold), not a headline number."]},
   handoverwatch:{title:"HandoverWatch NW",tag:"NHS emergency care",repo:"handoverwatch-nw",live:"/handoverwatch/",
     kpis:[[19,"","North West NHS trusts",0],[2301,"","daily handover records",0],[450,"","trust-months with a quality indicator",0]],
     steps:["Published NHS returns","Data quality checks","Trust-level metrics","Forecast backtest","Interactive dashboard"],
@@ -850,7 +871,7 @@ const CASES={
     limits:["No HuggingFace or torchvision access, so LoRA is implemented from scratch and vision uses bundled digits.","Models are small by design; the harness, not leaderboard numbers, is the point."]}
 };
 
-const CASE_ORDER=["voltflex","gridguard-uk","railpulse-uk","aquasentinel-uk","harvestshield-uk","ae-watch-uk","retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs"];
+const CASE_ORDER=["voltflex","gridguard-uk","railpulse-uk","aquasentinel-uk","harvestshield-uk","ae-watch-uk","retail","uplift","retention","reviews","filings","fraud","azure","pfa","macro","finmine","rag","bending","garment","lgguard","llmguard","finrisk","cpi","oil","fdetect","qlora","insurance","leetforge","geo","modelgrid","dqm","dbt","logs","growth","football","creditr"];
 let caseCur=null, caseOpener=null;
 function openCase(key,opener){
   const dlg=document.getElementById("caseDlg"), c=CASES[key]; if(!c) return;
@@ -1087,9 +1108,9 @@ function openCase(key,opener){
   const T=[
     ["LLMs & agents",{LangGraph:[0,3],LangChain:[0],RAG:[0,5,"filed"],"Hybrid retrieval":[0,5],ChromaDB:[0],pgvector:["filed"],GraphRAG:[4],MCP:[0],Guardrails:[0,3],"Llama 3 / Qwen2.5":[0,"filed"]}],
     ["Machine learning",{"scikit-learn":[2],XGBoost:[1,7],PyTorch:["filed"],TensorFlow:[2],"Hugging Face":["filed"],LayoutLMv3:["filed"],spaCy:[2],BERTopic:[2],SHAP:[1],"Time series":[3]}],
-    ["Evaluation & stats",{"Held-out testing":[0,1,2,3],Ablations:[0,5],"Bootstrap CIs":[1,2],"A/B testing":[1],"Power analysis":[1],"F1 / PR-AUC / Recall@k":[1,2,5,"filed"]}],
-    ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1,7],"Azure ML":[7],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5]}],
-    ["Data",{Python:[0,1,2,3,4,5,6,"filed","dhl"],SQL:[1,"filed","dhl"],PySpark:[1],"Delta Lake":[1],"XBRL parsing":[0,4],"SEC EDGAR":[0,4,6],Neo4j:[4],"Power BI":["filed"]}],
+    ["Evaluation & stats",{"Held-out testing":[0,1,2,3],Ablations:[0,5],"Bootstrap CIs":[1,2],"A/B testing":[1],"Power analysis":[1],"F1 / PR-AUC / Recall@k":[1,2,5,"filed"],"CUPED":[21],"Sequential testing (mSPRT)":[21],"Monte Carlo":[22]}],
+    ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1,7],"Azure ML":[7],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5],"BigQuery":[21],"dbt":[21],"Pub/Sub":[21]}],
+    ["Data",{Python:[0,1,2,3,4,5,6,"filed","dhl"],SQL:[1,"filed","dhl"],PySpark:[1],"Delta Lake":[1],"XBRL parsing":[0,4],"SEC EDGAR":[0,4,6],Neo4j:[4],"Power BI":["filed"],"R":[23]}],
     ["Automation",{"UiPath":["dhl"],"SAP":["dhl"],"CargoWise":["dhl"],"Root cause analysis":["dhl"]}],
     ["UI design",{"Apple-inspired UI design":["voltflex","handoverwatch"]}]
   ];
@@ -1105,8 +1126,8 @@ function openCase(key,opener){
 
 /* ---------- project cards ---------- */
 (function(){
-  const PTAGS=["ml","ml",...Array(5).fill("ml"),"ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
-  const BIG=["9.9%","",...Array(5).fill(""),"£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
+  const PTAGS=["ml","ml",...Array(5).fill("ml"),"ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin","ml mlops","ml","ml mlops","ml","ml fin"];
+  const BIG=["9.9%","",...Array(5).fill(""),"£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms","","","+5.9pp","54.8%","−24% loss"];
   const g=document.getElementById("pgrid");
   g.innerHTML=PROJECTS.map((p,i)=>{ const bars=Array.from({length:7},(_,k)=>`<i style="height:${30+((i*37+k*53)%70)}%"></i>`).join("");
     return `<article class="pj trace rv" tabindex="0" role="button" data-case="${p.cs}" data-tags="${PTAGS[i]||""}" aria-label="${esc(p.title)}: open case study">
