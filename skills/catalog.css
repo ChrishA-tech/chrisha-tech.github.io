@@ -1,0 +1,12 @@
+.skill-catalog{margin-top:24px;border:1px solid var(--line);border-radius:14px;padding:clamp(14px,3vw,24px);color:var(--ink)}
+.skill-catalog summary{cursor:pointer;font-weight:800}
+.skill-controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;margin-top:16px}
+.skill-controls label{display:grid;gap:5px;min-width:0;font-weight:700}
+.skill-controls :is(input,select),#skill-more{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:8px;min-width:0}
+#skill-count{margin:14px 0;color:var(--ink2);font-size:.9rem}
+#skill-list{margin:0;padding:0;list-style:none}
+#skill-list li{padding:12px 0;border-top:1px solid var(--line);overflow-wrap:anywhere}
+#skill-list strong{display:block}
+#skill-list a{font-size:.86rem;text-decoration:underline;text-underline-offset:3px}
+#skill-more{margin-top:12px;cursor:pointer}
+.skill-catalog :focus-visible{outline:2px solid var(--ink);outline-offset:3px}

@@ -422,6 +422,8 @@ html.ink-transition::view-transition-old(root){z-index:1}
 html.ink-transition::view-transition-new(root){z-index:2;clip-path:var(--ink-start)}
 
 </style>
+<link rel="stylesheet" href="/skills/catalog.css">
+<script defer src="/skills/catalog.js"></script>
 </head>
 <body class="loading">
 <div class="loader" id="loader" aria-hidden="true"><span class="cur t"></span><span class="cur b"></span>
@@ -488,6 +490,17 @@ html.ink-transition::view-transition-new(root){z-index:2;clip-path:var(--ink-sta
     <p class="lead rv">Select a skill or tool to see where I've used it.</p>
     <div class="stackgrid rv" id="stackgrid"></div>
     <p class="usedin" id="usedin" aria-live="polite"></p>
+    <details class="skill-catalog" id="skill-catalog">
+      <summary>Browse GitHub project skills</summary>
+      <div class="skill-controls">
+        <label>Search skills<input id="skill-search" type="search" placeholder="e.g. dbt or conformal prediction"></label>
+        <label>Project<select id="skill-project"><option value="">All projects</option></select></label>
+        <label>Status<select id="skill-status"><option value="">Implemented or documented</option><option value="Planned">Planned</option></select></label>
+      </div>
+      <p id="skill-count" role="status"></p>
+      <ul id="skill-list"></ul>
+      <button type="button" id="skill-more" hidden>Show more skills</button>
+    </details>
   </div>
 </section>
 
