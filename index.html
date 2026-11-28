@@ -638,6 +638,7 @@ async function copy(t,m){ try{ await navigator.clipboard.writeText(t); say(m); }
 const GH="https://github.com/ChrishA-tech/";
 const PROJECTS=[
   {cat:"Energy Scheduling",title:"VoltFlex UK · Energy scheduling replay",met:"9.9% lower replay cost · 84 region-days",desc:"Compare a rolling charging optimiser with immediate charging on archived Octopus Agile tariffs. Explore costs by region or scenario, and see how the policy performs when feeds degrade.",stack:["Python","Dynamic programming","Octopus Agile"],repo:"voltflex-uk",cs:"voltflex"},
+  {cat:"NHS Emergency Care",title:"HandoverWatch NW",met:"19 NHS trusts · 2,301 daily records",desc:"Explore ambulance handover delays, initial assessment and time to treatment using published North West NHS data. Compare forecast errors and export the selected series.",repo:"handoverwatch-nw",cs:"handoverwatch",big:"19 trusts"},
   {"cat": "Housing Retrofit", "title": "GridGuard UK", "met": "Modelled retrofit estimates", "desc": "Explore how housing retrofit estimates change across neighbourhoods and cold-home scenarios.", "repo": "gridguard-uk", "cs": "gridguard-uk", "big": "Retrofit"},
   {"cat": "Rail Reliability", "title": "RailPulse UK", "met": "Rail delay replay", "desc": "Explore how delays propagate across rail corridors under normal service, disruption and degraded feeds.", "repo": "railpulse-uk", "cs": "railpulse-uk", "big": "Rail"},
   {"cat": "River Health", "title": "AquaSentinel UK", "met": "Spill probability replay", "desc": "Explore how rainfall and sensor gaps affect forecasts of sewage spill events.", "repo": "aquasentinel-uk", "cs": "aquasentinel-uk", "big": "Rivers"},
@@ -659,6 +660,11 @@ const PROJECTS=[
   {cat:"Deep Learning",title:"Deep Learning Suite",met:"4 tasks · one Lightning harness · LoRA 7.3% params",desc:"A modality-agnostic PyTorch Lightning framework: one shared harness across vision (CNN 98.1%), time-series (LSTM), text (Transformer 95.5%) and recommendation, with LoRA from scratch and ONNX on every task.",stack:["PyTorch","Lightning","LoRA","Transformers","ONNX","CI"],repo:"deep-learning-suite",cs:"dlsuite"}
 ];
 const CASES={
+  handoverwatch:{title:"HandoverWatch NW",tag:"NHS emergency care",repo:"handoverwatch-nw",live:"/handoverwatch/",
+    kpis:[[19,"","North West NHS trusts",0],[2301,"","daily handover records",0],[450,"","trust-months with a quality indicator",0]],
+    steps:["Published NHS returns","Data quality checks","Trust-level metrics","Forecast backtest","Interactive dashboard"],
+    rows:[["Ambulance handovers","Inspect the shares exceeding 30 and 60 minutes. On 8 December 2025, 57 of 130 Liverpool handovers with known durations took more than 60 minutes."],["Clinician access","Explore ambulance-only initial assessment and time to treatment across eligible A&E attendances."],["Forecast benchmark","Liverpool holdout MAE: 5.20 percentage points for the seven-day baseline and 5.24 for ridge regression."]],
+    limits:["The published measures cover different groups and are not linked at patient level. They cannot identify time to a doctor specifically."]},
   "gridguard-uk":{"title": "GridGuard UK", "tag": "Housing Retrofit", "repo": "gridguard-uk", "live": "/replay/?project=gridguard-uk", "rows": [["Project", "Explore how housing retrofit estimates change across neighbourhoods and cold-home scenarios."], ["Method", "Housing profiles, EPC data and uncertainty modelling"], ["Replay", "Compares a simple estimate with a scenario-adjusted estimate against simulated annual outcomes."]], "limits": ["Replay inputs and outcomes are simulated."]},
   "railpulse-uk":{"title": "RailPulse UK", "tag": "Rail Reliability", "repo": "railpulse-uk", "live": "/replay/?project=railpulse-uk", "rows": [["Project", "Explore how delays propagate across rail corridors under normal service, disruption and degraded feeds."], ["Method", "Corridor graphs and delay forecasting"], ["Replay", "Compares a last-delay baseline with a schedule-recovery heuristic on simulated corridor data."]], "limits": ["Replay inputs and outcomes are simulated."]},
   "aquasentinel-uk":{"title": "AquaSentinel UK", "tag": "River Health", "repo": "aquasentinel-uk", "live": "/replay/?project=aquasentinel-uk", "rows": [["Project", "Explore how rainfall and sensor gaps affect forecasts of sewage spill events."], ["Method", "Catchment telemetry and event forecasting"], ["Replay", "Compares a rainfall threshold with a scenario-based estimate using Brier scores on simulated spill events."]], "limits": ["Replay inputs and outcomes are simulated."]},
@@ -1086,8 +1092,8 @@ function openCase(key,opener){
 
 /* ---------- project cards ---------- */
 (function(){
-  const PTAGS=["ml",...Array(5).fill("ml"),"ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
-  const BIG=["9.9%",...Array(5).fill(""),"£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
+  const PTAGS=["ml","ml",...Array(5).fill("ml"),"ml llm mlops fin","ml","ml","llm ml","llm mlops fin","ml mlops fin","ml","llm fin","ml fin","llm","fin","ml mlops fin"];
+  const BIG=["9.9%","",...Array(5).fill(""),"£2.5k/wk","+7.7pp","43.5%","0 vs 6","97.9%","0.994","0.868","0.87×","0.885","0.94","+126%","121 ms"];
   const g=document.getElementById("pgrid");
   g.innerHTML=PROJECTS.map((p,i)=>{ const bars=Array.from({length:7},(_,k)=>`<i style="height:${30+((i*37+k*53)%70)}%"></i>`).join("");
     return `<article class="pj trace rv" tabindex="0" role="button" data-case="${p.cs}" data-tags="${PTAGS[i]||""}" aria-label="${esc(p.title)}: open case study">
