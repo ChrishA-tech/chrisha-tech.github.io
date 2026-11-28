@@ -2,18 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>HandoverWatch NW</title><link rel="icon" href="data:,"><link rel="stylesheet" href="style.css">
+<title>HandoverWatch NW</title><link rel="icon" href="data:,"><script>try { if (localStorage.getItem('chrish-theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch {}</script>
+<link rel="stylesheet" href="/replay/theme.css"><link rel="stylesheet" href="style.css">
+<script defer src="theme.js"></script>
 <script defer src="data/observations.js"></script><script defer src="dashboard.js"></script>
 </head>
 <body>
+<nav class="topnav" aria-label="Main">
+  <a class="name" href="/">Chrish</a>
+  <a class="nav-link" href="/#projects">Projects</a>
+  <a class="nav-link" href="https://github.com/ChrishA-tech/handoverwatch-nw">GitHub</a>
+  <button id="themeBtn" type="button" aria-label="Switch to light mode">☀</button>
+</nav>
 <main>
-<header><p>North West England · NHS open data</p><h1>HandoverWatch NW</h1><p>Explore ambulance handover delays and how long patients wait to be seen for treatment.</p></header>
-<form>
+<header class="hero"><p class="domain">North West England · NHS open data</p><h1>HandoverWatch NW</h1><p class="lead">Explore ambulance handover delays and how long patients wait to be seen for treatment.</p></header>
+<form class="panel filters">
 <label>Trust<select id="trust"></select></label>
 <label>View<select id="view"><option value="handover">Ambulance handover analytics</option><option value="clinician">Arrival to first clinician</option></select></label>
 <label>Measure<select id="metric"></select></label>
 </form>
-<section id="results" aria-live="polite">
+<section class="panel chart" id="results" aria-live="polite">
 <h2 id="heading"></h2><p id="definition"></p>
 <div class="cards" id="cards"></div>
 <div class="plot"><svg id="chart" viewBox="0 0 850 280" role="img" aria-labelledby="heading"></svg></div>
@@ -21,8 +29,8 @@
 <p id="observation"></p>
 <button type="button" id="download">Download displayed series (CSV)</button>
 </section>
-<section><h2>What to investigate</h2><p id="action"></p><p>Use this retrospective dashboard for operational review. The public data has no live staffing, patient-level linkage, or clinician job titles.</p></section>
-<section><h2>Sources and reporting periods</h2>
+<section class="panel details"><h2>What to investigate</h2><p id="action"></p><p>Use this retrospective dashboard for operational review. The public data has no live staffing, patient-level linkage, or clinician job titles.</p></section>
+<section class="panel details"><h2>Sources and reporting periods</h2>
 <ul><li><a href="https://www.england.nhs.uk/statistics/statistical-work-areas/uec-sitrep/urgent-and-emergency-care-daily-situation-reports-2025-26/">NHS England Daily Ambulance Collection</a> · 24 November 2025 to 29 March 2026</li>
 <li><a href="https://digital.nhs.uk/data-and-information/publications/statistical/provisional-accident-and-emergency-quality-indicators-for-england/september-2026-by-provider">NHS England A&amp;E Quality Indicators</a> · September 2026 release</li></ul>
 <p id="quality"></p></section>

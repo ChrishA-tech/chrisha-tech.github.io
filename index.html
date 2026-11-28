@@ -1078,9 +1078,9 @@ function openCase(key,opener){
     ["MLOps & cloud",{Databricks:[0,1],MLflow:[0,1,7],"Azure ML":[7],Docker:[0,5],FastAPI:[0,5],"GitHub Actions":[5]}],
     ["Data",{Python:[0,1,2,3,4,5,6,"filed","dhl"],SQL:[1,"filed","dhl"],PySpark:[1],"Delta Lake":[1],"XBRL parsing":[0,4],"SEC EDGAR":[0,4,6],Neo4j:[4],"Power BI":["filed"]}],
     ["Automation",{"UiPath":["dhl"],"SAP":["dhl"],"CargoWise":["dhl"],"Root cause analysis":["dhl"]}],
-    ["UI design",{"Apple-inspired UI design":["voltflex"]}]
+    ["UI design",{"Apple-inspired UI design":["voltflex","handoverwatch"]}]
   ];
-  const EXAMPLES={voltflex:'<a href="/replay/tariffs/">VoltFlex UK interactive dashboard</a>'};
+  const EXAMPLES={voltflex:'<a href="/replay/tariffs/">VoltFlex UK interactive dashboard</a>',handoverwatch:'<a href="/handoverwatch/">HandoverWatch NW dashboard</a>'};
   const box=document.getElementById("stackgrid"), out=document.getElementById("usedin");
   T.forEach(([name,tools])=>{ const g=document.createElement("div"); g.className="sg"; g.innerHTML=`<h3>${esc(name)}</h3><div class="chips"></div>`;
     Object.entries(tools).forEach(([tool,used])=>{ const b=document.createElement("button"); b.type="button"; b.className="chip"; b.textContent=tool; b.setAttribute("aria-pressed","false");

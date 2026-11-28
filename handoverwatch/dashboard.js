@@ -5,7 +5,7 @@ const metrics = {
   clinician: {assessment: 'Initial assessment · median', assessment95: 'Initial assessment · 95th percentile',
               treatment: 'Seen for treatment · median', treatment95: 'Seen for treatment · 95th percentile'}
 };
-const colours = ['var(--blue)', '#b78224', '#16886a'];
+const colours = ['var(--candidate)', 'var(--benchmark)', 'var(--ridge)'];
 let selectedRows = [], unit = '', columns = [];
 
 function options(control, entries) {
